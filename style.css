@@ -292,3 +292,51 @@ html, body {
   .result-text { font-size: 18px; letter-spacing: 2px; }
   .spin-btn { width: 90px; height: 90px; font-size: 14px; }
 }
+/* ---------- GOLD JACKPOT (TOTAL) ---------- */
+.result.jackpot {
+  border-color: #ffcc33;
+  box-shadow:
+    0 0 30px rgba(255, 204, 51, 0.6),
+    inset 0 0 30px rgba(255, 204, 51, 0.15);
+  animation: jackpot-pulse 1.2s ease-in-out infinite;
+}
+.result.jackpot .result-label { color: #ffcc33; }
+.result.jackpot .result-text {
+  color: #ffcc33;
+  text-shadow:
+    0 0 10px #ffcc33,
+    0 0 25px #ff9500,
+    0 0 45px #ff6600;
+  letter-spacing: 6px;
+}
+.result.jackpot .result-sub {
+  color: #ffcc33;
+  font-style: normal;
+  letter-spacing: 2px;
+}
+
+@keyframes jackpot-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(255, 204, 51, 0.6), inset 0 0 30px rgba(255, 204, 51, 0.15); }
+  50%      { box-shadow: 0 0 55px rgba(255, 204, 51, 1),   inset 0 0 45px rgba(255, 204, 51, 0.35); }
+}
+
+/* золотая вспышка на весь экран */
+#gold-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  background: radial-gradient(circle at center,
+              rgba(255, 220, 100, 0.95) 0%,
+              rgba(255, 170, 0, 0.6) 35%,
+              transparent 70%);
+  opacity: 0;
+}
+#gold-flash.active {
+  animation: gold-flash 1.6s ease-out forwards;
+}
+@keyframes gold-flash {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  100% { opacity: 0; }
+}
