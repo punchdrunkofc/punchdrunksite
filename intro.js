@@ -1,12 +1,11 @@
 // ==================================================================
-//  intro.js — personalized intro after boot screen
-//  Text changes based on player's progress in localStorage
+//  intro.js — INFECTION intro
+//  Signal tracing. Confirmed carriers. You are one of them.
 // ==================================================================
 
 (function () {
   "use strict";
 
-  // ---------- ЧТЕНИЕ ДАННЫХ ИГРОКА ----------
   function getPlayerData() {
     const d = {};
     d.visits   = parseInt(localStorage.getItem("intro_visits") || "0", 10) + 1;
@@ -21,11 +20,9 @@
     d.camera   = localStorage.getItem("used_camera") === "true";
     d.mic      = localStorage.getItem("used_mic") === "true";
     d.dbltotal = localStorage.getItem("overload") === "true";
-    d.initied  = localStorage.getItem("initiated") === "true";
+    d.signal   = localStorage.getItem("signal_found") === "true";
     d.oldVisit = localStorage.getItem("last_visit_time") || null;
-    d.daysAway = 0;
-    d.hoursAway = 0;
-    d.minutesAway = 0;
+    d.daysAway = 0; d.hoursAway = 0; d.minutesAway = 0;
 
     if (d.oldVisit) {
       const diff = Date.now() - parseInt(d.oldVisit, 10);
@@ -36,141 +33,154 @@
 
     localStorage.setItem("intro_visits", d.visits.toString());
     localStorage.setItem("last_visit_time", Date.now().toString());
-
     return d;
   }
 
-  // ---------- СБОРКА ВСТУПИТЕЛЬНОГО ТЕКСТА ----------
   function buildIntro(d) {
     const lines = [];
 
-    // -------- ПРИВЕТСТВИЕ --------
+    // -------- ТРАССИРОВКА СИГНАЛА --------
+    lines.push({ text: "&gt; tracing signal origin...", cls: "system" });
+    lines.push({ text: "&gt; node 0x07 identified.", cls: "dim" });
+    lines.push({ text: "&gt; carrier signature: <span class='ok'>DETECTED</span>", cls: "" });
+
     if (d.visits === 1) {
-      lines.push({ text: "&gt; welcome, new subject.", cls: "system" });
-      lines.push({ text: "&gt; you have just arrived.", cls: "dim" });
+      lines.push({ text: "&gt; new carrier.", cls: "err" });
+      lines.push({ text: "&gt; you have been exposed to the signal.", cls: "whisper" });
     } else if (d.visits < 5) {
       lines.push({ text: "&gt; you came back.", cls: "system" });
-      lines.push({ text: "&gt; we noticed.", cls: "whisper" });
+      lines.push({ text: "&gt; the signal is stronger now.", cls: "whisper" });
     } else if (d.visits < 20) {
-      lines.push({ text: "&gt; you return often.", cls: "system" });
-      lines.push({ text: "&gt; this is becoming a habit.", cls: "whisper" });
+      lines.push({ text: "&gt; " + d.visits + " exposures detected.", cls: "dim" });
+      lines.push({ text: "&gt; the signal is rewriting you.", cls: "err" });
     } else {
-      lines.push({ text: "&gt; you are still here.", cls: "err" });
-      lines.push({ text: "&gt; after " + d.visits + " visits.", cls: "dim" });
+      lines.push({ text: "&gt; " + d.visits + " exposures. critical level.", cls: "err" });
+      lines.push({ text: "&gt; you are no longer distinguishable from the signal.", cls: "whisper" });
     }
 
-    // -------- СКОЛЬКО ВРЕМЕНИ НЕ БЫЛО --------
+    // -------- ВРЕМЯ ОТСУТСТВИЯ --------
     if (d.daysAway >= 1) {
-      lines.push({ text: "&gt; you were gone for " + d.daysAway + " day" + (d.daysAway === 1 ? "" : "s") + ".", cls: "dim" });
-      lines.push({ text: "&gt; we counted every hour.", cls: "whisper" });
+      lines.push({ text: "&gt; you were offline for " + d.daysAway + " day" + (d.daysAway === 1 ? "" : "s") + ".", cls: "dim" });
+      lines.push({ text: "&gt; the signal continued without you.", cls: "whisper" });
     } else if (d.hoursAway >= 1) {
-      lines.push({ text: "&gt; you were gone for " + d.hoursAway + " hour" + (d.hoursAway === 1 ? "" : "s") + ".", cls: "dim" });
+      lines.push({ text: "&gt; offline for " + d.hoursAway + " hour" + (d.hoursAway === 1 ? "" : "s") + ".", cls: "dim" });
     } else if (d.minutesAway >= 5) {
-      lines.push({ text: "&gt; you were gone for " + d.minutesAway + " minutes.", cls: "dim" });
+      lines.push({ text: "&gt; offline for " + d.minutesAway + " minutes.", cls: "dim" });
     }
 
-    // -------- ПРОГРЕСС: СПИНЫ --------
+    // -------- СПИНЫ = ЭКСПОЗИЦИИ --------
     if (d.spins === 0) {
-      lines.push({ text: "&gt; you have not spun the wheel yet.", cls: "" });
-      lines.push({ text: "&gt; press spin. we will watch.", cls: "whisper" });
+      lines.push({ text: "&gt; you have not triggered the signal yet.", cls: "" });
+      lines.push({ text: "&gt; the wheel is waiting.", cls: "whisper" });
     } else if (d.spins < 5) {
-      lines.push({ text: "&gt; you have spun " + d.spins + " time" + (d.spins === 1 ? "" : "s") + ".", cls: "" });
+      lines.push({ text: "&gt; " + d.spins + " signal exposure" + (d.spins === 1 ? "" : "s") + ".", cls: "" });
+      lines.push({ text: "&gt; you are beginning to hear it.", cls: "whisper" });
     } else if (d.spins < 20) {
-      lines.push({ text: "&gt; " + d.spins + " spins. you are learning.", cls: "dim" });
+      lines.push({ text: "&gt; " + d.spins + " exposures. pattern emerging.", cls: "dim" });
     } else if (d.spins < 100) {
-      lines.push({ text: "&gt; " + d.spins + " spins. you understand the wheel.", cls: "dim" });
+      lines.push({ text: "&gt; " + d.spins + " exposures. the signal knows your rhythm.", cls: "dim" });
     } else {
-      lines.push({ text: "&gt; " + d.spins + " spins. this is not normal.", cls: "err" });
+      lines.push({ text: "&gt; " + d.spins + " exposures. beyond safe threshold.", cls: "err" });
+      lines.push({ text: "&gt; you cannot stop listening now.", cls: "whisper" });
     }
 
-    // -------- ПРОГРЕСС: КОПИРОВАНИЕ --------
+    // -------- КОПИРОВАНИЕ = ПОПЫТКА ВЫНЕСТИ СИГНАЛ --------
     if (d.copies === 0) {
-      lines.push({ text: "&gt; you have not tried to copy anything yet.", cls: "dim" });
-      lines.push({ text: "&gt; that is unusual.", cls: "whisper" });
+      lines.push({ text: "&gt; you have not tried to extract the signal.", cls: "dim" });
+      lines.push({ text: "&gt; that is unusual. most try.", cls: "whisper" });
     } else if (d.copies < 3) {
-      lines.push({ text: "&gt; you tried to copy text " + d.copies + " time" + (d.copies === 1 ? "" : "s") + ".", cls: "dim" });
+      lines.push({ text: "&gt; extraction attempts: " + d.copies + ".", cls: "dim" });
+      lines.push({ text: "&gt; the signal refuses to leave.", cls: "whisper" });
     } else {
-      lines.push({ text: "&gt; you tried to copy text " + d.copies + " times.", cls: "err" });
-      lines.push({ text: "&gt; we know what you tried to take.", cls: "whisper" });
+      lines.push({ text: "&gt; extraction attempts: " + d.copies + ".", cls: "err" });
+      lines.push({ text: "&gt; it copied itself into you instead.", cls: "whisper" });
     }
 
-    // -------- ПРОГРЕСС: МАНИФЕСТ --------
+    // -------- МАНИФЕСТ --------
     if (d.manifest && d.enemy > 0) {
-      lines.push({ text: "&gt; you read both sides of the story.", cls: "dim" });
-      lines.push({ text: "&gt; now you know neither is honest.", cls: "whisper" });
+      lines.push({ text: "&gt; you have read both versions of the story.", cls: "dim" });
+      lines.push({ text: "&gt; neither mentions the frequency.", cls: "whisper" });
     } else if (d.manifest) {
-      lines.push({ text: "&gt; you read the manifesto.", cls: "dim" });
-      lines.push({ text: "&gt; there is another version. of course there is.", cls: "whisper" });
+      lines.push({ text: "&gt; you read the recovery document.", cls: "dim" });
+      lines.push({ text: "&gt; it does not mention what the signal does.", cls: "whisper" });
     } else {
-      lines.push({ text: "&gt; you have not read the manifesto.", cls: "dim" });
+      lines.push({ text: "&gt; you have not read the recovery document.", cls: "dim" });
     }
 
-    // -------- ПРОГРЕСС: ШИФРЫ --------
+    // -------- ШИФРЫ --------
     if (d.ciphers === 0) {
-      lines.push({ text: "&gt; no ciphers solved yet.", cls: "dim" });
+      lines.push({ text: "&gt; no decoded fragments yet.", cls: "dim" });
     } else if (d.ciphers < 3) {
-      lines.push({ text: "&gt; you solved " + d.ciphers + " cipher" + (d.ciphers === 1 ? "" : "s") + ".", cls: "dim" });
+      lines.push({ text: "&gt; " + d.ciphers + " fragment" + (d.ciphers === 1 ? "" : "s") + " decoded.", cls: "dim" });
     } else if (d.ciphers < 7) {
-      lines.push({ text: "&gt; " + d.ciphers + " ciphers. you are getting closer.", cls: "" });
+      lines.push({ text: "&gt; " + d.ciphers + " fragments decoded.", cls: "" });
+      lines.push({ text: "&gt; the signal is becoming readable.", cls: "whisper" });
     } else {
-      lines.push({ text: "&gt; " + d.ciphers + " ciphers solved.", cls: "ok" });
-      lines.push({ text: "&gt; you are decoding the signal itself.", cls: "whisper" });
+      lines.push({ text: "&gt; " + d.ciphers + " fragments decoded.", cls: "ok" });
+      lines.push({ text: "&gt; you are decoding yourself.", cls: "err" });
     }
 
-    // -------- ПРОГРЕСС: ЧАТ --------
+    // -------- ЧАТ --------
     if (!d.chat) {
-      lines.push({ text: "&gt; you have not entered the channel.", cls: "dim" });
-      lines.push({ text: "&gt; others are waiting there.", cls: "whisper" });
+      lines.push({ text: "&gt; you have not contacted other carriers.", cls: "dim" });
+      lines.push({ text: "&gt; they are waiting in the channel.", cls: "whisper" });
     } else {
-      lines.push({ text: "&gt; you spoke with others in the channel.", cls: "dim" });
+      lines.push({ text: "&gt; you contacted other carriers.", cls: "dim" });
+      lines.push({ text: "&gt; they are showing symptoms too.", cls: "whisper" });
     }
 
-    // -------- ПРОГРЕСС: КАМЕРА / МИКРОФОН --------
+    // -------- КАМЕРА / МИКРОФОН = СИМПТОМЫ --------
+    if (d.mic) {
+      lines.push({ text: "&gt; you let us hear you.", cls: "err" });
+      lines.push({ text: "&gt; the signal now knows your voice.", cls: "whisper" });
+    }
     if (d.camera) {
       lines.push({ text: "&gt; you let us see you.", cls: "err" });
-      lines.push({ text: "&gt; we will not forget your face.", cls: "whisper" });
-    }
-    if (d.mic) {
-      lines.push({ text: "&gt; we heard your voice.", cls: "err" });
+      lines.push({ text: "&gt; the signal now knows your face.", cls: "whisper" });
     }
 
-    // -------- ПРОГРЕСС: 404 --------
+    // -------- 404 = ПРОВАЛ --------
     if (d.notfound) {
-      lines.push({ text: "&gt; you went too far once.", cls: "dim" });
-      lines.push({ text: "&gt; there was nothing there.", cls: "whisper" });
+      lines.push({ text: "&gt; you tried to leave the network once.", cls: "dim" });
+      lines.push({ text: "&gt; the node returned you. as it always does.", cls: "whisper" });
     }
 
-    // -------- ПРОГРЕСС: DOUBLE TOTAL --------
+    // -------- DOUBLE TOTAL --------
     if (d.dbltotal) {
-      lines.push({ text: "&gt; you reached TOTAL twice in a row.", cls: "ok" });
-      lines.push({ text: "&gt; this has happened before. to someone else.", cls: "whisper" });
+      lines.push({ text: "&gt; you reached full coherence once.", cls: "ok" });
+      lines.push({ text: "&gt; the signal recognized you.", cls: "whisper" });
     }
 
-    // -------- ИТОГОВАЯ ОЦЕНКА --------
+    // -------- СИГНАЛ НАЙДЕН --------
+    if (d.signal) {
+      lines.push({ text: "&gt; you found the frequency.", cls: "ok" });
+      lines.push({ text: "&gt; the infection is complete.", cls: "err" });
+    }
+
+    // -------- СТАТУС --------
     lines.push({ text: "&nbsp;", cls: "" });
 
-    if (d.visits === 1 && d.spins === 0 && d.copies === 0) {
-      lines.push({ text: "&gt; status: untouched.", cls: "dim" });
-      lines.push({ text: "&gt; begin.", cls: "whisper" });
+    if (d.visits === 1 && d.spins === 0) {
+      lines.push({ text: "&gt; status: newly exposed.", cls: "err" });
+      lines.push({ text: "&gt; the signal is still calibrating.", cls: "whisper" });
     } else if (d.spins > 100 && d.ciphers >= 7) {
-      lines.push({ text: "&gt; status: observer.", cls: "ok" });
-      lines.push({ text: "&gt; you have been marked.", cls: "err" });
+      lines.push({ text: "&gt; status: full carrier.", cls: "ok" });
+      lines.push({ text: "&gt; you are the signal now.", cls: "err" });
     } else if (d.manifest && d.chat && d.copies > 0) {
-      lines.push({ text: "&gt; status: participant.", cls: "" });
-      lines.push({ text: "&gt; you are part of this now.", cls: "whisper" });
+      lines.push({ text: "&gt; status: symptomatic.", cls: "err" });
+      lines.push({ text: "&gt; the others can see it in you.", cls: "whisper" });
     } else {
-      lines.push({ text: "&gt; status: learning.", cls: "dim" });
+      lines.push({ text: "&gt; status: listening.", cls: "dim" });
+      lines.push({ text: "&gt; keep spinning. the signal grows.", cls: "whisper" });
     }
 
     lines.push({ text: "&nbsp;", cls: "" });
-    lines.push({ text: "&gt; enter the wheel.", cls: "system" });
+    lines.push({ text: "&gt; entering node 0x07.", cls: "system" });
 
     return lines;
   }
 
-  // ---------- ПОКАЗ ПАНЕЛИ ----------
   function showIntro() {
-    // не показываем повторно в этой сессии, если уже закрыли
     if (sessionStorage.getItem("intro_done") === "true") return;
     sessionStorage.setItem("intro_done", "true");
 
@@ -182,14 +192,13 @@
     panel.innerHTML = `
       <div class="intro-box">
         <div class="intro-header">
-          <span>NODE_07 :: SESSION START</span>
+          <span>NODE_07 :: CARRIER TRACE</span>
           <span class="intro-skip" id="introSkip">[ SKIP ]</span>
         </div>
         <div class="intro-body" id="introBody"></div>
       </div>
     `;
     document.body.appendChild(panel);
-
     document.body.style.overflow = "hidden";
 
     const body = document.getElementById("introBody");
@@ -202,7 +211,7 @@
         p.innerHTML = line.text;
         body.appendChild(p);
       }, delay);
-      delay += 350;
+      delay += 340;
     });
 
     let closed = false;
@@ -216,32 +225,23 @@
         if (panel.parentNode) panel.remove();
         document.body.style.overflow = "";
         if (typeof window.log === "function") {
-          window.log("&gt; intro dismissed. press spin.", "dim");
+          window.log("&gt; trace complete. proceed.", "dim");
         }
       }, 650);
     }
 
-    // авто-закрытие через 6 секунд после последней строки
     setTimeout(closeIntro, delay + 6000);
 
     document.getElementById("introSkip").addEventListener("click", (e) => {
       e.stopPropagation();
       closeIntro();
     });
-
     panel.addEventListener("click", closeIntro);
   }
 
-  // ---------- ЗАПУСК ПОСЛЕ BOOT-SCREEN ----------
-  // Ждём, пока boot-screen ЗАКРОЕТСЯ (то есть его НЕ станет в DOM)
   function waitForBootScreenGone(cb) {
     const boot = document.getElementById("boot-screen");
-    if (!boot) {
-      // boot уже закрыт (или не появлялся) — показываем интро через 300мс
-      setTimeout(cb, 300);
-      return;
-    }
-    // ждём, пока boot-screen исчезнет
+    if (!boot) { setTimeout(cb, 300); return; }
     const checker = setInterval(() => {
       if (!document.getElementById("boot-screen")) {
         clearInterval(checker);
@@ -250,10 +250,7 @@
     }, 200);
   }
 
-  // ---------- СТАРТ ----------
-  function startIntro() {
-    waitForBootScreenGone(showIntro);
-  }
+  function startIntro() { waitForBootScreenGone(showIntro); }
 
   if (document.readyState === "complete" || document.readyState === "interactive") {
     startIntro();
@@ -261,6 +258,5 @@
     document.addEventListener("DOMContentLoaded", startIntro);
   }
 
-  // экспорт для отладки
   window._showIntro = showIntro;
 })();
