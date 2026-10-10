@@ -1,5 +1,5 @@
 // ==================================================================
-//  cmd-4.js — terminal commands
+//  cmd-4.js — terminal commands (focus without scroll)
 // ==================================================================
 
 const cmds = {
@@ -234,6 +234,25 @@ document.getElementById("cmd").addEventListener("keydown", e => {
   }
 });
 
-document.body.addEventListener("click", () => {
-  document.getElementById("cmd").focus();
+// ---------- FOCUS WITHOUT SCROLL ----------
+document.body.addEventListener("click", (e) => {
+  // не фокусируем, если игрок кликнул по ссылке или кнопке
+  const tag = e.target.tagName;
+  if (tag === "A" || tag === "BUTTON" || tag === "INPUT" || tag === "TEXTAREA") {
+    return;
+  }
+
+  const cmd = document.getElementById("cmd");
+  if (!cmd) return;
+
+  // фокусируем без прокрутки страницы
+  try {
+    cmd.focus({ preventScroll: true });
+  } catch (err) {
+    // fallback для очень старых браузеров — фокус с сохранением скролла
+    const savedX = window.scrollX;
+    const savedY = window.scrollY;
+    cmd.focus();
+    window.scrollTo(savedX, savedY);
+  }
 }, { passive: true });
