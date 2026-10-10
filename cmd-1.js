@@ -22,4 +22,14 @@ function log(html, cls) {
   logEl.scrollTop = logEl.scrollHeight;
 }
 
-spinBtn.addEventListener("click", spin);
+// --- ЭКСПОРТ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ---
+window.spinBtn   = spinBtn;
+window.resultBox = resultBox;
+window.resultTxt = resultTxt;
+window.resultSub = resultSub;
+window.logEl     = logEl;
+window.counterEl = counterEl;
+window.triggerGlitch = triggerGlitch;
+window.log = log;
+
+spinBtn.addEventListener("click", function () { window.spin(); });
