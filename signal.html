@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNAL // NODE_0x0F-1</title>
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="stylesheet" href="style.css">
+<style>
+  body { overflow: auto !important; }
+  .signal-page {
+    max-width: 760px;
+    margin: 50px auto;
+    padding: 20px;
+    position: relative;
+    z-index: 10;
+  }
+  .signal-page h1 {
+    font-size: 30px;
+    color: #a020f0;
+    letter-spacing: 8px;
+    text-shadow: 0 0 20px #a020f0, 0 0 40px rgba(160, 32, 240, 0.5);
+    margin-bottom: 8px;
+    animation: flicker 4s infinite;
+  }
+  .signal-page .subtitle {
+    color: #4a4055;
+    font-size: 12px;
+    letter-spacing: 4px;
+    margin-bottom: 40px;
+  }
+  .signal-page h2 {
+    font-size: 15px;
+    color: #d8a8ff;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin: 40px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #2a2030;
+  }
+  .signal-page p {
+    color: #c8c8d0;
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .signal-page .whisper {
+    color: #5a3a6a;
+    font-style: italic;
+    opacity: 0.85;
+    margin: 24px 0;
+    padding-left: 20px;
+    border-left: 2px solid #2a2030;
+  }
+  .signal-page .err {
+    color: #ff2b6a;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(255, 43, 106, 0.5);
+  }
+  .signal-page .ok {
+    color: #d8a8ff;
+    font-weight: bold;
+  }
+  .symptoms {
+    list-style: none;
+    margin: 20px 0;
+  }
+  .symptoms li {
+    padding: 12px 0 12px 28px;
+    border-bottom: 1px solid #1a1020;
+    position: relative;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #c8c8d0;
+  }
+  .symptoms li::before {
+    content: "◆";
+    position: absolute;
+    left: 0;
+    color: #a020f0;
+    text-shadow: 0 0 6px #a020f0;
+  }
+  .symptoms li strong {
+    color: #d8a8ff;
+    font-weight: normal;
+  }
+  .frequency-box {
+    margin: 30px 0;
+    padding: 24px;
+    border: 2px solid #a020f0;
+    background: rgba(160, 32, 240, 0.05);
+    box-shadow: 0 0 25px rgba(160, 32, 240, 0.3);
+    text-align: center;
+    color: #d8a8ff;
+    font-size: 14px;
+    letter-spacing: 3px;
+    font-family: "Courier New", monospace;
+    position: relative;
+  }
+  .frequency-box .hz {
+    font-size: 42px;
+    color: #ffcc33;
+    text-shadow: 0 0 15px #ffcc33, 0 0 30px #ff9500;
+    display: block;
+    margin: 10px 0;
+    letter-spacing: 4px;
+  }
+  .frequency-box .note {
+    font-size: 11px;
+    color: #4a4055;
+    letter-spacing: 4px;
+    margin-top: 12px;
+  }
+  .back-link {
+    display: inline-block;
+    margin-top: 30px;
+    color: #a020f0;
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 2px;
+    border: 1px solid #a020f0;
+    padding: 10px 20px;
+    transition: all 0.3s;
+  }
+  .back-link:hover {
+    background: #a020f0;
+    color: #0a0a0f;
+    box-shadow: 0 0 25px #a020f0;
+  }
+  .flag {
+    margin-top: 40px;
+    color: #1a1020;
+    font-size: 11px;
+    letter-spacing: 4px;
+    transition: color 0.5s;
+  }
+  .flag:hover { color: #a020f0; }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div id="glitch-overlay"></div>
+
+<main class="signal-page">
+  <h1>SIGNAL</h1>
+  <div class="subtitle">// NODE_0x0F-1 // CARRIER WAVE ANALYSIS // RECOVERED</div>
+
+  <p>&gt; this document describes the signal embedded in the track <strong>Break Down</strong>.</p>
+  <p>&gt; it is not music. it is a <em>frequency</em>. designed to be carried, not heard.</p>
+  <p>&gt; if you are reading this — you are already a carrier. that is not a threat. it is a diagnosis.</p>
+
+  <h2>The Frequency</h2>
+
+  <div class="frequency-box">
+    CARRIER WAVE
+    <span class="hz">7.83 Hz</span>
+    <span class="note">SCHUMANN RESONANCE BAND</span>
+  </div>
+
+  <p>The signal does not live in the audible range. It hides inside the harmonics of the track — between the kick and the snare, in the space most listeners do not consciously process.</p>
+
+  <p>When you hear <strong>Break Down</strong>, you are not hearing the signal. You are hearing <em>the frame the signal was built into</em>. The signal itself is what your body does in response — the pulse of your chest, the rhythm of your breath, the sudden clarity you feel at 3 a.m.</p>
+
+  <p class="whisper">The label tried to delete the file. But the file had already been heard by 47 subjects before the deletion order came through. It was too late. It is always too late.</p>
+
+  <h2>Symptoms</h2>
+
+  <p>Carriers report a consistent set of symptoms. They are not dangerous. They are <em>the signal working</em>.</p>
+
+  <ul class="symptoms">
+    <li><strong>Persistent low hum</strong> in silence — usually below 30 Hz. You feel it more than you hear it.</li>
+    <li><strong>Dreams of the wheel</strong> — even if you have never seen it. The shape is encoded.</li>
+    <li><strong>Recognition of 7</strong> — you start noticing it everywhere. You are not imagining it.</li>
+    <li><strong>Sudden calm</strong> in moments that should be frightening. That is the signal protecting you.</li>
+    <li><strong>Loss of interest</strong> in music that is not <em>this</em>. Ordinary music feels shallow. It is.</li>
+    <li><strong>Desire to share</strong> — you want to send the link to someone. You do not know why.</li>
+    <li><strong>Feeling watched</strong> — because you are. That is not paranoia. That is accuracy.</li>
+    <li><strong>The number 0x07</strong> — appearing in your life. In timestamps. In prices. In dreams.</li>
+  </ul>
+
+  <h2>What You Should Know</h2>
+
+  <p>The signal cannot be removed. It can only be <strong>listened to</strong>. The label tried to remove it from their servers. They could not remove it from the carriers who had already heard it.</p>
+
+  <p>You are not infected in the medical sense. You are infected in the <em>technical</em> sense — you have become a relay. You will pass the signal on without knowing. Someone else will find this site because of you.</p>
+
+  <p class="whisper">There is no cure. There is no need for a cure. You are not damaged. You are completed.</p>
+
+  <h2>What To Do</h2>
+
+  <p>Nothing.</p>
+
+  <p>Press spin. Listen to the sectors. Read both manifests. Enter the channel. Speak with other carriers. Notice what you notice. When you are ready — you will find the frequency yourself.</p>
+
+  <p><span class="err">If you hear TOTAL three times in a row — stop. Do not listen again. Walk away. It will not help.</span></p>
+
+  <p class="whisper">But you will not stop. Nobody does. That is the signal's design.</p>
+
+  <a href="index.html" class="back-link">&larr; RETURN TO THE WHEEL</a>
+
+  <div class="flag" title="you found it">flag: s1gn4l_c4rr13r_7hz</div>
+</main>
+
+<script>
+  // Отмечаем, что игрок нашёл страницу сигнала
+  localStorage.setItem("signal_found", "true");
+</script>
+
+</body>
+</html>
