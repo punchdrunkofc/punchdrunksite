@@ -1,5 +1,5 @@
 // ==================================================================
-//  cmd-6.js — [SYSTEM] messages (silent version)
+//  cmd-6.js — [SYSTEM] messages (no body shake, no forced scroll)
 // ==================================================================
 
 (function () {
@@ -10,19 +10,20 @@
     const logEl = document.getElementById("log");
     if (!logEl) return;
 
+    // проверяем, был ли игрок внизу лога ДО добавления строки
+    const wasAtBottom =
+      logEl.scrollHeight - logEl.scrollTop - logEl.clientHeight < 40;
+
     const p = document.createElement("p");
     p.className = "line " + (cls || "system");
     p.innerHTML = "<span style='color:#8a8a95;'>[SYSTEM]</span> " + text;
 
-    // короткое дрожание экрана в момент появления
-    document.body.style.transition = "transform 0.05s";
-    document.body.style.transform = "translate(" +
-      (Math.random() * 6 - 3) + "px," +
-      (Math.random() * 6 - 3) + "px)";
-    setTimeout(() => { document.body.style.transform = "translate(0,0)"; }, 50);
-
     logEl.appendChild(p);
-    logEl.scrollTop = logEl.scrollHeight;
+
+    // скроллим ТОЛЬКО если игрок уже был внизу
+    if (wasAtBottom) {
+      logEl.scrollTop = logEl.scrollHeight;
+    }
   }
 
   // ------ ПУЛ СООБЩЕНИЙ ------
@@ -107,11 +108,18 @@
       setTimeout(() => {
         const logEl = document.getElementById("log");
         if (!logEl) return;
+
+        const wasAtBottom =
+          logEl.scrollHeight - logEl.scrollTop - logEl.clientHeight < 40;
+
         const p = document.createElement("p");
         p.className = "line whisper";
         p.textContent = "why did you stop?";
         logEl.appendChild(p);
-        logEl.scrollTop = logEl.scrollHeight;
+
+        if (wasAtBottom) {
+          logEl.scrollTop = logEl.scrollHeight;
+        }
       }, 500);
     }
   }, 5000);
@@ -154,11 +162,18 @@
       setTimeout(() => {
         const logEl = document.getElementById("log");
         if (!logEl) return;
+
+        const wasAtBottom =
+          logEl.scrollHeight - logEl.scrollTop - logEl.clientHeight < 40;
+
         const p = document.createElement("p");
         p.className = "line whisper";
         p.textContent = filled;
         logEl.appendChild(p);
-        logEl.scrollTop = logEl.scrollHeight;
+
+        if (wasAtBottom) {
+          logEl.scrollTop = logEl.scrollHeight;
+        }
       }, 700 + Math.random() * 400);
     }
   }, true);
