@@ -56,3 +56,5 @@ document.getElementById("cmd").addEventListener("keydown", e => {
 document.body.addEventListener("click", () => {
   document.getElementById("cmd").focus();
 }, { passive: true });
+window.handleCmd = handleCmd;
+window.cmds = cmds;
