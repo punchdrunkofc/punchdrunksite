@@ -64,6 +64,8 @@ function spin() {
     }
   }, 40);
 
+  window.spin = spin;
+
   setTimeout(() => {
     clearInterval(tickInterval);
     revealSector(idx);
