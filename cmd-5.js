@@ -34,3 +34,4 @@ setInterval(() => {
       pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
   }
 }, 1000);
+window.getSubjectId = getSubjectId;
