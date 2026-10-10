@@ -72,7 +72,6 @@
 
 </main>
 
-<!-- Отдельная кнопка ЧАТА — слева снизу -->
 <a href="chat.html" class="channel-btn" title="others are here">
   <span class="channel-row">
     <span class="channel-dot"></span>
@@ -81,7 +80,6 @@
   <span class="channel-count" id="channelCount">4 online</span>
 </a>
 
-<!-- Футер со ссылками справа снизу -->
 <footer class="hidden-footer">
   <a href="manifest.html" class="secret-dot" title="read this first">manifest.node</a>
   <a href="manifest-enemy.html" class="secret-dot" title="their version">official.node</a>
@@ -106,9 +104,10 @@
 <script src="cursor-drift.js"></script>
 <script src="camera-watch.js"></script>
 <script src="counter.js"></script>
+<script src="intro.js"></script>
 
 <script>
-  // ---------- ЖИВОЙ СЧЁТЧИК ОНЛАЙН ----------
+  // живой счётчик "онлайн" в кнопке чата
   (function() {
     const countEl = document.getElementById("channelCount");
     if (!countEl) return;
