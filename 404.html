@@ -94,7 +94,6 @@
 </head>
 <body>
 
-<div class="noise"></div>
 <div class="scanlines"></div>
 <div class="vignette"></div>
 
@@ -118,14 +117,12 @@
 </main>
 
 <script>
-  // обратный отсчёт 5 → 0, потом редирект на главную
   let n = 5;
   const el = document.getElementById("countdown");
   const timer = setInterval(() => {
     n--;
     el.textContent = n;
 
-    // на 3, 2, 1 — глитч-подёргивание
     if (n <= 3 && n > 0) {
       el.style.transform = "translate(" + (Math.random() * 6 - 3) + "px," +
                                           (Math.random() * 6 - 3) + "px)";
