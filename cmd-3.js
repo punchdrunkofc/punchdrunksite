@@ -44,3 +44,4 @@ function revealSector(idx) {
     resultBox.classList.remove("jackpot");
   }
 }
+window.revealSector = revealSector;
