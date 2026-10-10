@@ -72,10 +72,19 @@
 
 </main>
 
+<!-- Отдельная кнопка ЧАТА — слева снизу -->
+<a href="chat.html" class="channel-btn" title="others are here">
+  <span class="channel-row">
+    <span class="channel-dot"></span>
+    <span class="channel-text">CHANNEL_0x0F</span>
+  </span>
+  <span class="channel-count" id="channelCount">4 online</span>
+</a>
+
+<!-- Футер со ссылками справа снизу -->
 <footer class="hidden-footer">
   <a href="manifest.html" class="secret-dot" title="read this first">manifest.node</a>
   <a href="manifest-enemy.html" class="secret-dot" title="their version">official.node</a>
-  <a href="chat.html" class="secret-dot" title="others are here">channel.node</a>
   <a href="hidden.html" class="secret-dot" title="you were not supposed to see this">break_down.node</a>
   <a href="void.html" class="secret-dot" title="do not follow">void.node</a>
   <span class="hidden-tag" title="you found it">7</span>
@@ -97,6 +106,21 @@
 <script src="cursor-drift.js"></script>
 <script src="camera-watch.js"></script>
 <script src="counter.js"></script>
+
+<script>
+  // ---------- ЖИВОЙ СЧЁТЧИК ОНЛАЙН ----------
+  (function() {
+    const countEl = document.getElementById("channelCount");
+    if (!countEl) return;
+
+    function update() {
+      const n = Math.max(3, Math.min(9, 4 + Math.floor(Math.random() * 4 - 1)));
+      countEl.textContent = n + " online";
+    }
+    update();
+    setInterval(update, 30000);
+  })();
+</script>
 
 </body>
 </html>
