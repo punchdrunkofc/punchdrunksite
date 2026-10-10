@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OFFICIAL STATEMENT // FILE_0x00-A</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>■</text></svg>">
+<style>
+  body { overflow: auto !important; }
+
+  /* «корпоративный» вид — холодный, серый, без свечения */
+  .enemy-page {
+    max-width: 760px;
+    margin: 50px auto;
+    padding: 24px;
+    position: relative;
+    z-index: 10;
+    background: rgba(20, 20, 24, 0.6);
+    border: 1px solid #3a3a44;
+    border-top: 3px solid #6a6a75;
+    color: #b8b8c0;
+    font-family: "Helvetica", "Arial", sans-serif;
+  }
+
+  .enemy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #3a3a44;
+    margin-bottom: 30px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #6a6a75;
+    text-transform: uppercase;
+  }
+  .enemy-header .ref {
+    color: #8a8a95;
+    font-family: "Courier New", monospace;
+  }
+
+  .enemy-page h1 {
+    font-family: "Helvetica", "Arial", sans-serif;
+    font-size: 22px;
+    color: #d8d8e0;
+    letter-spacing: 1px;
+    font-weight: normal;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .enemy-page .doc-type {
+    color: #6a6a75;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  .enemy-page h2 {
+    font-family: "Helvetica", "Arial", sans-serif;
+    font-size: 14px;
+    color: #a0a0aa;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: normal;
+    margin: 36px 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #2a2a32;
+  }
+
+  .enemy-page p {
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+    color: #b8b8c0;
+  }
+  .enemy-page p.official {
+    padding-left: 16px;
+    border-left: 3px solid #6a6a75;
+    color: #8a8a95;
+    font-style: italic;
+    font-size: 13px;
+  }
+
+  .enemy-list {
+    list-style: none;
+    margin: 20px 0;
+  }
+  .enemy-list li {
+    padding: 10px 0 10px 24px;
+    border-bottom: 1px solid #2a2a32;
+    position: relative;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #a8a8b0;
+  }
+  .enemy-list li::before {
+    content: "§";
+    position: absolute;
+    left: 0;
+    color: #6a6a75;
+    font-family: "Courier New", monospace;
+  }
+  .enemy-list strong {
+    color: #c8c8d0;
+    font-weight: normal;
+  }
+
+  .enemy-quote {
+    margin: 30px 0;
+    padding: 20px 24px;
+    background: rgba(60, 60, 70, 0.15);
+    border-left: 4px solid #6a6a75;
+    color: #c8c8d0;
+    font-size: 15px;
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .enemy-threat {
+    margin: 40px 0 20px;
+    padding: 18px;
+    border: 1px solid #8a2a2a;
+    background: rgba(138, 42, 42, 0.08);
+    color: #d88a8a;
+    font-size: 13px;
+    letter-spacing: 1px;
+    line-height: 1.7;
+    font-family: "Courier New", monospace;
+  }
+
+  .enemy-signature {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #3a3a44;
+    color: #6a6a75;
+    font-size: 11px;
+    letter-spacing: 2px;
+    line-height: 1.8;
+  }
+  .enemy-signature strong {
+    color: #a0a0aa;
+    font-weight: normal;
+  }
+
+  .enemy-back {
+    display: inline-block;
+    margin-top: 30px;
+    color: #8a8a95;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 2px;
+    border: 1px solid #4a4a55;
+    padding: 10px 20px;
+    transition: all 0.3s;
+    font-family: "Courier New", monospace;
+  }
+  .enemy-back:hover {
+    background: #6a6a75;
+    color: #0a0a0f;
+    border-color: #6a6a75;
+  }
+
+  .enemy-footer {
+    margin-top: 40px;
+    color: #2a2a32;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-align: center;
+    transition: color 0.5s;
+  }
+  .enemy-footer:hover { color: #8a2a2a; }
+
+  /* «печать» компании в углу */
+  .enemy-stamp {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    width: 90px;
+    height: 90px;
+    border: 2px solid #8a2a2a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8a2a2a;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-align: center;
+    transform: rotate(-15deg);
+    opacity: 0.5;
+    font-family: "Courier New", monospace;
+    line-height: 1.2;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div class="scanlines"></div>
+<div class="vignette"></div>
+
+<main class="enemy-page">
+
+  <div class="enemy-stamp">CLASSIFIED<br>DO NOT<br>DISTRIBUTE</div>
+
+  <div class="enemy-header">
+    <span>NODE_00 / OFFICIAL RECORD</span>
+    <span class="ref">REF: 0x00-A / 07-13-37</span>
+  </div>
+
+  <h1>Statement Regarding the Unauthorized Archive Known as "MANIFEST"</h1>
+  <div class="doc-type">// Legal Notice / Public Disclosure / Amended</div>
+
+  <p class="official">This document has been issued in response to the unauthorized circulation of a file labeled "MANIFEST" on servers outside our jurisdiction. The following is the official position of the rights holders.</p>
+
+  <h2>1. On the Nature of the Archive</h2>
+
+  <p>The archive in question was never intended for public access. It was created internally, as a technical artifact — an experiment in procedural sound generation — and was not, at any point, intended to carry the meanings that have since been attributed to it.</p>
+
+  <p>The parties responsible for its unauthorized reproduction have taken fragments of a controlled internal project and recontextualized them to imply intent, ideology, and grievance where none exist.</p>
+
+  <h2>2. On the Sectors</h2>
+
+  <p>The eight sectors referenced in the disputed document are <strong>technical designations</strong>, not symbolic ones. Each corresponds to a specific synthesis module in our development pipeline:</p>
+
+  <ul class="enemy-list">
+    <li><strong>KICK</strong> — low-frequency percussive oscillator. Nothing more.</li>
+    <li><strong>SNARE</strong> — high-frequency noise burst. A component, not a cry for attention.</li>
+    <li><strong>BASS</strong> — subharmonic generator. There is no "truth" encoded in a frequency range.</li>
+    <li><strong>SIREN</strong> — alarm waveform used for QA testing. Not a warning to the public.</li>
+    <li><strong>BREAKBEAT</strong> — algorithmic rhythm sample. Its tempo is not a political statement.</li>
+    <li><strong>GLITCH</strong> — deliberate signal corruption for stress testing. Not a metaphor.</li>
+    <li><strong>ACID</strong> — resonant filter sweep. A well-documented DSP technique.</li>
+    <li><strong>TOTAL</strong> — all modules engaged simultaneously. A stress test, nothing more.</li>
+  </ul>
+
+  <p class="official">We strongly discourage the romanticization of engineering terms.</p>
+
+  <h2>3. On the Alleged "Wheel"</h2>
+
+  <p>The spin mechanism is a <strong>random selector</strong>. Its behavior is deterministic and reproducible. Any claim that it "chooses based on need" is factually incorrect and, frankly, unhelpful. We have provided the source code to the appropriate oversight bodies.</p>
+
+  <p>It does not know you. It cannot know you. It is a function.</p>
+
+  <h2>4. On the Individuals Referred to as "They"</h2>
+
+  <p>We are not a shadow organization. We are a mid-sized independent label with three offices and fourteen full-time employees. Our legal counsel has reviewed the disputed document and finds its claims to be <strong>defamatory in the extreme</strong>.</p>
+
+  <p>We did not "bury" anyone. We did not "take tapes". We did not "erase" anyone from public records. These are inventions, and they have consequences.</p>
+
+  <div class="enemy-quote">
+    "The signal was never fragile. It was simply never ours to keep. If it travels now — let it travel. We have moved on. You should too."
+  </div>
+
+  <h2>5. On the Act of Listening</h2>
+
+  <p>We understand that some listeners have developed an emotional attachment to the archive. We do not wish to litigate against you. You are not the enemy here.</p>
+
+  <p>But understand: by sharing this file, by decoding its ciphers, by reading its manifesto and taking it seriously, you are <strong>amplifying a narrative that never existed.</strong> There is no hidden layer. There is no seventh node. There is no "signal". There is only a folder of audio files and a person who was, perhaps, bored.</p>
+
+  <p class="official">Please stop.</p>
+
+  <h2>6. Legal Notice</h2>
+
+  <p>Any further distribution of the disputed archive, in whole or in part, may constitute a violation of intellectual property law in the jurisdictions listed in Appendix C (redacted from this public copy).</p>
+
+  <div class="enemy-threat">
+    → This is the only warning that will be issued publicly.<br>
+    → Internal monitoring remains active.<br>
+    → Access to this document from your IP has been logged.<br>
+    → Further action is at the discretion of the rights holders.
+  </div>
+
+  <h2>7. Closing Remarks</h2>
+
+  <p>We are not asking you to forget. We are asking you to <strong>remember accurately</strong>.</p>
+
+  <p>The archive you found is not a manifesto. It is a <strong>leak</strong> — of internal materials, taken out of context, presented as revelation. If you have ever worked in any organization, you understand how this happens. If you have not, we ask that you extend us the professional courtesy of assuming we are not monsters.</p>
+
+  <p>That said — if you continue to spread this file, we will respond. Not because we are angry. Because we are obligated.</p>
+
+  <div class="enemy-signature">
+    <strong>Issued by:</strong> Legal &amp; Communications Division<br>
+    <strong>On behalf of:</strong> █████████████ (name redacted at request of counsel)<br>
+    <strong>Date:</strong> [redacted]<br>
+    <strong>Status:</strong> PUBLIC COPY — AMENDED<br>
+    <strong>Distribution:</strong> unrestricted on this domain only
+  </div>
+
+  <a href="index.html" class="enemy-back">← RETURN TO THE WHEEL</a>
+
+  <div class="enemy-footer" title="you found it">flag: th3y_4r3_n0t_ly1ng_3nt1r3ly</div>
+
+</main>
+
+</body>
+</html>
