@@ -1,15 +1,15 @@
 // ==================================================================
-//  cursor-drift.js — после 10 сек бездействия фальшивый курсор
-//  медленно плывёт к кнопке SPIN
+//  cursor-drift.js — после 30 сек бездействия фальшивый курсор
+//  медленно плывёт к кнопке SPIN. Курсор — перекрестие (как crosshair).
 // ==================================================================
 
 (function () {
   "use strict";
 
   // ---------- НАСТРОЙКИ ----------
-  const IDLE_MS       = 10000;     // 10 секунд бездействия
+  const IDLE_MS        = 30000;    // 30 секунд бездействия
   const DRIFT_DURATION = 3500;     // за сколько мс доплыть до кнопки
-  const EPSILON       = 2;         // пиксельный порог «доплыли»
+  const EPSILON        = 2;        // пиксельный порог «доплыли»
 
   // ---------- СОСТОЯНИЕ ----------
   let realX = window.innerWidth / 2;
@@ -28,15 +28,16 @@
   }
   if (isTouchDevice()) return;
 
-  // ---------- СОЗДАНИЕ ФАЛЬШИВОГО КУРСОРА ----------
+  // ---------- СОЗДАНИЕ ФАЛЬШИВОГО КУРСОРА (ПЕРЕКРЕСТИЕ) ----------
   function createFakeCursor() {
     fakeEl = document.createElement("div");
     fakeEl.id = "fake-cursor";
     fakeEl.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M3 2 L3 18 L7 14 L10 21 L13 20 L10 13 L16 13 Z"
-              fill="#a020f0" stroke="#d8a8ff" stroke-width="1"
-              style="filter: drop-shadow(0 0 6px #a020f0);"/>
+        <line x1="12" y1="2"  x2="12" y2="22" stroke="#a020f0" stroke-width="2"
+              style="filter: drop-shadow(0 0 4px #a020f0);"/>
+        <line x1="2"  y1="12" x2="22" y2="12" stroke="#a020f0" stroke-width="2"
+              style="filter: drop-shadow(0 0 4px #a020f0);"/>
       </svg>
     `;
     fakeEl.style.cssText = `
@@ -45,7 +46,7 @@
       left: 0;
       pointer-events: none;
       z-index: 99999;
-      transform: translate3d(${realX}px, ${realY}px, 0);
+      transform: translate3d(${realX - 12}px, ${realY - 12}px, 0);
       transition: opacity 0.3s;
       opacity: 0;
       will-change: transform;
@@ -57,7 +58,6 @@
   function hideRealCursor() {
     document.documentElement.style.cursor = "none";
     document.body.style.cursor = "none";
-    // прячем у всех элементов — но не у input, чтобы игрок мог печатать
     const style = document.createElement("style");
     style.id = "hide-cursor-style";
     style.textContent = `*:not(input):not(textarea) { cursor: none !important; }`;
@@ -72,21 +72,20 @@
   }
 
   // ---------- ОБНОВЛЕНИЕ ФАЛЬШИВОГО ----------
+  // сдвигаем на −12, −12 — центр перекрестия совпадает с точкой
   function updateFakeCursor(x, y) {
     if (!fakeEl) return;
-    fakeEl.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    fakeEl.style.transform = `translate3d(${x - 12}px, ${y - 12}px, 0)`;
   }
 
   // ---------- ОТСЛЕЖИВАНИЕ РЕАЛЬНОГО КУРСОРА ----------
   document.addEventListener("mousemove", (e) => {
-    // если игрок двигает мышь — прерываем дрейф
     if (drifting) {
       stopDrift();
     }
     realX = e.clientX;
     realY = e.clientY;
 
-    // если настоящий курсор виден — синхронизируем фальшивый
     if (!drifting && fakeEl && fakeEl.style.opacity === "1") {
       updateFakeCursor(realX, realY);
     }
@@ -121,10 +120,10 @@
     if (!spinBtn) return;
     if (drifting) return;
 
-    // цель — центр кнопки
+    // цель — точный центр кнопки SPIN
     const rect = spinBtn.getBoundingClientRect();
-    driftToX = rect.left + rect.width / 2 - 12;   // -12 — поправка на «жало» курсора
-    driftToY = rect.top + rect.height / 2 - 6;
+    driftToX = rect.left + rect.width / 2;
+    driftToY = rect.top + rect.height / 2;
 
     driftFromX = realX;
     driftFromY = realY;
@@ -132,13 +131,11 @@
     drifting = true;
     driftStart = performance.now();
 
-    // показать фальшивый курсор
     if (!fakeEl) createFakeCursor();
     hideRealCursor();
     updateFakeCursor(realX, realY);
     fakeEl.style.opacity = "1";
 
-    // лёгкое свечение кнопки при начале дрейфа
     spinBtn.style.transition = "box-shadow 0.5s";
     spinBtn.style.boxShadow =
       "0 0 30px rgba(160, 32, 240, 0.9), inset 0 0 30px rgba(160, 32, 240, 0.5)";
@@ -153,15 +150,15 @@
     const elapsed = now - driftStart;
     const t = Math.min(1, elapsed / DRIFT_DURATION);
 
-    // easeInOutCubic — плавно ускоряется, плавно тормозит
+    // easeInOutCubic
     const ease = t < 0.5
       ? 4 * t * t * t
       : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-    // лёгкое покачивание по перпендикуляру — как будто курсор «плывёт»
+    // покачивание по перпендикуляру — «плывёт»
     const dx = driftToX - driftFromX;
     const dy = driftToY - driftFromY;
-    const len = Math.sqrt(dx * dx + dy * dy);
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
     const perpX = -dy / len;
     const perpY = dx / len;
     const sway = Math.sin(elapsed * 0.008) * 8 * (1 - t);
@@ -173,7 +170,6 @@
     realY = y;
     updateFakeCursor(x, y);
 
-    // когда доплыли — активируем кнопку
     if (t >= 1 && Math.abs(x - driftToX) < EPSILON && Math.abs(y - driftToY) < EPSILON) {
       finishDrift();
       return;
@@ -189,7 +185,6 @@
     const spinBtn = document.getElementById("spin-btn");
     if (!spinBtn) return;
 
-    // лёгкая вибрация кнопки — «нажми»
     spinBtn.style.transition = "transform 0.15s";
     spinBtn.style.transform = "translate(-50%, -50%) scale(1.05)";
     setTimeout(() => {
@@ -197,21 +192,17 @@
       spinBtn.style.boxShadow = "";
     }, 200);
 
-    // шёпот в терминале
     if (typeof window.log === "function") {
       window.log("press it.", "whisper");
     }
 
-    // короткий звук
     playDriftEndSound();
 
-    // фальшивый курсор плавно растворяется, настоящий возвращается
     setTimeout(() => {
       if (fakeEl) fakeEl.style.opacity = "0";
       showRealCursor();
     }, 800);
 
-    // сброс таймера — если игрок снова бездействует, дрейф повторится
     resetIdleTimer();
   }
 
@@ -251,7 +242,7 @@
   // ---------- СТАРТ ----------
   resetIdleTimer();
 
-  // экспорт для отладки
+  // ---------- ЭКСПОРТ ДЛЯ ОТЛАДКИ ----------
   window._startCursorDrift = startDrift;
   window._stopCursorDrift  = stopDrift;
 })();
