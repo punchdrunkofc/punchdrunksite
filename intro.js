@@ -24,6 +24,8 @@
     d.initied  = localStorage.getItem("initiated") === "true";
     d.oldVisit = localStorage.getItem("last_visit_time") || null;
     d.daysAway = 0;
+    d.hoursAway = 0;
+    d.minutesAway = 0;
 
     if (d.oldVisit) {
       const diff = Date.now() - parseInt(d.oldVisit, 10);
@@ -168,10 +170,13 @@
 
   // ---------- ПОКАЗ ПАНЕЛИ ----------
   function showIntro() {
+    // не показываем повторно в этой сессии, если уже закрыли
+    if (sessionStorage.getItem("intro_done") === "true") return;
+    sessionStorage.setItem("intro_done", "true");
+
     const d = getPlayerData();
     const lines = buildIntro(d);
 
-    // -------- СОЗДАНИЕ ПАНЕЛИ --------
     const panel = document.createElement("div");
     panel.id = "intro-panel";
     panel.innerHTML = `
@@ -185,10 +190,8 @@
     `;
     document.body.appendChild(panel);
 
-    // блокируем скролл
     document.body.style.overflow = "hidden";
 
-    // -------- ПОСТРОЧНЫЙ ВЫВОД --------
     const body = document.getElementById("introBody");
     let delay = 300;
 
@@ -202,54 +205,62 @@
       delay += 350;
     });
 
-    // -------- ЗАКРЫТИЕ --------
+    let closed = false;
     function closeIntro() {
+      if (closed) return;
+      closed = true;
       panel.style.transition = "opacity 0.6s ease, transform 0.6s ease";
       panel.style.opacity = "0";
       panel.style.transform = "scale(1.05)";
       setTimeout(() => {
-        panel.remove();
+        if (panel.parentNode) panel.remove();
         document.body.style.overflow = "";
-        // сообщение в терминале
         if (typeof window.log === "function") {
           window.log("&gt; intro dismissed. press spin.", "dim");
         }
       }, 650);
     }
 
-    // авто-закрытие через 10 секунд после последней строки
-    setTimeout(closeIntro, delay + 5000);
+    // авто-закрытие через 6 секунд после последней строки
+    setTimeout(closeIntro, delay + 6000);
 
-    // клик по SKIP
     document.getElementById("introSkip").addEventListener("click", (e) => {
       e.stopPropagation();
       closeIntro();
     });
 
-    // клик по любому месту панели — закрыть
     panel.addEventListener("click", closeIntro);
   }
 
   // ---------- ЗАПУСК ПОСЛЕ BOOT-SCREEN ----------
-  function waitForBootScreen(cb) {
+  // Ждём, пока boot-screen ЗАКРОЕТСЯ (то есть его НЕ станет в DOM)
+  function waitForBootScreenGone(cb) {
     const boot = document.getElementById("boot-screen");
     if (!boot) {
-      // если boot уже закрыт или не существует — показываем сразу
-      cb();
-    } else {
-      setTimeout(() => waitForBootScreen(cb), 500);
+      // boot уже закрыт (или не появлялся) — показываем интро через 300мс
+      setTimeout(cb, 300);
+      return;
     }
+    // ждём, пока boot-screen исчезнет
+    const checker = setInterval(() => {
+      if (!document.getElementById("boot-screen")) {
+        clearInterval(checker);
+        setTimeout(cb, 500);
+      }
+    }, 200);
   }
 
-  // запуск после загрузки DOM
+  // ---------- СТАРТ ----------
+  function startIntro() {
+    waitForBootScreenGone(showIntro);
+  }
+
   if (document.readyState === "complete" || document.readyState === "interactive") {
-    waitForBootScreen(showIntro);
+    startIntro();
   } else {
-    document.addEventListener("DOMContentLoaded", () => {
-      waitForBootScreen(showIntro);
-    });
+    document.addEventListener("DOMContentLoaded", startIntro);
   }
 
-  // ---------- ЭКСПОРТ ДЛЯ ОТЛАДКИ ----------
+  // экспорт для отладки
   window._showIntro = showIntro;
 })();
