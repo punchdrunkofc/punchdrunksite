@@ -499,3 +499,26 @@ html, body {
   92%, 96%      { opacity: 0.05; }
   94%, 98%      { opacity: 0.7; }
 }
+/* ---------- DVD LOGO ---------- */
+.dvd-logo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 140px;
+  height: 140px;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.55;
+  filter: invert(1) hue-rotate(270deg) saturate(2)
+          drop-shadow(0 0 14px rgba(160, 32, 240, 0.7));
+  will-change: transform, filter;
+  transform: translate(40px, 40px);
+}
+
+@media (max-width: 600px) {
+  .dvd-logo {
+    width: 90px;
+    height: 90px;
+    opacity: 0.4;
+  }
+}
