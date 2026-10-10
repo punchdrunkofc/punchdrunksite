@@ -63,9 +63,6 @@ function spin() {
       lastTick = now;
     }
   }, 40);
-
-  window.spin = spin;
-
   setTimeout(() => {
     clearInterval(tickInterval);
     revealSector(idx);
@@ -73,3 +70,8 @@ function spin() {
     spinBtn.disabled = false;
   }, spinDuration + 100);
 }
+window.spin = spin;
+window.playTick = playTick;
+window.playJackpotFanfare = playJackpotFanfare;
+window.spin = spin;
+
