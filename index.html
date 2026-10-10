@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WHEEL_0x07 // DO NOT TURN</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☢</text></svg>">
+</head>
+<body>
+
+<!-- Ambient overlays -->
+<div class="noise"></div>
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div id="glitch-overlay"></div>
+
+<!-- Header -->
+<header class="hud">
+  <div class="hud-left">
+    <span class="dot red"></span>
+    <span class="dot yellow"></span>
+    <span class="dot green"></span>
+    <span class="hud-title">NODE_07 // SIGNAL: <span class="err">UNSTABLE</span></span>
+  </div>
+  <div class="hud-right">
+    <span id="visitor-id">SUBJECT_0000</span>
+    <span class="sep">|</span>
+    <span id="counter">SPINS: 0</span>
+    <span class="sep">|</span>
+    <span id="clock">00:00:00</span>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="stage">
+
+  <div class="intro" id="intro">
+    <p class="line system">&gt; boot sequence... OK</p>
+    <p class="line system">&gt; loading WHEEL_0x07... <span class="ok">DONE</span></p>
+    <p class="line whisper">you were not supposed to find this</p>
+    <p class="line">Press <span class="glitch-text" data-text="SPIN">SPIN</span> to continue. Each sector plays a sound. They are not random.</p>
+    <p class="line dim">Nothing here is random.</p>
+  </div>
+
+  <!-- Wheel -->
+  <div class="wheel-wrap">
+    <div class="wheel-pointer">▼</div>
+    <canvas id="wheel" width="600" height="600"></canvas>
+    <button id="spin-btn" class="spin-btn">
+      <span class="glitch-text" data-text="SPIN">SPIN</span>
+    </button>
+  </div>
+
+  <!-- Result -->
+  <div class="result" id="result">
+    <div class="result-label">// DECODED SIGNAL</div>
+    <div class="result-text" id="result-text">—</div>
+    <div class="result-sub" id="result-sub"></div>
+  </div>
+
+  <!-- Terminal log -->
+  <div class="log" id="log">
+    <p class="line system">&gt; terminal ready. try: help</p>
+  </div>
+
+  <div class="terminal-input">
+    <span class="prompt">&gt;</span>
+    <input type="text" id="cmd" autocomplete="off" spellcheck="false" placeholder="type a command...">
+  </div>
+
+</main>
+
+<footer class="hidden-footer">
+  <!-- flag: wh33l_0f_m4dn3ss -->
+  <span class="hidden-tag" title="you found it">7</span>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
