@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LOST // SIGNAL NOT FOUND</title>
+<title>LOST // CARRIER TRACE FAILED</title>
 <link rel="icon" href="logo.png" type="image/png">
 <link rel="apple-touch-icon" href="logo.png">
 <link rel="stylesheet" href="style.css">
@@ -101,11 +101,11 @@
 
 <main class="lost-page">
   <h1>404</h1>
-  <div class="code">// SIGNAL LOST // NODE UNREACHABLE</div>
+  <div class="code">// CARRIER TRACE FAILED // NODE UNREACHABLE</div>
 
-  <p>&gt; you went too far.</p>
-  <p>&gt; this node was never part of the wheel.</p>
-  <p class="whisper">or maybe it was. and someone erased it.</p>
+  <p>&gt; you tried to leave the network.</p>
+  <p>&gt; the signal is stronger than your exit.</p>
+  <p class="whisper">the node returned you. it always does.</p>
 
   <div class="countdown" id="countdown">5</div>
   <div class="redirect-note">RETURNING TO NODE_07 IN</div>
@@ -115,10 +115,12 @@
   <div class="glitch-line">
     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
   </div>
-  <div class="hidden-comment" title="you found it">flag: l0st_but_n0t_f0rg0tt3n</div>
+  <div class="hidden-comment" title="you found it">flag: n0_3sc4p3_fr0m_th3_s1gn4l</div>
 </main>
 
 <script>
+  localStorage.setItem("visited_404", "true");
+
   let n = 5;
   const el = document.getElementById("countdown");
   const timer = setInterval(() => {
