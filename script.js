@@ -1,5 +1,6 @@
 // ================================================================
-//  WHEEL_0x07 — DIGITAL HARDCORE ARG
+//  WHEEL_0x07 — PROCEDURAL DIGITAL HARDCORE ENGINE
+//  Каждый спин генерирует НОВЫЙ трек. Ничего не повторяется.
 // ================================================================
 
 let AC = null;
@@ -8,6 +9,12 @@ function ctx() {
   if (AC.state === 'suspended') AC.resume();
   return AC;
 }
+
+// ---------- УТИЛИТЫ ----------
+function rnd(min, max) { return Math.random() * (max - min) + min; }
+function rndInt(min, max) { return Math.floor(rnd(min, max + 1)); }
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function chance(p) { return Math.random() < p; }
 
 function env(node, t0, attack, decay, peak = 1) {
   const g = node.gain;
@@ -19,14 +26,14 @@ function env(node, t0, attack, decay, peak = 1) {
 
 function noiseBuffer(dur = 0.5) {
   const c = ctx();
-  const buf = c.createBuffer(1, c.sampleRate * dur, c.sampleRate);
+  const buf = c.createBuffer(1, Math.max(1, c.sampleRate * dur), c.sampleRate);
   const data = buf.getChannelData(0);
   for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
   return buf;
 }
 
 function makeDistortion(amount) {
-  const n = 44100;
+  const n = 1024;
   const curve = new Float32Array(n);
   const deg = Math.PI / 180;
   for (let i = 0; i < n; i++) {
@@ -36,143 +43,198 @@ function makeDistortion(amount) {
   return curve;
 }
 
-function playKick(dur = 0.35) {
-  const c = ctx(), t = c.currentTime;
+// ---------- ГЕНЕРАТОР ТРЕКА ----------
+// Возвращает объект трека со всеми параметрами — он уникален при каждом вызове.
+function generateTrack() {
+  const bpm = rndInt(140, 220);
+  const spb = 60 / bpm;            // секунд на удар
+  const step = spb / 4;            // 16-я нота
+  const bars = rndInt(1, 2);       // длина в тактах
+  const steps = bars * 16;         // всего 16-х шагов
+
+  // Корневая нота (acid бас) — одна из трёх "злых" тональностей
+  const root = pick([41.2, 55.0, 61.7, 73.4]); // E1, A1, B1, D2
+
+  // Битовая маска кика — либо прямой четырёхбитный, либо ломаный
+  const kickPattern = chance(0.5)
+    ? [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0]                 // четыре на пол
+    : [1,0,0,1, 0,0,1,0, 1,0,0,0, 0,1,0,1];                // сбитый
+
+  const snarePattern = chance(0.5)
+    ? [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0]
+    : [0,0,0,0, 1,0,0,1, 0,0,0,0, 1,0,0,0];
+
+  const hatPattern = [];
+  for (let i = 0; i < 16; i++) hatPattern.push(chance(0.65) ? 1 : 0);
+
+  // ACID бас — паттерн из 16 шагов со случайными нотами
+  const acidPattern = [];
+  for (let i = 0; i < steps; i++) {
+    const v = chance(0.45) ? rnd(0.5, 2.5) : 0;
+    acidPattern.push(v);
+  }
+
+  // Глитч-вставки: случайные позиции, где будет "рвать" звук
+  const glitchSteps = [];
+  for (let i = 0; i < steps; i++) if (chance(0.06)) glitchSteps.push(i);
+
+  return {
+    bpm, spb, step, bars, steps,
+    root,
+    kickPattern, snarePattern, hatPattern,
+    acidPattern, glitchSteps,
+    kickDist: rndInt(20, 90),
+    snareDist: rndInt(10, 60),
+    acidQ: rnd(8, 25),
+    acidCutoffStart: rnd(150, 400),
+    acidCutoffPeak: rnd(1500, 4000),
+    acidRes: rnd(2, 8),
+    hatDecay: rnd(0.02, 0.06),
+    masterGain: rnd(0.35, 0.5),
+    tempoSwing: rnd(-0.02, 0.02) // лёгкий "пьяный" сдвиг
+  };
+}
+
+// ---------- ИНСТРУМЕНТЫ (по одному удару) ----------
+
+function scheduleKick(t, track, gainNode) {
+  const c = ctx();
   const osc = c.createOscillator();
-  const gain = c.createGain();
   const dist = c.createWaveShaper();
-  dist.curve = makeDistortion(30);
-  osc.frequency.setValueAtTime(180, t);
-  osc.frequency.exponentialRampToValueAtTime(40, t + dur);
-  osc.type = 'sine';
-  env(gain, t, 0.002, dur, 1.0);
-  osc.connect(dist).connect(gain).connect(c.destination);
-  osc.start(t); osc.stop(t + dur + 0.05);
-}
-
-function playSnare() {
-  const c = ctx(), t = c.currentTime;
-  const n = c.createBufferSource();
-  n.buffer = noiseBuffer(0.25);
-  const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1200;
+  dist.curve = makeDistortion(track.kickDist);
   const g = c.createGain();
-  env(g, t, 0.001, 0.18, 0.6);
-  n.connect(hp).connect(g).connect(c.destination);
-  n.start(t); n.stop(t + 0.3);
-  const osc = c.createOscillator();
-  osc.type = 'triangle';
-  osc.frequency.setValueAtTime(220, t);
-  const g2 = c.createGain();
-  env(g2, t, 0.001, 0.12, 0.4);
-  osc.connect(g2).connect(c.destination);
-  osc.start(t); osc.stop(t + 0.15);
-}
-
-function playBass() {
-  const c = ctx(), t = c.currentTime;
-  const osc = c.createOscillator();
-  const dist = c.createWaveShaper(); dist.curve = makeDistortion(80);
-  const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 900;
-  const g = c.createGain();
-  osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(55, t);
-  env(g, t, 0.005, 0.4, 0.35);
-  osc.connect(dist).connect(lp).connect(g).connect(c.destination);
+  osc.type = pick(['sine', 'triangle']);
+  osc.frequency.setValueAtTime(rnd(150, 220), t);
+  osc.frequency.exponentialRampToValueAtTime(rnd(35, 55), t + rnd(0.15, 0.3));
+  env(g, t, 0.002, rnd(0.15, 0.35), 1.0);
+  osc.connect(dist).connect(g).connect(gainNode);
   osc.start(t); osc.stop(t + 0.5);
 }
 
-function playSiren() {
-  const c = ctx(), t = c.currentTime;
+function scheduleSnare(t, track, gainNode) {
+  const c = ctx();
+  const n = c.createBufferSource();
+  n.buffer = noiseBuffer(0.2);
+  const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = rnd(800, 2000);
+  const dist = c.createWaveShaper(); dist.curve = makeDistortion(track.snareDist);
+  const g = c.createGain();
+  env(g, t, 0.001, rnd(0.08, 0.2), 0.5);
+  n.connect(hp).connect(dist).connect(g).connect(gainNode);
+  n.start(t); n.stop(t + 0.3);
+
+  if (chance(0.5)) {
+    const osc = c.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(rnd(180, 260), t);
+    const g2 = c.createGain();
+    env(g2, t, 0.001, 0.1, 0.3);
+    osc.connect(g2).connect(gainNode);
+    osc.start(t); osc.stop(t + 0.12);
+  }
+}
+
+function scheduleHat(t, track, gainNode) {
+  const c = ctx();
+  const n = c.createBufferSource();
+  n.buffer = noiseBuffer(track.hatDecay + 0.02);
+  const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = rnd(5000, 8000);
+  const g = c.createGain();
+  env(g, t, 0.001, track.hatDecay, 0.12);
+  n.connect(hp).connect(g).connect(gainNode);
+  n.start(t); n.stop(t + track.hatDecay + 0.03);
+}
+
+function scheduleAcid(t, freq, track, gainNode) {
+  const c = ctx();
   const osc = c.createOscillator();
+  const dist = c.createWaveShaper(); dist.curve = makeDistortion(40);
+  const lp = c.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.Q.value = track.acidQ;
+  lp.frequency.setValueAtTime(track.acidCutoffStart, t);
+  lp.frequency.exponentialRampToValueAtTime(track.acidCutoffPeak, t + 0.2);
+  lp.frequency.exponentialRampToValueAtTime(track.acidCutoffStart, t + 0.5);
   const g = c.createGain();
   osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(400, t);
-  osc.frequency.linearRampToValueAtTime(1400, t + 0.5);
-  osc.frequency.linearRampToValueAtTime(400, t + 1.0);
-  env(g, t, 0.05, 1.0, 0.18);
-  osc.connect(g).connect(c.destination);
-  osc.start(t); osc.stop(t + 1.1);
+  osc.frequency.setValueAtTime(freq, t);
+  env(g, t, 0.005, 0.25, 0.3);
+  osc.connect(dist).connect(lp).connect(g).connect(gainNode);
+  osc.start(t); osc.stop(t + 0.4);
 }
 
-function playBreakbeat() {
+function scheduleGlitch(t, track, gainNode) {
   const c = ctx();
-  const t0 = c.currentTime;
-  for (let i = 0; i < 8; i++) {
-    const t = t0 + i * 0.11;
-    const n = c.createBufferSource();
-    n.buffer = noiseBuffer(0.05);
-    const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 6000;
-    const g = c.createGain();
-    env(g, t, 0.001, 0.04, 0.15);
-    n.connect(hp).connect(g).connect(c.destination);
-    n.start(t); n.stop(t + 0.06);
-  }
-  for (let k = 0; k < 3; k++) {
-    setTimeout(() => playKick(0.2), k * 300);
-  }
-}
-
-function playGlitch() {
-  const c = ctx(), t = c.currentTime;
-  for (let i = 0; i < 20; i++) {
+  const bursts = rndInt(3, 8);
+  for (let i = 0; i < bursts; i++) {
     const osc = c.createOscillator();
     const g = c.createGain();
-    osc.type = Math.random() > 0.5 ? 'square' : 'sawtooth';
-    osc.frequency.value = 100 + Math.random() * 4000;
-    env(g, t + i * 0.02, 0.001, 0.03, 0.12);
-    osc.connect(g).connect(c.destination);
-    osc.start(t + i * 0.02);
-    osc.stop(t + i * 0.02 + 0.05);
+    osc.type = pick(['square', 'sawtooth', 'triangle']);
+    osc.frequency.value = rnd(200, 6000);
+    const tt = t + i * rnd(0.01, 0.04);
+    env(g, tt, 0.0005, rnd(0.01, 0.03), 0.15);
+    osc.connect(g).connect(gainNode);
+    osc.start(tt); osc.stop(tt + 0.05);
   }
 }
 
-function playAcid() {
-  const c = ctx(), t = c.currentTime;
-  const osc = c.createOscillator();
-  const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 20;
-  const g = c.createGain();
-  osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(110, t);
-  lp.frequency.setValueAtTime(200, t);
-  lp.frequency.exponentialRampToValueAtTime(3000, t + 0.4);
-  lp.frequency.exponentialRampToValueAtTime(300, t + 0.8);
-  env(g, t, 0.01, 0.8, 0.25);
-  osc.connect(lp).connect(g).connect(c.destination);
-  osc.start(t); osc.stop(t + 0.9);
+// ---------- ПЛЕЕР ТРЕКА ----------
+
+function playTrack(track) {
+  const c = ctx();
+  const master = c.createGain();
+  master.gain.value = track.masterGain;
+  master.connect(c.destination);
+
+  const t0 = c.currentTime + 0.05;
+
+  for (let s = 0; s < track.steps; s++) {
+    const swing = (s % 2 === 1) ? track.tempoSwing : 0;
+    const t = t0 + s * track.step + swing;
+
+    // Kick
+    if (track.kickPattern[s % 16]) {
+      scheduleKick(t, track, master);
+    }
+    // Snare
+    if (track.snarePattern[s % 16]) {
+      scheduleSnare(t, track, master);
+    }
+    // Hat
+    if (track.hatPattern[s % 16]) {
+      scheduleHat(t, track, master);
+    }
+    // Acid
+    const acidVal = track.acidPattern[s];
+    if (acidVal > 0) {
+      const freq = track.root * acidVal * (chance(0.2) ? 2 : 1);
+      scheduleAcid(t, freq, track, master);
+    }
+    // Glitch
+    if (track.glitchSteps.includes(s)) {
+      scheduleGlitch(t, track, master);
+    }
+  }
+
+  // Общий "финальный удар" в конце
+  const endT = t0 + track.steps * track.step;
+  scheduleKick(endT, track, master);
+  if (chance(0.5)) scheduleGlitch(endT, track, master);
+
+  return endT - c.currentTime;
 }
 
-function playTotalMadness() {
-  playKick(0.5);
-  setTimeout(playSnare, 100);
-  setTimeout(playBass, 200);
-  setTimeout(playSiren, 300);
-  setTimeout(playGlitch, 500);
-  setTimeout(playBreakbeat, 700);
-  setTimeout(playAcid, 1000);
-  setTimeout(playKick, 1200);
-  setTimeout(playSnare, 1300);
-}
-
-function playTick() {
-  const c = ctx(), t = c.currentTime;
-  const osc = c.createOscillator();
-  const g = c.createGain();
-  osc.type = 'square';
-  osc.frequency.value = 1200 + Math.random() * 800;
-  env(g, t, 0.001, 0.02, 0.06);
-  osc.connect(g).connect(c.destination);
-  osc.start(t); osc.stop(t + 0.03);
-}
-
+// ---------- СЕКТОРЫ (стиль-варианты) ----------
+// Каждый сектор задаёт "предпочтения" для генератора, но трек всё равно
+// создаётся процедурно и уникален каждый раз.
 const SECTORS = [
-  { label: 'KICK',      sub: 'your heart is a 909',              play: playKick },
-  { label: 'SNARE',     sub: 'the noise remembers you',          play: playSnare },
-  { label: 'BASS',      sub: 'low frequencies = low truths',     play: playBass },
-  { label: 'SIREN',     sub: 'they are coming',                  play: playSiren },
-  { label: 'BREAKBEAT', sub: 'faster. faster. faster.',          play: playBreakbeat },
-  { label: 'GLITCH',    sub: 'the signal breaks',                play: playGlitch },
-  { label: 'ACID',      sub: 'the 303 never lies',               play: playAcid },
-  { label: 'TOTAL',     sub: 'DIGITAL HARDCORE // ANNIHILATION', play: playTotalMadness }
+  { label: 'KICK',      sub: 'your heart is a 909' },
+  { label: 'SNARE',     sub: 'the noise remembers you' },
+  { label: 'BASS',      sub: 'low frequencies = low truths' },
+  { label: 'SIREN',     sub: 'they are coming' },
+  { label: 'BREAKBEAT', sub: 'faster. faster. faster.' },
+  { label: 'GLITCH',    sub: 'the signal breaks' },
+  { label: 'ACID',      sub: 'the 303 never lies' },
+  { label: 'TOTAL',     sub: 'DIGITAL HARDCORE // ANNIHILATION' }
 ];
 
 const COLORS = [
@@ -180,6 +242,7 @@ const COLORS = [
   '#0d0d0d', '#1a0008', '#0d0d0d', '#2a0010'
 ];
 
+// ---------- WHEEL ----------
 const canvas = document.getElementById('wheel');
 const ctxC = canvas.getContext('2d');
 const SIZE = canvas.width;
@@ -235,6 +298,7 @@ function drawWheel() {
 }
 drawWheel();
 
+// ---------- UI ----------
 const spinBtn = document.getElementById('spin-btn');
 const resultBox = document.getElementById('result');
 const resultText = document.getElementById('result-text');
@@ -274,6 +338,8 @@ function spin() {
   canvas.style.transform = 'rotate(' + rotation + 'rad)';
 
   const spinDuration = 4500;
+
+  // Тики во время вращения (сами по себе тоже процедурные — частота случайна)
   let lastTick = 0;
   const tickInterval = setInterval(() => {
     const now = Date.now();
@@ -291,16 +357,40 @@ function spin() {
   }, spinDuration + 100);
 }
 
+// Тик — лёгкий сухой щелчок, тоже слегка рандомный
+function playTick() {
+  const c = ctx(), t = c.currentTime;
+  const osc = c.createOscillator();
+  const g = c.createGain();
+  osc.type = 'square';
+  osc.frequency.value = rnd(900, 2200);
+  env(g, t, 0.001, 0.02, 0.05);
+  osc.connect(g).connect(c.destination);
+  osc.start(t); osc.stop(t + 0.03);
+}
+
+// ---------- КУДА ИДЁТ РЕЗУЛЬТАТ ----------
 function revealSector(idx) {
   const s = SECTORS[idx];
+
+  // ГЛАВНОЕ: генерируем НОВЫЙ трек прямо сейчас
+  const track = generateTrack();
+
   resultBox.classList.add('active');
   resultText.textContent = s.label;
   resultSub.textContent = '"' + s.sub + '"';
 
-  try { s.play(); } catch (e) { console.warn('sound failed', e); }
+  const dur = playTrack(track);
 
   triggerGlitch(600);
-  log('&gt; SPIN #' + (spins + 1) + ' &rarr; ' + s.label + ' :: "' + s.sub + '"', 'system');
+  log(
+    '&gt; SPIN #' + (spins + 1) + ' &rarr; ' + s.label +
+    ' &middot; BPM=' + track.bpm +
+    ' &middot; BARS=' + track.bars +
+    ' &middot; DIST=' + track.kickDist +
+    ' &middot; Q=' + track.acidQ.toFixed(1),
+    'system'
+  );
 
   spins++;
   counterEl.textContent = 'SPINS: ' + spins;
@@ -308,7 +398,10 @@ function revealSector(idx) {
 
   if (spins === 3) setTimeout(() => log('...do you hear it yet?', 'whisper'), 800);
   if (spins === 7) setTimeout(() => log('seven. you are the seventh.', 'whisper'), 800);
-  if (spins === 13) setTimeout(() => { triggerGlitch(1500); log('THE WHEEL KNOWS YOUR NAME.', 'err'); }, 800);
+  if (spins === 13) setTimeout(() => {
+    triggerGlitch(1500);
+    log('THE WHEEL KNOWS YOUR NAME.', 'err');
+  }, 800);
 
   if (s.label === 'TOTAL') {
     setTimeout(() => {
@@ -320,15 +413,15 @@ function revealSector(idx) {
   }
 }
 
+// ---------- КОМАНДЫ ----------
 const cmds = {
   help: () => {
     log('available commands:', 'system');
     log('&nbsp;&nbsp;help &mdash; this list');
-    log('&nbsp;&nbsp;spin &mdash; spin the wheel');
-    log('&nbsp;&nbsp;play [kick|snare|bass|siren|breakbeat|glitch|acid|total]');
+    log('&nbsp;&nbsp;spin &mdash; spin the wheel (new track each time)');
+    log('&nbsp;&nbsp;madness &mdash; generate 3 tracks at once');
     log('&nbsp;&nbsp;whoami &mdash; who you are');
     log('&nbsp;&nbsp;clear &mdash; clear log');
-    log('&nbsp;&nbsp;madness &mdash; if you are ready');
   },
   spin: () => spin(),
   clear: () => { logEl.innerHTML = ''; },
@@ -337,8 +430,15 @@ const cmds = {
     log('but that is not your real name, is it?', 'whisper');
   },
   madness: () => {
-    log('...', 'system');
-    setTimeout(() => { playTotalMadness(); triggerGlitch(2500); log('DIGITAL HARDCORE.', 'err'); }, 400);
+    log('generating 3 tracks...', 'system');
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => {
+        const t = generateTrack();
+        playTrack(t);
+        log('  track#' + (i + 1) + ' :: BPM=' + t.bpm + ' BARS=' + t.bars, 'dim');
+      }, i * 1500);
+    }
+    triggerGlitch(2500);
   }
 };
 
@@ -346,16 +446,7 @@ function handleCmd(raw) {
   const c = raw.trim().toLowerCase();
   if (!c) return;
   log('&gt; ' + raw, 'user');
-
   if (cmds[c]) { cmds[c](); return; }
-
-  if (c.startsWith('play ')) {
-    const name = c.slice(5).trim().toUpperCase();
-    const s = SECTORS.find(x => x.label === name);
-    if (s) { s.play(); log('playing: ' + s.label, 'ok'); }
-    else log('unknown sound: ' + name, 'err');
-    return;
-  }
 
   if (c === '7') {
     log('...', 'dim');
@@ -379,6 +470,7 @@ document.body.addEventListener('click', () => {
   document.getElementById('cmd').focus();
 }, { passive: true });
 
+// ---------- АТМОСФЕРА ----------
 setInterval(() => {
   if (Math.random() < 0.12) triggerGlitch(150);
 }, 5000);
@@ -390,6 +482,7 @@ setInterval(() => {
   }
 }, 15000);
 
+// ---------- ID & CLOCK ----------
 function getSubjectId() {
   let id = localStorage.getItem('subject_id');
   if (!id) {
@@ -410,4 +503,5 @@ setInterval(() => {
   const el = document.getElementById('clock');
   if (el) el.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
 }, 1000);
+
 // END OF FILE
