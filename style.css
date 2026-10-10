@@ -372,3 +372,11 @@ html, body {
   .result-text { font-size: 18px; letter-spacing: 2px; }
   .spin-btn { width: 90px; height: 90px; font-size: 14px; }
 }
+.secret-dot[href="void.html"] {
+  animation: void-flicker 3s infinite;
+}
+@keyframes void-flicker {
+  0%, 90%, 100% { opacity: 0.4; }
+  92%, 96%      { opacity: 0.05; }
+  94%, 98%      { opacity: 0.7; }
+}
