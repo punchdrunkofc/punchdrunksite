@@ -23,15 +23,21 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 50;
   pointer-events: none;
   background-image: url("logo.png");
   background-repeat: no-repeat;
-  background-position: center center;
-  background-size: min(70vh, 70vw);
-  opacity: 0.06;
+  background-position: right 5% top 15%;
+  background-size: min(45vh, 45vw);
+  opacity: 0.22;
   filter: invert(1) hue-rotate(270deg) saturate(2);
+  mix-blend-mode: screen;
   animation: logo-breathe 12s ease-in-out infinite;
+}
+
+@keyframes logo-breathe {
+  0%, 100% { opacity: 0.18; }
+  50%      { opacity: 0.32; }
 }
 
 /* лёгкое «дыхание» — логотип едва заметно пульсирует */
