@@ -17,28 +17,28 @@
   }
   .secret-page h1 {
     font-size: 32px;
-    color: #ff0033;
+    color: #a020f0;
     letter-spacing: 6px;
-    text-shadow: 0 0 15px #ff0033;
+    text-shadow: 0 0 15px #a020f0;
     margin-bottom: 10px;
     animation: flicker 3s infinite;
   }
   .secret-page .warn {
-    color: #3a5a3a;
+    color: #4a4055;
     font-size: 12px;
     letter-spacing: 3px;
     margin-bottom: 30px;
   }
   .secret-page p {
-    color: #c8ffc8;
+    color: #c8c8d0;
     font-size: 15px;
     line-height: 1.7;
     margin-bottom: 14px;
   }
   .secret-page .whisper {
-    color: #4a2a4a;
+    color: #5a3a6a;
     font-style: italic;
-    opacity: 0.8;
+    opacity: 0.85;
   }
 
   /* ---------- КОНТЕЙНЕР ПЛЕЕРА ---------- */
@@ -47,13 +47,12 @@
     width: 100%;
     padding-bottom: 56.25%;
     margin: 30px 0;
-    border: 2px solid #ff0033;
-    box-shadow: 0 0 30px rgba(255, 0, 51, 0.4);
-    background: #050505;
+    border: 2px solid #a020f0;
+    box-shadow: 0 0 30px rgba(160, 32, 240, 0.5);
+    background: #0a0a0f;
     overflow: hidden;
   }
 
-  /* iframe создаётся JS-ом и занимает весь контейнер */
   .video-frame iframe {
     position: absolute;
     top: 0; left: 0;
@@ -78,12 +77,12 @@
     background:
       repeating-linear-gradient(
         0deg,
-        rgba(255, 0, 51, 0.05) 0px,
-        rgba(255, 0, 51, 0.05) 1px,
+        rgba(160, 32, 240, 0.06) 0px,
+        rgba(160, 32, 240, 0.06) 1px,
         transparent 1px,
         transparent 4px
       ),
-      radial-gradient(circle at center, #1a0008 0%, #050505 100%);
+      radial-gradient(circle at center, #14081f 0%, #0a0a0f 100%);
     transition: opacity 0.6s ease;
     user-select: none;
   }
@@ -93,18 +92,18 @@
     position: absolute;
     top: 14px; left: 16px;
     font-size: 11px;
-    color: #3a5a3a;
+    color: #4a4055;
     letter-spacing: 3px;
   }
   .cover-signal {
     position: absolute;
     top: 14px; right: 16px;
     font-size: 11px;
-    color: #ff0033;
+    color: #a020f0;
     letter-spacing: 3px;
-    animation: pulse-red 1.5s infinite;
+    animation: pulse-purple 1.5s infinite;
   }
-  @keyframes pulse-red {
+  @keyframes pulse-purple {
     0%, 100% { opacity: 1; }
     50%      { opacity: 0.3; }
   }
@@ -112,14 +111,14 @@
     position: absolute;
     bottom: 14px; left: 16px;
     font-size: 10px;
-    color: #1a1a1a;
+    color: #2a2030;
     letter-spacing: 2px;
   }
   .cover-code {
     position: absolute;
     bottom: 14px; right: 16px;
     font-size: 10px;
-    color: #1a1a1a;
+    color: #2a2030;
     letter-spacing: 2px;
   }
 
@@ -137,38 +136,39 @@
     width: 84px;
     height: 84px;
     border-radius: 50%;
-    border: 2px solid #ff0033;
-    background: radial-gradient(circle, #1a0008 0%, #050505 100%);
-    color: #ff0033;
+    border: 2px solid #a020f0;
+    background: radial-gradient(circle, #14081f 0%, #0a0a0f 100%);
+    color: #a020f0;
     font-size: 26px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding-left: 6px;
     box-shadow:
-      0 0 25px rgba(255, 0, 51, 0.4),
-      inset 0 0 25px rgba(255, 0, 51, 0.2);
+      0 0 25px rgba(160, 32, 240, 0.5),
+      inset 0 0 25px rgba(160, 32, 240, 0.25);
     transition: all 0.3s;
   }
   .video-cover:hover .cover-play {
     box-shadow:
-      0 0 45px rgba(255, 0, 51, 0.9),
-      inset 0 0 35px rgba(255, 0, 51, 0.4);
-    text-shadow: 0 0 12px #ff0033;
+      0 0 45px rgba(160, 32, 240, 1),
+      inset 0 0 35px rgba(160, 32, 240, 0.5);
+    text-shadow: 0 0 12px #a020f0;
+    color: #d8a8ff;
   }
   .cover-text {
     font-size: 12px;
-    color: #3a5a3a;
+    color: #4a4055;
     letter-spacing: 4px;
     text-transform: uppercase;
   }
-  .video-cover:hover .cover-text { color: #ff0033; }
+  .video-cover:hover .cover-text { color: #a020f0; }
 
   .cover-glitch {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(transparent 0%, rgba(255,0,51,0.05) 50%, transparent 100%);
+    background: linear-gradient(transparent 0%, rgba(160, 32, 240, 0.08) 50%, transparent 100%);
     background-size: 100% 4px;
     animation: cover-scan 8s linear infinite;
     z-index: 1;
@@ -183,36 +183,36 @@
     top: 50%; right: 24px;
     transform: translateY(-50%);
     font-size: 14px;
-    color: #1a1a1a;
+    color: #2a2030;
     letter-spacing: 2px;
     writing-mode: vertical-rl;
     transition: color 0.4s;
   }
-  .video-cover:hover .cover-lock { color: #ff0033; }
+  .video-cover:hover .cover-lock { color: #a020f0; }
 
   .back-link {
     display: inline-block;
     margin-top: 30px;
-    color: #ff0033;
+    color: #a020f0;
     text-decoration: none;
     font-size: 14px;
     letter-spacing: 2px;
-    border: 1px solid #ff0033;
+    border: 1px solid #a020f0;
     padding: 10px 20px;
     transition: all 0.3s;
   }
   .back-link:hover {
-    background: #ff0033;
-    color: #050505;
-    box-shadow: 0 0 25px #ff0033;
+    background: #a020f0;
+    color: #0a0a0f;
+    box-shadow: 0 0 25px #a020f0;
   }
   .flag {
     margin-top: 40px;
-    color: #1a1a1a;
+    color: #1a1020;
     font-size: 11px;
     letter-spacing: 4px;
   }
-  .flag:hover { color: #ff0033; }
+  .flag:hover { color: #a020f0; }
 </style>
 </head>
 <body>
@@ -261,11 +261,9 @@
   const cover = document.getElementById("videoCover");
 
   cover.addEventListener("click", function () {
-    // если уже разблокировано — выходим
     if (frame.dataset.unlocked === "1") return;
     frame.dataset.unlocked = "1";
 
-    // создаём iframe С НУЛЯ — теперь его точно не было в DOM
     const iframe = document.createElement("iframe");
     iframe.src = "https://www.youtube-nocookie.com/embed/" + VIDEO_ID +
                  "?rel=0&modestbranding=1&autoplay=1";
@@ -276,7 +274,6 @@
 
     frame.appendChild(iframe);
 
-    // плавно убираем заглушку
     cover.style.opacity = "0";
     cover.style.pointerEvents = "none";
     setTimeout(() => cover.remove(), 700);
