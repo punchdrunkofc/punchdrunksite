@@ -1,15 +1,15 @@
 // ==================================================================
-//  cursor-drift.js — после 30 сек бездействия фальшивый курсор
-//  медленно плывёт к кнопке SPIN. Курсор — белое перекрестие.
+//  cursor-drift.js — после 30 сек бездействия белый курсор-крестик
+//  медленно плывёт к кнопке SPIN (silent version)
 // ==================================================================
 
 (function () {
   "use strict";
 
   // ---------- НАСТРОЙКИ ----------
-  const IDLE_MS        = 30000;    // 30 секунд бездействия
-  const DRIFT_DURATION = 3500;     // за сколько мс доплыть до кнопки
-  const EPSILON        = 2;        // пиксельный порог «доплыли»
+  const IDLE_MS        = 30000;
+  const DRIFT_DURATION = 3500;
+  const EPSILON        = 2;
 
   // ---------- СОСТОЯНИЕ ----------
   let realX = window.innerWidth / 2;
@@ -28,7 +28,7 @@
   }
   if (isTouchDevice()) return;
 
-  // ---------- СОЗДАНИЕ ФАЛЬШИВОГО КУРСОРА (БЕЛОЕ ПЕРЕКРЕСТИЕ) ----------
+  // ---------- СОЗДАНИЕ ФАЛЬШИВОГО КУРСОРА ----------
   function createFakeCursor() {
     fakeEl = document.createElement("div");
     fakeEl.id = "fake-cursor";
@@ -69,18 +69,15 @@
     if (s) s.remove();
   }
 
-  // ---------- ОБНОВЛЕНИЕ ФАЛЬШИВОГО ----------
-  // сдвиг на −12, −12 — центр перекрестия совпадает с точкой
+  // ---------- ОБНОВЛЕНИЕ ----------
   function updateFakeCursor(x, y) {
     if (!fakeEl) return;
     fakeEl.style.transform = `translate3d(${x - 12}px, ${y - 12}px, 0)`;
   }
 
-  // ---------- ОТСЛЕЖИВАНИЕ РЕАЛЬНОГО КУРСОРА ----------
+  // ---------- ОТСЛЕЖИВАНИЕ ----------
   document.addEventListener("mousemove", (e) => {
-    if (drifting) {
-      stopDrift();
-    }
+    if (drifting) stopDrift();
     realX = e.clientX;
     realY = e.clientY;
 
@@ -106,7 +103,7 @@
     resetIdleTimer();
   }, { passive: true });
 
-  // ---------- ТАЙМЕР БЕЗДЕЙСТВИЯ ----------
+  // ---------- ТАЙМЕР ----------
   function resetIdleTimer() {
     if (idleTimer) clearTimeout(idleTimer);
     idleTimer = setTimeout(startDrift, IDLE_MS);
@@ -118,7 +115,6 @@
     if (!spinBtn) return;
     if (drifting) return;
 
-    // цель — точный центр кнопки SPIN
     const rect = spinBtn.getBoundingClientRect();
     driftToX = rect.left + rect.width / 2;
     driftToY = rect.top + rect.height / 2;
@@ -141,19 +137,17 @@
     requestAnimationFrame(driftTick);
   }
 
-  // ---------- АНИМАЦИЯ ДРЕЙФА ----------
+  // ---------- АНИМАЦИЯ ----------
   function driftTick(now) {
     if (!drifting) return;
 
     const elapsed = now - driftStart;
     const t = Math.min(1, elapsed / DRIFT_DURATION);
 
-    // easeInOutCubic
     const ease = t < 0.5
       ? 4 * t * t * t
       : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-    // покачивание по перпендикуляру — «плывёт»
     const dx = driftToX - driftFromX;
     const dy = driftToY - driftFromY;
     const len = Math.sqrt(dx * dx + dy * dy) || 1;
@@ -194,8 +188,6 @@
       window.log("press it.", "whisper");
     }
 
-    playDriftEndSound();
-
     setTimeout(() => {
       if (fakeEl) fakeEl.style.opacity = "0";
       showRealCursor();
@@ -204,7 +196,7 @@
     resetIdleTimer();
   }
 
-  // ---------- ПРЕРЫВАНИЕ ДРЕЙФА ----------
+  // ---------- ПРЕРЫВАНИЕ ----------
   function stopDrift() {
     drifting = false;
     if (fakeEl) fakeEl.style.opacity = "0";
@@ -214,33 +206,10 @@
     if (spinBtn) spinBtn.style.boxShadow = "";
   }
 
-  // ---------- ЗВУК ----------
-  let AC = null;
-  function playDriftEndSound() {
-    try {
-      if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
-      if (AC.state === "suspended") AC.resume();
-      const c = AC;
-      const t = c.currentTime;
-
-      const osc = c.createOscillator();
-      const g = c.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(440, t);
-      osc.frequency.exponentialRampToValueAtTime(880, t + 0.15);
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.06, t + 0.005);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
-      osc.connect(g).connect(c.destination);
-      osc.start(t);
-      osc.stop(t + 0.3);
-    } catch (e) {}
-  }
-
   // ---------- СТАРТ ----------
   resetIdleTimer();
 
-  // ---------- ЭКСПОРТ ДЛЯ ОТЛАДКИ ----------
+  // ---------- ЭКСПОРТ ----------
   window._startCursorDrift = startDrift;
   window._stopCursorDrift  = stopDrift;
 })();
