@@ -505,3 +505,43 @@ body::before {
     0 0 20px rgba(160, 32, 240, 0.2);
   user-select: none;
 }
+/* ---------- REC INDICATOR ---------- */
+#rec-indicator {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(10, 10, 15, 0.9);
+  border: 1px solid #ff2b6a;
+  border-radius: 3px;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #ff2b6a;
+  box-shadow: 0 0 20px rgba(255, 43, 106, 0.5);
+  animation: rec-pulse 1.5s infinite;
+}
+
+.rec-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff2b6a;
+  box-shadow: 0 0 10px #ff2b6a;
+  animation: rec-dot-blink 1s infinite;
+}
+
+@keyframes rec-dot-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.2; }
+}
+
+@keyframes rec-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 43, 106, 0.5); }
+  50%      { box-shadow: 0 0 35px rgba(255, 43, 106, 0.9); }
+}
