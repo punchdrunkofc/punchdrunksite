@@ -18,6 +18,40 @@ html, body {
   cursor: crosshair;
 }
 
+/* ---------- СТАТИЧНЫЙ ЛОГОТИП СПРАВА ---------- */
+body::before {
+  content: "";
+  position: fixed;
+  right: 5%;
+  bottom: 15%;
+  width: min(35vh, 35vw);
+  height: min(35vh, 35vw);
+  background-image: url("logo.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.08;
+  filter: invert(1) hue-rotate(270deg) saturate(2);
+  animation: logo-breathe 12s ease-in-out infinite;
+}
+
+@keyframes logo-breathe {
+  0%, 100% { opacity: 0.06; transform: scale(1); }
+  50%      { opacity: 0.12; transform: scale(1.03); }
+}
+
+@media (max-width: 600px) {
+  body::before {
+    right: 5%;
+    bottom: 20%;
+    width: 40vw;
+    height: 40vw;
+    opacity: 0.06;
+  }
+}
+
 /* ---------- HUD ---------- */
 .hud {
   display: flex;
@@ -234,17 +268,6 @@ html, body {
 #cmd::placeholder { color: #3a2a45; }
 
 /* ---------- OVERLAYS ---------- */
-.noise {
-  position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: 0.06;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: noise-shift 0.4s steps(3) infinite;
-}
-@keyframes noise-shift {
-  0% { transform: translate(0, 0); }
-  33% { transform: translate(-5%, 3%); }
-  66% { transform: translate(3%, -5%); }
-  100% { transform: translate(0, 0); }
-}
 .scanlines {
   position: fixed; inset: 0; z-index: 99; pointer-events: none;
   background: repeating-linear-gradient(
@@ -317,7 +340,6 @@ html, body {
   letter-spacing: 4px;
 }
 
-/* void.node — ярче и мерцает */
 .secret-dot[href="void.html"] {
   color: #c77dff;
   font-weight: bold;
@@ -349,84 +371,6 @@ html, body {
 .hidden-tag:hover {
   color: #ffffff;
   text-shadow: 0 0 12px #a020f0, 0 0 25px #a020f0;
-}
-
-/* ---------- Мобильная адаптация ---------- */
-@media (max-width: 600px) {
-  .hidden-footer {
-    bottom: 10px;
-    right: 10px;
-    left: 10px;
-    gap: 12px;
-    padding: 10px 14px;
-    font-size: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .secret-dot, .hidden-tag { font-size: 12px; }
-}
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 6px 12px;
-  background: rgba(10, 10, 15, 0.75);
-  border: 1px solid #2a2030;
-  border-radius: 2px;
-  backdrop-filter: blur(4px);
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-.hidden-footer:hover {
-  border-color: #a020f0;
-  box-shadow: 0 0 15px rgba(160, 32, 240, 0.4);
-}
-
-.secret-dot {
-  color: #6a5a75;
-  font-size: 13px;
-  font-family: "Courier New", monospace;
-  letter-spacing: 2px;
-  text-decoration: none;
-  cursor: crosshair;
-  opacity: 1;
-  transition: all 0.4s ease;
-  text-shadow: 0 0 6px rgba(160, 32, 240, 0.35);
-}
-.secret-dot:hover {
-  color: var(--accent);
-  text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 40px var(--accent);
-  letter-spacing: 4px;
-}
-
-/* void.node — ярче и мерцает */
-.secret-dot[href="void.html"] {
-  color: #a020f0;
-  text-shadow: 0 0 8px #a020f0, 0 0 15px rgba(160, 32, 240, 0.6);
-  animation: void-flicker 3s infinite;
-}
-.secret-dot[href="void.html"]:hover {
-  color: #d8a8ff;
-  text-shadow: 0 0 15px #d8a8ff, 0 0 30px #a020f0, 0 0 50px #a020f0;
-}
-
-@keyframes void-flicker {
-  0%, 88%, 100% { opacity: 1; }
-  90%           { opacity: 0.25; }
-  92%           { opacity: 1; }
-  94%           { opacity: 0.4; }
-  96%           { opacity: 1; }
-}
-
-.hidden-tag {
-  color: #4a4055;
-  font-size: 13px;
-  transition: color 0.5s;
-  cursor: help;
-  text-shadow: 0 0 6px rgba(160, 32, 240, 0.3);
-}
-.hidden-tag:hover {
-  color: var(--accent);
-  text-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
 }
 
 /* ---------- GOLD JACKPOT (TOTAL) ---------- */
@@ -490,35 +434,15 @@ html, body {
   .hud-title { display: none; }
   .result-text { font-size: 18px; letter-spacing: 2px; }
   .spin-btn { width: 90px; height: 90px; font-size: 14px; }
-}
-.secret-dot[href="void.html"] {
-  animation: void-flicker 3s infinite;
-}
-@keyframes void-flicker {
-  0%, 90%, 100% { opacity: 0.4; }
-  92%, 96%      { opacity: 0.05; }
-  94%, 98%      { opacity: 0.7; }
-}
-/* ---------- DVD LOGO ---------- */
-.dvd-logo {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 140px;
-  height: 140px;
-  pointer-events: none;
-  z-index: 50;
-  opacity: 0.55;
-  filter: 
-          drop-shadow(0 0 14px rgba(160, 32, 240, 0.7));
-  will-change: transform, filter;
-  transform: translate(40px, 40px);
-}
-
-@media (max-width: 600px) {
-  .dvd-logo {
-    width: 90px;
-    height: 90px;
-    opacity: 0.4;
+  .hidden-footer {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    gap: 12px;
+    padding: 10px 14px;
+    font-size: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
   }
+  .secret-dot, .hidden-tag { font-size: 12px; }
 }
