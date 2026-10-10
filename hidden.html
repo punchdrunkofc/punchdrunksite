@@ -41,7 +41,6 @@
     opacity: 0.85;
   }
 
-  /* ---------- КОНТЕЙНЕР ПЛЕЕРА ---------- */
   .video-frame {
     position: relative;
     width: 100%;
@@ -52,7 +51,6 @@
     background: #0a0a0f;
     overflow: hidden;
   }
-
   .video-frame iframe {
     position: absolute;
     top: 0; left: 0;
@@ -62,7 +60,6 @@
     z-index: 3;
   }
 
-  /* --- ЗАГЛУШКА --- */
   .video-cover {
     position: absolute;
     inset: 0;
@@ -86,8 +83,6 @@
   }
   .video-cover:hover { filter: brightness(1.15); }
 
-  /* --- ЭФФЕКТ ПОВРЕЖДЕНИЯ --- */
-  /* с каждым кликом добавляются трещины через псевдоэлементы и фильтр */
   .video-cover[data-hits="1"] { animation: shake 0.15s; }
   .video-cover[data-hits="1"]::before,
   .video-cover[data-hits="2"]::before,
@@ -132,14 +127,10 @@
     background-position: 0 0;
     animation: crack-flash 0.4s;
   }
-
-  /* вспышка при 5-м клике */
   @keyframes crack-flash {
     0%   { filter: brightness(3); transform: scale(1.02); }
     100% { filter: brightness(1); transform: scale(1); }
   }
-
-  /* тряска при каждом клике */
   @keyframes shake {
     0%   { transform: translate(0, 0); }
     25%  { transform: translate(-4px, 2px); }
@@ -147,8 +138,6 @@
     75%  { transform: translate(-2px, -2px); }
     100% { transform: translate(0, 0); }
   }
-
-  /* состояние "совсем сломано" — заглушка быстро растворяется */
   .video-cover.broken {
     animation: broken-out 0.8s forwards;
   }
@@ -159,7 +148,6 @@
     100% { opacity: 0; transform: scale(1.15); filter: brightness(0) blur(8px); }
   }
 
-  /* счётчик кликов */
   .hit-counter {
     position: absolute;
     bottom: 40px;
@@ -177,7 +165,6 @@
   .video-cover[data-hits="4"] .hit-counter { color: #a020f0; }
   .video-cover[data-hits="5"] .hit-counter { color: #d8a8ff; text-shadow: 0 0 10px #a020f0; }
 
-  /* подсказка */
   .hit-hint {
     position: absolute;
     top: 40px;
@@ -193,7 +180,6 @@
   .video-cover[data-hits="4"] .hit-hint { color: #a020f0; }
   .video-cover[data-hits="5"] .hit-hint { color: #d8a8ff; }
 
-  /* центральные надписи */
   .cover-status {
     position: absolute;
     top: 14px; left: 16px;
@@ -325,7 +311,6 @@
 </head>
 <body>
 
-<div class="noise"></div>
 <div class="scanlines"></div>
 <div class="vignette"></div>
 
@@ -369,7 +354,7 @@
 </main>
 
 <script>
-  const VIDEO_ID = "Vb8knhx6OtE"; // ← замените на реальный ID
+  const VIDEO_ID = "VIDEO_ID_HERE"; // ← замените на реальный ID
   const frame  = document.getElementById("videoFrame");
   const cover  = document.getElementById("videoCover");
   const counter = document.getElementById("hitCounter");
@@ -378,7 +363,6 @@
   const MAX_HITS = 5;
   let hits = 0;
 
-  // маленький звук "глухого удара" при каждом клике
   let AC = null;
   function hitSound(intensity) {
     try {
@@ -388,7 +372,6 @@
       const c = AC;
       const t = c.currentTime;
 
-      // низкий "удар"
       const osc = c.createOscillator();
       osc.type = "square";
       osc.frequency.setValueAtTime(140 + intensity * 20, t);
@@ -403,7 +386,6 @@
       osc.start(t);
       osc.stop(t + 0.25);
 
-      // шумовой "треск"
       const buf = c.createBuffer(1, c.sampleRate * 0.08, c.sampleRate);
       const d = buf.getChannelData(0);
       for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
@@ -429,7 +411,6 @@
     if (hits > MAX_HITS) hits = MAX_HITS;
     cover.dataset.hits = hits;
 
-    // перезапуск тряски
     cover.style.animation = "none";
     void cover.offsetWidth;
     cover.style.animation = "shake 0.15s";
@@ -437,11 +418,9 @@
     hitSound(hits);
     counter.textContent = "HITS: " + hits + " / " + MAX_HITS;
 
-    // обновляем процент целостности
     const integrity = Math.max(0, 100 - hits * 20);
     hint.textContent = "BARRIER INTEGRITY: " + integrity + "%";
 
-    // меняем надписи по мере разрушения
     if (hits === 2) {
       document.querySelector(".cover-signal").textContent = "● SIGNAL DESTABILIZING";
     }
@@ -461,10 +440,8 @@
   });
 
   function breakTheLock() {
-    // финальный визуальный "слом"
     cover.classList.add("broken");
 
-    // подгружаем видео
     const iframe = document.createElement("iframe");
     iframe.src = "https://www.youtube-nocookie.com/embed/" + VIDEO_ID +
                  "?rel=0&modestbranding=1&autoplay=1";
@@ -474,7 +451,6 @@
     iframe.title = "Break Down";
     frame.appendChild(iframe);
 
-    // убираем заглушку после анимации
     setTimeout(() => cover.remove(), 850);
   }
 </script>
