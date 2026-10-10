@@ -29,12 +29,33 @@ let spinning = false;
 let spins = 0;
 
 function drawWheel() {
-  ctxC.clearRect(0, 0, SIZE, SIZE);
-  ctxC.beginPath();
-  ctxC.arc(CENTER, CENTER, RADIUS + 5, 0, Math.PI * 2);
-  ctxC.strokeStyle = "#ff0033";
-  ctxC.lineWidth = 2;
-  ctxC.stroke();
+    ctxC.beginPath();
+    ctxC.moveTo(CENTER, CENTER);
+    ctxC.arc(CENTER, CENTER, RADIUS, start, end);
+    ctxC.closePath();
+
+    if (SECTORS[i].label === "TOTAL") {
+      // золотой градиент для главного приза
+      const grad = ctxC.createRadialGradient(
+        CENTER, CENTER, 40,
+        CENTER, CENTER, RADIUS
+      );
+      grad.addColorStop(0.0, "#4a3500");
+      grad.addColorStop(0.6, "#8a6a00");
+      grad.addColorStop(1.0, "#ffcc33");
+      ctxC.fillStyle = grad;
+      ctxC.shadowColor = "#ffcc33";
+      ctxC.shadowBlur = 25;
+    } else {
+      ctxC.fillStyle = COLORS[i % COLORS.length];
+      ctxC.shadowBlur = 0;
+    }
+    ctxC.fill();
+    ctxC.shadowBlur = 0;
+
+    ctxC.strokeStyle = SECTORS[i].label === "TOTAL" ? "#ffcc33" : "#2a0008";
+    ctxC.lineWidth   = SECTORS[i].label === "TOTAL" ? 2 : 1;
+    ctxC.stroke();
 
   for (let i = 0; i < N; i++) {
     const start = i * ANGLE + rotation;
