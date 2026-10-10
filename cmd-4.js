@@ -1,3 +1,7 @@
+// ==================================================================
+//  cmd-4.js — terminal commands
+// ==================================================================
+
 const cmds = {
   help: () => {
     log("available commands:", "system");
@@ -5,10 +9,12 @@ const cmds = {
     log("&nbsp;&nbsp;spin &mdash; new random sound");
     log("&nbsp;&nbsp;play [kick|snare|bass|siren|breakbeat|glitch|acid|total]");
     log("&nbsp;&nbsp;whoami &mdash; who you are");
-    log("&nbsp;&nbsp;status &mdash; system status");
+    log("&nbsp;&nbsp;status &mdash; session report");
     log("&nbsp;&nbsp;system &mdash; server info");
     log("&nbsp;&nbsp;cipher &mdash; receive encrypted message");
     log("&nbsp;&nbsp;decode [word] &mdash; decrypt using cipher");
+    log("&nbsp;&nbsp;watch &mdash; open camera. we want to see you.");
+    log("&nbsp;&nbsp;unwatch &mdash; close camera.");
     log("&nbsp;&nbsp;clear &mdash; clear log");
     log("&nbsp;&nbsp;void &mdash; ???");
   },
@@ -18,8 +24,9 @@ const cmds = {
     log("you are " + getSubjectId() + ".", "system");
     log("but that is not your real name, is it?", "whisper");
   },
+
+  // ---------- СТАТУС ----------
   status: () => {
-    // реальная статистика из localStorage
     const totalSpins = parseInt(localStorage.getItem("spins") || "0", 10);
     const jackpots   = parseInt(localStorage.getItem("jackpots") || "0", 10);
     const cipherSolved = parseInt(localStorage.getItem("cipher_count") || "0", 10);
@@ -35,7 +42,6 @@ const cmds = {
     log("&nbsp;&nbsp;overload reached: " + (overload ? "<span class='ok'>YES</span>" : "<span class='err'>NO</span>"));
     log("&nbsp;&nbsp;cipher flag: " + (cipherFlag ? "<span class='ok'>UNLOCKED</span>" : "<span class='err'>LOCKED</span>"));
 
-    // «системное время» — сколько ты уже здесь
     const since = parseInt(localStorage.getItem("first_visit") || "0", 10);
     if (!since) {
       localStorage.setItem("first_visit", Date.now().toString());
@@ -45,7 +51,6 @@ const cmds = {
       log("&nbsp;&nbsp;time in system: " + mins + " minutes");
     }
 
-    // оценка активности
     let rating = "passive";
     if (totalSpins > 50)  rating = "persistent";
     if (totalSpins > 100) rating = "obsessed";
@@ -58,7 +63,8 @@ const cmds = {
       log("// you have been here too long. we like that.", "whisper");
     }
   },
-  // ---------- ФЕЙКОВАЯ ИНФА О СЕРВЕРЕ ----------
+
+  // ---------- СИСТЕМА ----------
   system: () => {
     log("NODE_07 :: SYSTEM REPORT", "system");
     log("&nbsp;&nbsp;hostname: seventh.node.local");
@@ -78,46 +84,13 @@ const cmds = {
 
   // ---------- ШИФР ----------
   cipher: () => {
-    // каждый раз — новый шифр
     const ciphers = [
-      {
-        encoded: "Z3JhbmQ=",
-        method: "base64",
-        hint: "decode with: decode " + atob("Z3JhbmQ="),
-        answer: "grand"
-      },
-      {
-        encoded: "0x7369676E616C",
-        method: "hex",
-        hint: "hex to ascii",
-        answer: "signal"
-      },
-      {
-        encoded: "70756E6368",
-        method: "hex",
-        hint: "hex to ascii",
-        answer: "punch"
-      },
-      {
-        encoded: "U0lHSE7",
-        method: "caesar+1",
-        hint: "each letter is 1 ahead",
-        answer: "signal"
-      },
-      {
-        encoded: "d2hlZWw=",
-        method: "base64",
-        hint: "base64",
-        answer: "wheel"
-      },
-      {
-        encoded: "6e 6f 64 65",
-        method: "hex",
-        hint: "hex to ascii",
-        answer: "node"
-      }
+      { encoded: "Z3JhbmQ=", method: "base64", hint: "base64", answer: "grand" },
+      { encoded: "0x7369676E616C", method: "hex", hint: "hex to ascii", answer: "signal" },
+      { encoded: "70756E6368", method: "hex", hint: "hex to ascii", answer: "punch" },
+      { encoded: "d2hlZWw=", method: "base64", hint: "base64", answer: "wheel" },
+      { encoded: "6e 6f 64 65", method: "hex", hint: "hex to ascii", answer: "node" }
     ];
-
     const picked = ciphers[Math.floor(Math.random() * ciphers.length)];
 
     log("&gt; receiving encrypted transmission...", "system");
@@ -126,16 +99,54 @@ const cmds = {
       log("&nbsp;method: " + picked.method, "dim");
       log("&nbsp;hint: " + picked.hint, "dim");
       log("&nbsp;use: decode [word]", "dim");
-      // сохраняем ответ для проверки
       window._currentCipherAnswer = picked.answer.toLowerCase();
     }, 800);
   },
 
-  // ---------- ДЕКОДЕР ----------
-  // "decode" — с аргументом, поэтому обрабатывается отдельно
+  // ---------- КАМЕРА ----------
+  watch: () => {
+    log("...", "dim");
+    log("requesting camera access from this device...", "system");
+
+    setTimeout(() => {
+      log("&gt; note: nothing is recorded. nothing leaves your device.", "dim");
+      log("&gt; permission prompt incoming.", "system");
+    }, 600);
+
+    if (typeof window.cameraWatchEnable !== "function") {
+      setTimeout(() => {
+        log("&gt; ERROR: camera module not loaded.", "err");
+      }, 900);
+      return;
+    }
+
+    window.cameraWatchEnable();
+  },
+
+  unwatch: () => {
+    if (typeof window.cameraWatchDisable === "function") {
+      window.cameraWatchDisable();
+      log("&gt; camera released.", "system");
+    } else {
+      log("&gt; nothing to release.", "err");
+    }
+  },
+
+  // ---------- VOID ----------
+  void: () => {
+    log("...", "dim");
+    log("searching for node 0x00...", "system");
+    setTimeout(() => {
+      log("&gt; ERROR: NODE NOT FOUND", "err");
+      triggerGlitch(1200);
+      setTimeout(() => {
+        window.location.href = "void.html";
+      }, 1200);
+    }, 900);
+  }
 };
 
-// ---------- ОБРАБОТКА "decode [word]" ----------
+// ---------- DECODE ----------
 function handleDecode(raw) {
   const parts = raw.trim().toLowerCase().split(/\s+/);
   if (parts.length < 2) {
@@ -154,10 +165,8 @@ function handleDecode(raw) {
     log("&gt; you are one of us now.", "whisper");
     triggerGlitch(1200);
 
-    // флаг в localStorage
     localStorage.setItem("cipher_solved", "true");
 
-    // бонус — если решил 3 шифра подряд, что-то происходит
     let solved = parseInt(localStorage.getItem("cipher_count") || "0", 10) + 1;
     localStorage.setItem("cipher_count", solved);
 
@@ -187,7 +196,6 @@ function handleCmd(raw) {
   if (!c) return;
   log("&gt; " + raw, "user");
 
-  // спец-обработка decode
   if (c.startsWith("decode ")) {
     handleDecode(raw);
     return;
@@ -212,19 +220,6 @@ function handleCmd(raw) {
     log("you found the seventh node.", "");
     log("the wheel was never the game.", "whisper");
     triggerGlitch(1500);
-    return;
-  }
-
-  if (c === "void") {
-    log("...", "dim");
-    log("searching for node 0x00...", "system");
-    setTimeout(() => {
-      log("&gt; ERROR: NODE NOT FOUND", "err");
-      triggerGlitch(1200);
-      setTimeout(() => {
-        window.location.href = "void.html";
-      }, 1200);
-    }, 900);
     return;
   }
 
