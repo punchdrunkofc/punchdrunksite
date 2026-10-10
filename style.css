@@ -545,3 +545,218 @@ body::before {
   0%, 100% { box-shadow: 0 0 20px rgba(255, 43, 106, 0.5); }
   50%      { box-shadow: 0 0 35px rgba(255, 43, 106, 0.9); }
 }
+/* ---------- BOOT SCREEN ---------- */
+#boot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  background: #0a0a0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: "Courier New", monospace;
+  opacity: 1;
+  animation: boot-fade-in 0.4s ease-out;
+}
+
+@keyframes boot-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.boot-box {
+  width: 100%;
+  max-width: 640px;
+  border: 2px solid #a020f0;
+  background: rgba(10, 10, 15, 0.95);
+  box-shadow:
+    0 0 40px rgba(160, 32, 240, 0.5),
+    inset 0 0 30px rgba(160, 32, 240, 0.08);
+  padding: 24px;
+  position: relative;
+}
+
+.boot-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(160, 32, 240, 0.04) 0px,
+    rgba(160, 32, 240, 0.04) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  pointer-events: none;
+}
+
+.boot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #2a2030;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #6a5a75;
+  position: relative;
+  z-index: 1;
+}
+
+.boot-status {
+  color: #a020f0;
+  animation: pulse-red 1.5s infinite;
+}
+
+.boot-status.pending {
+  color: #ffcc33;
+  animation: pulse-red 1s infinite;
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+
+.boot-log {
+  min-height: 180px;
+  max-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #6a5a75;
+  position: relative;
+  z-index: 1;
+}
+
+.boot-log::-webkit-scrollbar { width: 4px; }
+.boot-log::-webkit-scrollbar-thumb { background: #2a2030; }
+
+.boot-line {
+  margin: 0;
+  padding: 1px 0;
+  animation: boot-line-in 0.3s ease-out;
+}
+
+.boot-line.warn {
+  color: #ff8a8a;
+}
+
+.boot-line.whisper {
+  color: #5a3a6a;
+  font-style: italic;
+}
+
+@keyframes boot-line-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ---------- PRIVACY NOTICE ---------- */
+.boot-privacy {
+  border-top: 1px solid #2a2030;
+  padding-top: 20px;
+  position: relative;
+  z-index: 1;
+  animation: boot-line-in 0.5s ease-out;
+}
+
+.privacy-title {
+  color: #ffcc33;
+  font-size: 13px;
+  letter-spacing: 4px;
+  margin-bottom: 12px;
+  text-shadow: 0 0 10px rgba(255, 204, 51, 0.5);
+}
+
+.privacy-text {
+  color: #c8c8d0;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.privacy-text ul {
+  list-style: none;
+  padding: 8px 0 8px 20px;
+  margin: 8px 0;
+  border-left: 2px solid #2a2030;
+}
+
+.privacy-text li {
+  padding: 3px 0;
+}
+
+.privacy-text strong {
+  color: #d8a8ff;
+  font-weight: normal;
+  text-shadow: 0 0 6px rgba(160, 32, 240, 0.4);
+}
+
+.privacy-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.boot-btn {
+  flex: 1;
+  padding: 12px 20px;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  letter-spacing: 3px;
+  border: 2px solid;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.boot-btn.deny {
+  color: #6a5a75;
+  border-color: #2a2030;
+}
+
+.boot-btn.deny:hover {
+  color: #ff8a8a;
+  border-color: #ff8a8a;
+  box-shadow: 0 0 15px rgba(255, 138, 138, 0.4);
+}
+
+.boot-btn.allow {
+  color: #a020f0;
+  border-color: #a020f0;
+  box-shadow: 0 0 12px rgba(160, 32, 240, 0.4);
+}
+
+.boot-btn.allow:hover {
+  background: #a020f0;
+  color: #0a0a0f;
+  box-shadow: 0 0 25px #a020f0;
+}
+
+.boot-btn:focus {
+  outline: none;
+}
+
+.privacy-hint {
+  color: #2a2030;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ---------- MOBILE ---------- */
+@media (max-width: 600px) {
+  .boot-box {
+    padding: 16px;
+  }
+  .boot-header { font-size: 10px; letter-spacing: 2px; }
+  .boot-log { font-size: 12px; min-height: 140px; }
+  .privacy-text { font-size: 12px; }
+  .privacy-buttons { flex-direction: column; }
+  .boot-btn { font-size: 12px; padding: 10px 16px; }
+}
