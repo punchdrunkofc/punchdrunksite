@@ -130,6 +130,83 @@
     font-family: "Courier New", monospace;
   }
 
+  /* ЖИВОЙ IP-ЛОГ */
+  .ip-log {
+    margin: 30px 0;
+    padding: 20px 24px;
+    border: 2px solid #8a2a2a;
+    background: rgba(30, 5, 10, 0.7);
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.9;
+    color: #d88a8a;
+    box-shadow: 0 0 25px rgba(138, 42, 42, 0.3), inset 0 0 15px rgba(138, 42, 42, 0.1);
+    position: relative;
+  }
+  .ip-log::before {
+    content: "⚠ MONITORING ACTIVE";
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: #0a0a0f;
+    padding: 0 10px;
+    color: #8a2a2a;
+    font-size: 10px;
+    letter-spacing: 3px;
+  }
+  .ip-log .field {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px dashed rgba(138, 42, 42, 0.2);
+    gap: 16px;
+  }
+  .ip-log .field:last-child { border-bottom: none; }
+  .ip-log .label {
+    color: #6a5a5a;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+  }
+  .ip-log .value {
+    color: #ff8a8a;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(255, 138, 138, 0.5);
+    letter-spacing: 1px;
+    text-align: right;
+    word-break: break-all;
+  }
+  .ip-log .value.pending {
+    color: #6a5a5a;
+    animation: dot-pulse 1s infinite;
+    font-weight: normal;
+  }
+  @keyframes dot-pulse {
+    0%, 100% { opacity: 0.3; }
+    50%      { opacity: 1; }
+  }
+
+  .personal-warning {
+    margin: 20px 0;
+    padding: 16px 20px;
+    background: rgba(138, 42, 42, 0.15);
+    border-left: 4px solid #8a2a2a;
+    color: #ffaaaa;
+    font-size: 14px;
+    font-family: "Courier New", monospace;
+    letter-spacing: 1px;
+    line-height: 1.7;
+    animation: warning-in 0.4s ease-out;
+  }
+  @keyframes warning-in {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .personal-warning strong {
+    color: #ff5555;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 85, 85, 0.6);
+  }
+
   .enemy-signature {
     margin-top: 50px;
     padding-top: 20px;
@@ -270,8 +347,33 @@
   <div class="enemy-threat">
     → This is the only warning that will be issued publicly.<br>
     → Internal monitoring remains active.<br>
-    → Access to this document from your IP has been logged.<br>
     → Further action is at the discretion of the rights holders.
+  </div>
+
+  <!-- ЖИВОЙ IP-ЛОГ -->
+  <div class="ip-log">
+    <div class="field">
+      <span class="label">session id:</span>
+      <span class="value" id="ip-session">—</span>
+    </div>
+    <div class="field">
+      <span class="label">detected ip:</span>
+      <span class="value pending" id="ip-value">resolving...</span>
+    </div>
+    <div class="field">
+      <span class="label">timestamp:</span>
+      <span class="value" id="ip-timestamp">—</span>
+    </div>
+    <div class="field">
+      <span class="label">status:</span>
+      <span class="value">LOGGED</span>
+    </div>
+  </div>
+
+  <div class="personal-warning" id="personal-warning" style="display:none;">
+    <strong>⚠ Your access has been recorded.</strong><br>
+    IP <strong id="ip-inline">—</strong> has been added to our internal archive.<br>
+    This is not a threat. This is a record.
   </div>
 
   <h2>7. Closing Remarks</h2>
@@ -295,6 +397,73 @@
   <div class="enemy-footer" title="you found it">flag: th3y_4r3_n0t_ly1ng_3nt1r3ly</div>
 
 </main>
+
+<script>
+  // ---------- IP-ЛОГ ----------
+  (function() {
+    function getSubjectId() {
+      let id = localStorage.getItem("subject_id");
+      if (!id) {
+        const hex = () => Math.floor(Math.random() * 0xFFFF)
+          .toString(16).padStart(4, "0").toUpperCase();
+        id = "SUBJECT_" + hex() + "-" + hex();
+        localStorage.setItem("subject_id", id);
+      }
+      return id;
+    }
+
+    function nowTimestamp() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2, "0");
+      return d.getUTCFullYear() + "-" + pad(d.getUTCMonth() + 1) + "-" +
+             pad(d.getUTCDate()) + " " + pad(d.getUTCHours()) + ":" +
+             pad(d.getUTCMinutes()) + ":" + pad(d.getUTCSeconds()) + " UTC";
+    }
+
+    document.getElementById("ip-session").textContent = getSubjectId();
+    document.getElementById("ip-timestamp").textContent = nowTimestamp();
+
+    const ipEl = document.getElementById("ip-value");
+    const ipInline = document.getElementById("ip-inline");
+    const warning = document.getElementById("personal-warning");
+
+    fetch("https://api.ipify.org?format=json")
+      .then(r => r.json())
+      .then(data => {
+        const ip = data.ip || "unknown";
+        ipEl.textContent = ip;
+        ipEl.classList.remove("pending");
+        ipInline.textContent = ip;
+
+        setTimeout(() => {
+          warning.style.display = "block";
+        }, 400);
+      })
+      .catch(() => {
+        const fake = "0." + Math.floor(Math.random() * 255) + "." +
+                     Math.floor(Math.random() * 255) + "." +
+                     Math.floor(Math.random() * 255);
+        ipEl.textContent = fake;
+        ipEl.classList.remove("pending");
+        ipInline.textContent = fake;
+        warning.style.display = "block";
+      });
+
+    let visits = parseInt(localStorage.getItem("enemy_visits") || "0", 10) + 1;
+    localStorage.setItem("enemy_visits", visits);
+
+    if (visits > 1) {
+      setTimeout(() => {
+        const extra = document.createElement("div");
+        extra.className = "personal-warning";
+        extra.innerHTML =
+          "<strong>⚠ You have visited this document " + visits + " times.</strong><br>" +
+          "Repetition increases the priority flag on your file.";
+        warning.parentNode.insertBefore(extra, warning.nextSibling);
+      }, 1200);
+    }
+  })();
+</script>
 
 </body>
 </html>
