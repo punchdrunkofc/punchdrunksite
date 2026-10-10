@@ -1,10 +1,26 @@
 "use strict";
 
+// ---------- AUDIO CONTEXT + ANALYSER ----------
 let AC = null;
+let ANALYSER = null;
+
 function ctx() {
-  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  if (!AC) {
+    AC = new (window.AudioContext || window.webkitAudioContext)();
+    ANALYSER = AC.createAnalyser();
+    ANALYSER.fftSize = 256;
+    ANALYSER.smoothingTimeConstant = 0.75;
+    ANALYSER.connect(AC.destination);
+    window.analyserNode = ANALYSER;
+  }
   if (AC.state === "suspended") AC.resume();
   return AC;
+}
+
+// Все генераторы подключаются сюда — вместо прямого destination
+function dest() {
+  ctx();
+  return ANALYSER;
 }
 
 const rnd    = (a, b) => Math.random() * (b - a) + a;
@@ -36,7 +52,6 @@ function curveHard(k) {
   }
   return c;
 }
-
 function curveFold(k) {
   const n = 2048, c = new Float32Array(n);
   for (let i = 0; i < n; i++) {
@@ -45,7 +60,6 @@ function curveFold(k) {
   }
   return c;
 }
-
 function curveCrush(bits) {
   const n = 2048, c = new Float32Array(n);
   const step = Math.pow(2, bits);
@@ -55,7 +69,6 @@ function curveCrush(bits) {
   }
   return c;
 }
-
 function shaper(curve) {
   const ws = ctx().createWaveShaper();
   ws.curve = curve;
@@ -63,12 +76,13 @@ function shaper(curve) {
   return ws;
 }
 
+// ---------- KICK ----------
 function makeKick() {
   const c = ctx();
   const t = c.currentTime + 0.02;
   const out = c.createGain();
   out.gain.value = 0.9;
-  out.connect(c.destination);
+  out.connect(dest());
 
   const startF = rnd(110, 280);
   const endF   = rnd(28, 55);
@@ -103,12 +117,13 @@ function makeKick() {
   return dur + 0.3;
 }
 
+// ---------- SNARE ----------
 function makeSnare() {
   const c = ctx();
   const t = c.currentTime + 0.02;
   const out = c.createGain();
   out.gain.value = 0.85;
-  out.connect(c.destination);
+  out.connect(dest());
 
   const dur   = rnd(0.15, 0.4);
   const drive = rnd(15, 80);
@@ -141,12 +156,13 @@ function makeSnare() {
   return dur + 0.3;
 }
 
+// ---------- BASS ----------
 function makeBass() {
   const c = ctx();
   const t = c.currentTime + 0.02;
   const out = c.createGain();
   out.gain.value = 0.85;
-  out.connect(c.destination);
+  out.connect(dest());
 
   const root = pick([41.2, 43.65, 49.0, 55.0, 32.7]);
   const mult = pick([1, 1, 1, 1.5, 2, 3]);
@@ -175,12 +191,13 @@ function makeBass() {
   return dur + 0.3;
 }
 
+// ---------- SIREN ----------
 function makeSiren() {
   const c = ctx();
   const t = c.currentTime + 0.02;
   const out = c.createGain();
   out.gain.value = 0.7;
-  out.connect(c.destination);
+  out.connect(dest());
 
   const dur = rnd(0.8, 2.2);
   const f1  = rnd(200, 700);
@@ -207,12 +224,13 @@ function makeSiren() {
   return dur + 0.3;
 }
 
+// ---------- BREAKBEAT ----------
 function makeBreakbeat() {
   const c = ctx();
   const t0 = c.currentTime + 0.02;
   const out = c.createGain();
   out.gain.value = 0.85;
-  out.connect(c.destination);
+  out.connect(dest());
 
   const bpm = rndInt(170, 210);
   const step = 60 / bpm / 4;
@@ -262,12 +280,13 @@ function makeBreakbeat() {
   return len * step + 0.3;
 }
 
+// ---------- GLITCH ----------
 function makeGlitch() {
   const c = ctx();
   const t0 = c.currentTime + 0.02;
   const out = c.createGain();
   out.gain.value = 0.75;
-  out.connect(c.destination);
+  out.connect(dest());
 
   const bursts = rndInt(6, 20);
   const total  = rnd(0.4, 1.4);
@@ -304,12 +323,13 @@ function makeGlitch() {
   return total + 0.3;
 }
 
+// ---------- ACID ----------
 function makeAcid() {
   const c = ctx();
   const t = c.currentTime + 0.02;
   const out = c.createGain();
   out.gain.value = 0.75;
-  out.connect(c.destination);
+  out.connect(dest());
 
   const dur    = rnd(0.6, 1.8);
   const root   = pick([41.2, 55.0, 61.7, 73.4]);
@@ -342,6 +362,7 @@ function makeAcid() {
   return dur + 0.3;
 }
 
+// ---------- TOTAL ----------
 function makeTotal() {
   const dur = Math.max(
     makeKick(),
