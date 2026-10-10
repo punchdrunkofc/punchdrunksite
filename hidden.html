@@ -40,21 +40,156 @@
     font-style: italic;
     opacity: 0.8;
   }
-  .video-wrap {
+
+  /* ---------- КОНТЕЙНЕР ПЛЕЕРА ---------- */
+  .video-frame {
     position: relative;
     width: 100%;
     padding-bottom: 56.25%;
     margin: 30px 0;
     border: 2px solid #ff0033;
     box-shadow: 0 0 30px rgba(255, 0, 51, 0.4);
-    background: #000;
+    background: #050505;
+    overflow: hidden;
   }
-  .video-wrap iframe {
+
+  /* iframe создаётся JS-ом и занимает весь контейнер */
+  .video-frame iframe {
     position: absolute;
     top: 0; left: 0;
     width: 100%;
     height: 100%;
+    border: 0;
+    z-index: 3;
   }
+
+  /* --- ЗАГЛУШКА --- */
+  .video-cover {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 0, 51, 0.05) 0px,
+        rgba(255, 0, 51, 0.05) 1px,
+        transparent 1px,
+        transparent 4px
+      ),
+      radial-gradient(circle at center, #1a0008 0%, #050505 100%);
+    transition: opacity 0.6s ease;
+    user-select: none;
+  }
+  .video-cover:hover { opacity: 0.95; }
+
+  .cover-status {
+    position: absolute;
+    top: 14px; left: 16px;
+    font-size: 11px;
+    color: #3a5a3a;
+    letter-spacing: 3px;
+  }
+  .cover-signal {
+    position: absolute;
+    top: 14px; right: 16px;
+    font-size: 11px;
+    color: #ff0033;
+    letter-spacing: 3px;
+    animation: pulse-red 1.5s infinite;
+  }
+  @keyframes pulse-red {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+  }
+  .cover-coords {
+    position: absolute;
+    bottom: 14px; left: 16px;
+    font-size: 10px;
+    color: #1a1a1a;
+    letter-spacing: 2px;
+  }
+  .cover-code {
+    position: absolute;
+    bottom: 14px; right: 16px;
+    font-size: 10px;
+    color: #1a1a1a;
+    letter-spacing: 2px;
+  }
+
+  .cover-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    z-index: 3;
+    transition: transform 0.3s;
+  }
+  .video-cover:hover .cover-center { transform: scale(1.05); }
+
+  .cover-play {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    border: 2px solid #ff0033;
+    background: radial-gradient(circle, #1a0008 0%, #050505 100%);
+    color: #ff0033;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 6px;
+    box-shadow:
+      0 0 25px rgba(255, 0, 51, 0.4),
+      inset 0 0 25px rgba(255, 0, 51, 0.2);
+    transition: all 0.3s;
+  }
+  .video-cover:hover .cover-play {
+    box-shadow:
+      0 0 45px rgba(255, 0, 51, 0.9),
+      inset 0 0 35px rgba(255, 0, 51, 0.4);
+    text-shadow: 0 0 12px #ff0033;
+  }
+  .cover-text {
+    font-size: 12px;
+    color: #3a5a3a;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  .video-cover:hover .cover-text { color: #ff0033; }
+
+  .cover-glitch {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(transparent 0%, rgba(255,0,51,0.05) 50%, transparent 100%);
+    background-size: 100% 4px;
+    animation: cover-scan 8s linear infinite;
+    z-index: 1;
+  }
+  @keyframes cover-scan {
+    0%   { background-position: 0 0; }
+    100% { background-position: 0 200px; }
+  }
+
+  .cover-lock {
+    position: absolute;
+    top: 50%; right: 24px;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #1a1a1a;
+    letter-spacing: 2px;
+    writing-mode: vertical-rl;
+    transition: color 0.4s;
+  }
+  .video-cover:hover .cover-lock { color: #ff0033; }
+
   .back-link {
     display: inline-block;
     margin-top: 30px;
@@ -94,14 +229,22 @@
   <p>&gt; the wheel was a distraction. this is the source.</p>
   <p class="whisper">they tried to bury this track. but sound always escapes.</p>
 
-  <div class="video-wrap">
-    <iframe
-      src="https://www.youtube-nocookie.com/embed/Vb8knhx6OtE?rel=0&modestbranding=1"
-      title="Break Down"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
+  <div class="video-frame" id="videoFrame">
+    <div class="video-cover" id="videoCover">
+      <div class="cover-glitch"></div>
+      <div class="cover-status">CHANNEL 0x0F</div>
+      <div class="cover-signal">● SIGNAL ENCRYPTED</div>
+      <div class="cover-lock">LOCKED</div>
+
+      <div class="cover-center">
+        <div class="cover-play">▶</div>
+        <div class="cover-text">decrypt &amp; play</div>
+      </div>
+
+      <div class="cover-coords">N 55.7558 // E 37.6173</div>
+      <div class="cover-code">SNIPPET: br34k_d0wn</div>
+    </div>
+    <!-- iframe появится здесь после клика -->
   </div>
 
   <p>&gt; snippet recovered. play it if you dare.</p>
@@ -111,6 +254,34 @@
 
   <div class="flag">flag: br34k_d0wn_0x0F</div>
 </main>
+
+<script>
+  const VIDEO_ID = "Vb8knhx6OtE"; // ← замените на реальный ID
+  const frame = document.getElementById("videoFrame");
+  const cover = document.getElementById("videoCover");
+
+  cover.addEventListener("click", function () {
+    // если уже разблокировано — выходим
+    if (frame.dataset.unlocked === "1") return;
+    frame.dataset.unlocked = "1";
+
+    // создаём iframe С НУЛЯ — теперь его точно не было в DOM
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://www.youtube-nocookie.com/embed/" + VIDEO_ID +
+                 "?rel=0&modestbranding=1&autoplay=1";
+    iframe.setAttribute("allow",
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
+    iframe.setAttribute("allowfullscreen", "");
+    iframe.title = "Break Down";
+
+    frame.appendChild(iframe);
+
+    // плавно убираем заглушку
+    cover.style.opacity = "0";
+    cover.style.pointerEvents = "none";
+    setTimeout(() => cover.remove(), 700);
+  });
+</script>
 
 </body>
 </html>
