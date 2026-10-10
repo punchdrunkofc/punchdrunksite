@@ -104,25 +104,7 @@
     requestAnimationFrame(tick);
   }
 
-  // ---------- ЗВУК ПРИ ОТСКОКЕ ----------
-  let AC = null;
-  function bounceSound() {
-    if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
-    if (AC.state === "suspended") AC.resume();
-    const c = AC;
-    const t = c.currentTime;
-    const osc = c.createOscillator();
-    const g = c.createGain();
-    osc.type = "square";
-    osc.frequency.setValueAtTime(900, t);
-    osc.frequency.exponentialRampToValueAtTime(300, t + 0.05);
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(0.06, t + 0.003);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
-    osc.connect(g).connect(c.destination);
-    osc.start(t);
-    osc.stop(t + 0.08);
-  }
+  
 
   // ---------- РЕСАЙЗ ОКНА ----------
   window.addEventListener("resize", () => {
