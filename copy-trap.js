@@ -1,5 +1,5 @@
 // ==================================================================
-//  copy-trap.js — intercepts copy, replaces clipboard content
+//  copy-trap.js — intercepts copy, replaces clipboard content (silent)
 // ==================================================================
 
 (function () {
@@ -7,8 +7,8 @@
 
   // ---------- НАСТРОЙКИ ----------
   const REPLACEMENT_TEXT = "we know what you copied.";
-  const GLITCH_DURATION  = 900;      // мс
-  const COOLDOWN_MS      = 4000;     // не чаще раза в 4 секунды
+  const GLITCH_DURATION  = 900;
+  const COOLDOWN_MS      = 4000;
 
   let lastTrigger = 0;
 
@@ -16,7 +16,6 @@
   document.addEventListener("copy", function (e) {
     const now = Date.now();
     if (now - lastTrigger < COOLDOWN_MS) {
-      // чтобы игрок не мог «заспамить» — не трогаем буфер слишком часто
       return;
     }
     lastTrigger = now;
@@ -26,23 +25,19 @@
       e.clipboardData.setData("text/plain", REPLACEMENT_TEXT);
       e.preventDefault();
     } catch (err) {
-      // fallback: если clipboardData недоступен
       try {
         navigator.clipboard.writeText(REPLACEMENT_TEXT);
       } catch (e2) {}
     }
 
-    // ---------- ВИЗУАЛЬНЫЙ ОТКЛИК ----------
+    // визуальный отклик
     triggerGlitch();
     flashSelection();
 
-    // ---------- ЗВУК ----------
-    playCopySound();
-
-    // ---------- СООБЩЕНИЕ В ТЕРМИНАЛЕ ----------
+    // сообщение в терминале
     logCopyMessage();
 
-    // ---------- ФЛАГ ----------
+    // флаг в localStorage
     try {
       localStorage.setItem("copy_trap_triggered", "true");
       let count = parseInt(localStorage.getItem("copy_trap_count") || "0", 10) + 1;
@@ -56,7 +51,6 @@
       window.triggerGlitch(GLITCH_DURATION);
       return;
     }
-    // fallback, если triggerGlitch из cmd-1.js недоступен
     const o = document.getElementById("glitch-overlay");
     if (!o) return;
     o.classList.add("active");
@@ -89,44 +83,6 @@
     document.body.appendChild(flash);
     setTimeout(() => { flash.style.opacity = "0"; }, 120);
     setTimeout(() => { flash.remove(); }, 900);
-  }
-
-  // ---------- ЗВУК ----------
-  let AC = null;
-  function playCopySound() {
-    try {
-      if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
-      if (AC.state === "suspended") AC.resume();
-
-      const c = AC;
-      const t = c.currentTime;
-
-      // резкий «snap» — высокий короткий
-      const osc = c.createOscillator();
-      const g = c.createGain();
-      osc.type = "square";
-      osc.frequency.setValueAtTime(2000, t);
-      osc.frequency.exponentialRampToValueAtTime(300, t + 0.06);
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.14, t + 0.002);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.1);
-      osc.connect(g).connect(c.destination);
-      osc.start(t);
-      osc.stop(t + 0.12);
-
-      // низкий «thump»
-      const sub = c.createOscillator();
-      const subG = c.createGain();
-      sub.type = "sine";
-      sub.frequency.setValueAtTime(90, t);
-      sub.frequency.exponentialRampToValueAtTime(45, t + 0.12);
-      subG.gain.setValueAtTime(0.0001, t);
-      subG.gain.exponentialRampToValueAtTime(0.18, t + 0.005);
-      subG.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
-      sub.connect(subG).connect(c.destination);
-      sub.start(t);
-      sub.stop(t + 0.18);
-    } catch (e) {}
   }
 
   // ---------- СООБЩЕНИЕ В ТЕРМИНАЛЕ ----------
