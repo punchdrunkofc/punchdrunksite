@@ -18,7 +18,46 @@ const cmds = {
     log("you are " + getSubjectId() + ".", "system");
     log("but that is not your real name, is it?", "whisper");
   },
+  status: () => {
+    // реальная статистика из localStorage
+    const totalSpins = parseInt(localStorage.getItem("spins") || "0", 10);
+    const jackpots   = parseInt(localStorage.getItem("jackpots") || "0", 10);
+    const cipherSolved = parseInt(localStorage.getItem("cipher_count") || "0", 10);
+    const overload   = localStorage.getItem("overload") === "true";
+    const initiated  = localStorage.getItem("initiated") === "true";
+    const cipherFlag = localStorage.getItem("cipher_solved") === "true";
 
+    log("// SESSION REPORT // " + getSubjectId(), "system");
+    log("&nbsp;&nbsp;spins this life: " + totalSpins);
+    log("&nbsp;&nbsp;jackpots hit: " + jackpots);
+    log("&nbsp;&nbsp;ciphers solved: " + cipherSolved);
+    log("&nbsp;&nbsp;initiated: " + (initiated ? "<span class='ok'>YES</span>" : "<span class='err'>NO</span>"));
+    log("&nbsp;&nbsp;overload reached: " + (overload ? "<span class='ok'>YES</span>" : "<span class='err'>NO</span>"));
+    log("&nbsp;&nbsp;cipher flag: " + (cipherFlag ? "<span class='ok'>UNLOCKED</span>" : "<span class='err'>LOCKED</span>"));
+
+    // «системное время» — сколько ты уже здесь
+    const since = parseInt(localStorage.getItem("first_visit") || "0", 10);
+    if (!since) {
+      localStorage.setItem("first_visit", Date.now().toString());
+      log("&nbsp;&nbsp;time in system: just arrived");
+    } else {
+      const mins = Math.floor((Date.now() - since) / 60000);
+      log("&nbsp;&nbsp;time in system: " + mins + " minutes");
+    }
+
+    // оценка активности
+    let rating = "passive";
+    if (totalSpins > 50)  rating = "persistent";
+    if (totalSpins > 100) rating = "obsessed";
+    if (totalSpins > 300) rating = "part of the signal";
+
+    log("");
+    log("// observer rating: " + rating, "dim");
+
+    if (rating === "part of the signal") {
+      log("// you have been here too long. we like that.", "whisper");
+    }
+  },
   // ---------- ФЕЙКОВАЯ ИНФА О СЕРВЕРЕ ----------
   system: () => {
     log("NODE_07 :: SYSTEM REPORT", "system");
