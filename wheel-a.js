@@ -1,4 +1,3 @@
-"use strict";
 
 const SECTORS = [
   { label: "KICK",      sub: "your heart is a 909",              gen: makeKick },
