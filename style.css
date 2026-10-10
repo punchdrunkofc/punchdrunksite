@@ -885,3 +885,92 @@ body::before {
     padding-left: 14px;
   }
 }
+/* ---------- INTRO PANEL ---------- */
+#intro-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 99997;
+  background: rgba(10, 10, 15, 0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: "Courier New", monospace;
+  cursor: pointer;
+  animation: intro-fade 0.5s ease-out;
+}
+
+@keyframes intro-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.intro-box {
+  width: 100%;
+  max-width: 620px;
+  border: 2px solid #a020f0;
+  background: rgba(10, 10, 15, 0.95);
+  box-shadow:
+    0 0 40px rgba(160, 32, 240, 0.5),
+    inset 0 0 30px rgba(160, 32, 240, 0.08);
+  padding: 24px 28px;
+  position: relative;
+}
+
+.intro-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #2a2030;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #6a5a75;
+}
+
+.intro-skip {
+  color: #4a4055;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.intro-skip:hover {
+  color: #a020f0;
+}
+
+.intro-body {
+  min-height: 200px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.intro-line {
+  margin: 0;
+  padding: 2px 0;
+  opacity: 0;
+  animation: intro-line-in 0.4s ease-out forwards;
+}
+
+@keyframes intro-line-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.intro-line.system  { color: #6a5a75; }
+.intro-line.dim     { color: #3a2a45; }
+.intro-line.whisper {
+  color: #5a3a6a;
+  font-style: italic;
+  opacity: 0.85;
+}
+.intro-line.err     { color: #ff2b6a; }
+.intro-line.ok      { color: #d8a8ff; }
+
+@media (max-width: 600px) {
+  .intro-box {
+    padding: 18px 20px;
+  }
+  .intro-body {
+    font-size: 13px;
+  }
+}
