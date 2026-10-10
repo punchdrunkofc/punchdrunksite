@@ -18,7 +18,7 @@ html, body {
   cursor: crosshair;
 }
 
-/* ---------- ЛОГОТИП НА ФОНЕ (справа снизу) ---------- */
+/* ---------- ЛОГОТИП НА ФОНЕ ---------- */
 body::before {
   content: "";
   position: fixed;
@@ -40,6 +40,37 @@ body::before {
 @keyframes logo-breathe {
   0%, 100% { opacity: 0.06; transform: scale(1); }
   50%      { opacity: 0.12; transform: scale(1.03); }
+}
+
+/* ---------- MIC BACKGROUND (floating words) ---------- */
+#mic-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+#mic-bg.active {
+  opacity: 1;
+}
+
+.mic-word {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #a020f0;
+  white-space: nowrap;
+  will-change: transform, opacity, filter;
+  text-shadow:
+    0 0 10px rgba(160, 32, 240, 0.4),
+    0 0 20px rgba(160, 32, 240, 0.2);
+  user-select: none;
 }
 
 /* ---------- HUD ---------- */
