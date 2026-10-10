@@ -65,9 +65,7 @@
   /* --- ЗАГЛУШКА --- */
   .video-cover {
     position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     z-index: 5;
     display: flex;
     flex-direction: column;
@@ -83,11 +81,119 @@
         transparent 4px
       ),
       radial-gradient(circle at center, #14081f 0%, #0a0a0f 100%);
-    transition: opacity 0.6s ease;
+    transition: opacity 0.6s ease, filter 0.2s;
     user-select: none;
   }
-  .video-cover:hover { opacity: 0.95; }
+  .video-cover:hover { filter: brightness(1.15); }
 
+  /* --- ЭФФЕКТ ПОВРЕЖДЕНИЯ --- */
+  /* с каждым кликом добавляются трещины через псевдоэлементы и фильтр */
+  .video-cover[data-hits="1"] { animation: shake 0.15s; }
+  .video-cover[data-hits="1"]::before,
+  .video-cover[data-hits="2"]::before,
+  .video-cover[data-hits="3"]::before,
+  .video-cover[data-hits="4"]::before,
+  .video-cover[data-hits="5"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(115deg, transparent 48%, rgba(160,32,240,0.7) 49%, rgba(160,32,240,0.7) 50%, transparent 51%),
+      linear-gradient(75deg, transparent 48%, rgba(216,168,255,0.5) 49%, rgba(216,168,255,0.5) 50%, transparent 51%);
+    background-size: 200px 200px, 300px 300px;
+    background-position: 20% 30%, 70% 60%;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .video-cover[data-hits="1"]::before { opacity: 0.35; }
+  .video-cover[data-hits="2"]::before {
+    opacity: 0.55;
+    background-position: 20% 30%, 70% 60%;
+    background-size: 180px 180px, 260px 260px;
+  }
+  .video-cover[data-hits="3"]::before {
+    opacity: 0.75;
+    background-position: 35% 55%, 60% 25%;
+    background-size: 150px 150px, 200px 200px;
+  }
+  .video-cover[data-hits="4"]::before {
+    opacity: 0.9;
+    background-position: 55% 15%, 25% 70%;
+    background-size: 120px 120px, 140px 140px;
+  }
+  .video-cover[data-hits="5"]::before {
+    opacity: 1;
+    background:
+      linear-gradient(115deg, transparent 47%, #a020f0 48%, #a020f0 50%, transparent 51%),
+      linear-gradient(75deg,  transparent 47%, #d8a8ff 48%, #d8a8ff 50%, transparent 51%),
+      linear-gradient(160deg, transparent 48%, #7b2cbf 49%, #7b2cbf 50%, transparent 51%);
+    background-size: 100% 100%, 100% 100%, 100% 100%;
+    background-position: 0 0;
+    animation: crack-flash 0.4s;
+  }
+
+  /* вспышка при 5-м клике */
+  @keyframes crack-flash {
+    0%   { filter: brightness(3); transform: scale(1.02); }
+    100% { filter: brightness(1); transform: scale(1); }
+  }
+
+  /* тряска при каждом клике */
+  @keyframes shake {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-4px, 2px); }
+    50%  { transform: translate(3px, -3px); }
+    75%  { transform: translate(-2px, -2px); }
+    100% { transform: translate(0, 0); }
+  }
+
+  /* состояние "совсем сломано" — заглушка быстро растворяется */
+  .video-cover.broken {
+    animation: broken-out 0.8s forwards;
+  }
+  @keyframes broken-out {
+    0%   { opacity: 1; transform: scale(1); filter: brightness(1); }
+    30%  { opacity: 1; transform: scale(1.05); filter: brightness(3) hue-rotate(45deg); }
+    60%  { opacity: 0.6; transform: scale(1.1); filter: brightness(2) blur(2px); }
+    100% { opacity: 0; transform: scale(1.15); filter: brightness(0) blur(8px); }
+  }
+
+  /* счётчик кликов */
+  .hit-counter {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #4a4055;
+    letter-spacing: 4px;
+    z-index: 6;
+    transition: color 0.3s;
+  }
+  .video-cover[data-hits="1"] .hit-counter,
+  .video-cover[data-hits="2"] .hit-counter { color: #6a5a75; }
+  .video-cover[data-hits="3"] .hit-counter,
+  .video-cover[data-hits="4"] .hit-counter { color: #a020f0; }
+  .video-cover[data-hits="5"] .hit-counter { color: #d8a8ff; text-shadow: 0 0 10px #a020f0; }
+
+  /* подсказка */
+  .hit-hint {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: #4a4055;
+    letter-spacing: 3px;
+    z-index: 6;
+    transition: color 0.3s;
+  }
+  .video-cover[data-hits="3"] .hit-hint,
+  .video-cover[data-hits="4"] .hit-hint { color: #a020f0; }
+  .video-cover[data-hits="5"] .hit-hint { color: #d8a8ff; }
+
+  /* центральные надписи */
   .cover-status {
     position: absolute;
     top: 14px; left: 16px;
@@ -130,7 +236,7 @@
     z-index: 3;
     transition: transform 0.3s;
   }
-  .video-cover:hover .cover-center { transform: scale(1.05); }
+  .video-cover:hover .cover-center { transform: scale(1.03); }
 
   .cover-play {
     width: 84px;
@@ -147,7 +253,7 @@
     box-shadow:
       0 0 25px rgba(160, 32, 240, 0.5),
       inset 0 0 25px rgba(160, 32, 240, 0.25);
-    transition: all 0.3s;
+    transition: all 0.2s;
   }
   .video-cover:hover .cover-play {
     box-shadow:
@@ -156,6 +262,8 @@
     text-shadow: 0 0 12px #a020f0;
     color: #d8a8ff;
   }
+  .video-cover:active .cover-play { transform: scale(0.9); }
+
   .cover-text {
     font-size: 12px;
     color: #4a4055;
@@ -230,21 +338,26 @@
   <p class="whisper">they tried to bury this track. but sound always escapes.</p>
 
   <div class="video-frame" id="videoFrame">
-    <div class="video-cover" id="videoCover">
+    <div class="video-cover" id="videoCover" data-hits="0">
       <div class="cover-glitch"></div>
+
       <div class="cover-status">CHANNEL 0x0F</div>
       <div class="cover-signal">● SIGNAL ENCRYPTED</div>
       <div class="cover-lock">LOCKED</div>
 
+      <div class="hit-hint" id="hitHint">BARRIER INTEGRITY: 100%</div>
+
       <div class="cover-center">
         <div class="cover-play">▶</div>
-        <div class="cover-text">decrypt &amp; play</div>
+        <div class="cover-text">break the lock</div>
       </div>
+
+      <div class="hit-counter" id="hitCounter">HITS: 0 / 5</div>
 
       <div class="cover-coords">N 55.7558 // E 37.6173</div>
       <div class="cover-code">SNIPPET: br34k_d0wn</div>
     </div>
-    <!-- iframe появится здесь после клика -->
+    <!-- iframe появится здесь после 5-го клика -->
   </div>
 
   <p>&gt; snippet recovered. play it if you dare.</p>
@@ -256,14 +369,102 @@
 </main>
 
 <script>
-  const VIDEO_ID = "Vb8knhx6OtE"; // ← замените на реальный ID
-  const frame = document.getElementById("videoFrame");
-  const cover = document.getElementById("videoCover");
+  const VIDEO_ID = "VIDEO_ID_HERE"; // ← замените на реальный ID
+  const frame  = document.getElementById("videoFrame");
+  const cover  = document.getElementById("videoCover");
+  const counter = document.getElementById("hitCounter");
+  const hint    = document.getElementById("hitHint");
+
+  const MAX_HITS = 5;
+  let hits = 0;
+
+  // маленький звук "глухого удара" при каждом клике
+  let AC = null;
+  function hitSound(intensity) {
+    try {
+      if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+      if (AC.state === "suspended") AC.resume();
+
+      const c = AC;
+      const t = c.currentTime;
+
+      // низкий "удар"
+      const osc = c.createOscillator();
+      osc.type = "square";
+      osc.frequency.setValueAtTime(140 + intensity * 20, t);
+      osc.frequency.exponentialRampToValueAtTime(40, t + 0.15);
+
+      const g = c.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.25, t + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
+
+      osc.connect(g).connect(c.destination);
+      osc.start(t);
+      osc.stop(t + 0.25);
+
+      // шумовой "треск"
+      const buf = c.createBuffer(1, c.sampleRate * 0.08, c.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      const n = c.createBufferSource();
+      n.buffer = buf;
+      const hp = c.createBiquadFilter();
+      hp.type = "highpass";
+      hp.frequency.value = 2000 + intensity * 500;
+      const ng = c.createGain();
+      ng.gain.setValueAtTime(0.0001, t);
+      ng.gain.exponentialRampToValueAtTime(0.15, t + 0.001);
+      ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
+      n.connect(hp).connect(ng).connect(c.destination);
+      n.start(t);
+      n.stop(t + 0.1);
+    } catch (e) {}
+  }
 
   cover.addEventListener("click", function () {
-    if (frame.dataset.unlocked === "1") return;
-    frame.dataset.unlocked = "1";
+    if (cover.classList.contains("broken")) return;
 
+    hits++;
+    if (hits > MAX_HITS) hits = MAX_HITS;
+    cover.dataset.hits = hits;
+
+    // перезапуск тряски
+    cover.style.animation = "none";
+    void cover.offsetWidth;
+    cover.style.animation = "shake 0.15s";
+
+    hitSound(hits);
+    counter.textContent = "HITS: " + hits + " / " + MAX_HITS;
+
+    // обновляем процент целостности
+    const integrity = Math.max(0, 100 - hits * 20);
+    hint.textContent = "BARRIER INTEGRITY: " + integrity + "%";
+
+    // меняем надписи по мере разрушения
+    if (hits === 2) {
+      document.querySelector(".cover-signal").textContent = "● SIGNAL DESTABILIZING";
+    }
+    if (hits === 3) {
+      document.querySelector(".cover-signal").textContent = "● CRITICAL FAILURE";
+      document.querySelector(".cover-lock").textContent = "CRACKING";
+    }
+    if (hits === 4) {
+      document.querySelector(".cover-signal").textContent = "● BARRIER COLLAPSING";
+      document.querySelector(".cover-lock").textContent = "BREAKING";
+    }
+    if (hits === 5) {
+      document.querySelector(".cover-signal").textContent = "● ACCESS UNLOCKED";
+      document.querySelector(".cover-lock").textContent = "OPEN";
+      breakTheLock();
+    }
+  });
+
+  function breakTheLock() {
+    // финальный визуальный "слом"
+    cover.classList.add("broken");
+
+    // подгружаем видео
     const iframe = document.createElement("iframe");
     iframe.src = "https://www.youtube-nocookie.com/embed/" + VIDEO_ID +
                  "?rel=0&modestbranding=1&autoplay=1";
@@ -271,13 +472,11 @@
       "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
     iframe.setAttribute("allowfullscreen", "");
     iframe.title = "Break Down";
-
     frame.appendChild(iframe);
 
-    cover.style.opacity = "0";
-    cover.style.pointerEvents = "none";
-    setTimeout(() => cover.remove(), 700);
-  });
+    // убираем заглушку после анимации
+    setTimeout(() => cover.remove(), 850);
+  }
 </script>
 
 </body>
