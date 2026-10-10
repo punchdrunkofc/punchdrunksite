@@ -340,3 +340,24 @@ html, body {
   15%  { opacity: 1; }
   100% { opacity: 0; }
 }
+/* ---------- SECRET LINK TO HIDDEN NODE ---------- */
+.secret-dot {
+  color: #1a1a1a;
+  font-size: 13px;
+  font-family: "Courier New", monospace;
+  letter-spacing: 2px;
+  text-decoration: none;
+  margin-right: 10px;
+  cursor: crosshair;
+  opacity: 0.35;
+  transition: all 0.6s ease;
+  position: relative;
+  bottom: 1px;
+  text-shadow: 0 0 4px rgba(255, 0, 51, 0.15);
+}
+.secret-dot:hover {
+  color: #ff0033;
+  opacity: 1;
+  text-shadow: 0 0 10px #ff0033, 0 0 20px #ff0033, 0 0 40px #ff0033;
+  letter-spacing: 4px;
+}
