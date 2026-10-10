@@ -1,3 +1,4 @@
+"use strict";
 
 const SECTORS = [
   { label: "KICK",      sub: "your heart is a 909",              gen: makeKick },
@@ -11,8 +12,8 @@ const SECTORS = [
 ];
 
 const COLORS = [
-  "#0d0d0d", "#1a0008", "#0d0d0d", "#1a0008",
-  "#0d0d0d", "#1a0008", "#0d0d0d", "#4a3500"
+  "#0a0a0f", "#14081f", "#0a0a0f", "#14081f",
+  "#0a0a0f", "#14081f", "#0a0a0f", "#4a3500"
 ];
 
 const canvas = document.getElementById("wheel");
