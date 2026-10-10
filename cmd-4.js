@@ -6,6 +6,17 @@ const cmds = {
     log("&nbsp;&nbsp;play [kick|snare|bass|siren|breakbeat|glitch|acid|total]");
     log("&nbsp;&nbsp;whoami &mdash; who you are");
     log("&nbsp;&nbsp;clear &mdash; clear log");
+      void: () => {
+    log("...", "dim");
+    log("searching for node 0x00...", "system");
+    setTimeout(() => {
+      log("&gt; ERROR: NODE NOT FOUND", "err");
+      triggerGlitch(1200);
+      setTimeout(() => {
+        window.location.href = "void.html";
+      }, 1200);
+    }, 900);
+  },
   },
   spin: () => spin(),
   clear: () => { logEl.innerHTML = ""; },
