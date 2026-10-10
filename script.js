@@ -1,11 +1,7 @@
 // ================================================================
 //  WHEEL_0x07 — DIGITAL HARDCORE ARG
-//  Все звуки генерируются через Web Audio API — файлы не нужны.
 // ================================================================
 
-// ---------------------------------------------------------------
-// 1. AUDIO ENGINE (Web Audio API — digital hardcore synthesis)
-// ---------------------------------------------------------------
 let AC = null;
 function ctx() {
   if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
@@ -29,7 +25,17 @@ function noiseBuffer(dur = 0.5) {
   return buf;
 }
 
-// --- Kick: distorted 909-style ---
+function makeDistortion(amount) {
+  const n = 44100;
+  const curve = new Float32Array(n);
+  const deg = Math.PI / 180;
+  for (let i = 0; i < n; i++) {
+    const x = (i * 2) / n - 1;
+    curve[i] = ((3 + amount) * x * 20 * deg) / (Math.PI + amount * Math.abs(x));
+  }
+  return curve;
+}
+
 function playKick(dur = 0.35) {
   const c = ctx(), t = c.currentTime;
   const osc = c.createOscillator();
@@ -44,7 +50,6 @@ function playKick(dur = 0.35) {
   osc.start(t); osc.stop(t + dur + 0.05);
 }
 
-// --- Snare: noise + body ---
 function playSnare() {
   const c = ctx(), t = c.currentTime;
   const n = c.createBufferSource();
@@ -54,7 +59,6 @@ function playSnare() {
   env(g, t, 0.001, 0.18, 0.6);
   n.connect(hp).connect(g).connect(c.destination);
   n.start(t); n.stop(t + 0.3);
-
   const osc = c.createOscillator();
   osc.type = 'triangle';
   osc.frequency.setValueAtTime(220, t);
@@ -64,7 +68,6 @@ function playSnare() {
   osc.start(t); osc.stop(t + 0.15);
 }
 
-// --- Distorted bass stab ---
 function playBass() {
   const c = ctx(), t = c.currentTime;
   const osc = c.createOscillator();
@@ -78,7 +81,6 @@ function playBass() {
   osc.start(t); osc.stop(t + 0.5);
 }
 
-// --- Siren ---
 function playSiren() {
   const c = ctx(), t = c.currentTime;
   const osc = c.createOscillator();
@@ -92,7 +94,6 @@ function playSiren() {
   osc.start(t); osc.stop(t + 1.1);
 }
 
-// --- Breakbeat (fast 16th hat pattern + kick) ---
 function playBreakbeat() {
   const c = ctx();
   const t0 = c.currentTime;
@@ -111,7 +112,6 @@ function playBreakbeat() {
   }
 }
 
-// --- Glitch burst ---
 function playGlitch() {
   const c = ctx(), t = c.currentTime;
   for (let i = 0; i < 20; i++) {
@@ -126,7 +126,6 @@ function playGlitch() {
   }
 }
 
-// --- Acid line ---
 function playAcid() {
   const c = ctx(), t = c.currentTime;
   const osc = c.createOscillator();
@@ -142,7 +141,6 @@ function playAcid() {
   osc.start(t); osc.stop(t + 0.9);
 }
 
-// --- Total annihilation (full pattern) ---
 function playTotalMadness() {
   playKick(0.5);
   setTimeout(playSnare, 100);
@@ -153,151 +151,6 @@ function playTotalMadness() {
   setTimeout(playAcid, 1000);
   setTimeout(playKick, 1200);
   setTimeout(playSnare, 1300);
-}
-
-// --- Distortion curve helper ---
-function makeDistortion(amount) {
-  const n = 44100;
-  const curve = new Float32Array(n);
-  const deg = Math.PI / 180;
-  for (let i = 0; i < n; i++) {
-    const x = (i * 2) / n - 1;
-    curve[i] = ((3 + amount) * x * 20 * deg) / (Math.PI + amount * Math.abs(x));
-  }
-  return curve;
-}
-
-// ---------------------------------------------------------------
-// 2. SECTORS
-// ---------------------------------------------------------------
-const SECTORS = [
-  { label: 'KICK',       sub: 'your heart is a 909',              play: playKick },
-  { label: 'SNARE',      sub: 'the noise remembers you',          play: playSnare },
-  { label: 'BASS',       sub: 'low frequencies = low truths',     play: playBass },
-  { label: 'SIREN',      sub: 'they are coming',                  play: playSiren },
-  { label: 'BREAKBEAT',  sub: 'faster. faster. faster.',          play: playBreakbeat },
-  { label: 'GLITCH',     sub: 'the signal breaks',                play: playGlitch },
-  { label: 'ACID',       sub: 'the 303 never lies',               play: playAcid },
-  { label: 'TOTAL',      sub: 'DIGITAL HARDCORE // ANNIHILATION', play: playTotalMadness, weight: 1 },
-];
-
-const COLORS = [
-  '#0d0d0d', '#1a0008', '#0d0d0d', '#1a0008',
-  '#0d0d0d', '#1a0008', '#0d0d0d', '#2a0010'
-];
-
-// ---------------------------------------------------------------
-// 3. WHEEL RENDER
-// ---------------------------------------------------------------
-const canvas = document.getElementById('wheel');
-const ctxC = canvas.getContext('2d');
-const SIZE = canvas.width;
-const CENTER = SIZE / 2;
-const RADIUS = CENTER - 10;
-const N = SECTORS.length;
-const ANGLE = (Math.PI * 2) / N;
-
-let rotation = 0;      // radians
-let spinning = false;
-let spins = 0;
-
-function drawWheel() {
-  ctxC.clearRect(0, 0, SIZE, SIZE);
-
-  // Outer ring
-  ctxC.beginPath();
-  ctxC.arc(CENTER, CENTER, RADIUS + 5, 0, Math.PI * 2);
-  ctxC.strokeStyle = '#ff0033';
-  ctxC.lineWidth = 2;
-  ctxC.stroke();
-
-  for (let i = 0; i < N; i++) {
-    const start = i * ANGLE + rotation;
-    const end = start + ANGLE;
-
-    // Sector fill
-    ctxC.beginPath();
-    ctxC.moveTo(CENTER, CENTER);
-    ctxC.arc(CENTER, CENTER, RADIUS, start, end);
-    ctxC.closePath();
-    ctxC.fillStyle = COLORS[i % COLORS.length];
-    ctxC.fill();
-    ctxC.strokeStyle = '#2a0008';
-    ctxC.lineWidth = 1;
-    ctxC.stroke();
-
-    // Label
-    ctxC.save();
-    ctxC.translate(CENTER, CENTER);
-    ctxC.rotate(start + ANGLE / 2);
-    ctxC.textAlign = 'right';
-    ctxC.fillStyle = '#ff0033';
-    ctxC.font = 'bold 18px "Courier New", monospace';
-    ctxC.shadowColor = '#ff0033';
-    ctxC.shadowBlur = 8;
-    ctxC.fillText(SECTORS[i].label, RADIUS - 20, 6);
-    ctxC.restore();
-  }
-
-  // Inner ring
-  ctxC.beginPath();
-  ctxC.arc(CENTER, CENTER, 70, 0, Math.PI * 2);
-  ctxC.strokeStyle = '#ff0033';
-  ctxC.lineWidth = 2;
-  ctxC.stroke();
-  ctxC.fillStyle = '#050505';
-  ctxC.fill();
-}
-drawWheel();
-
-// ---------------------------------------------------------------
-// 4. SPIN LOGIC
-// ---------------------------------------------------------------
-const spinBtn = document.getElementById('spin-btn');
-const resultBox = document.getElementById('result');
-const resultText = document.getElementById('result-text');
-const resultSub = document.getElementById('result-sub');
-const logEl = document.getElementById('log');
-const counterEl = document.getElementById('counter');
-
-spinBtn.addEventListener('click', spin);
-
-function spin() {
-  if (spinning) return;
-  spinning = true;
-  spinBtn.disabled = true;
-
-  // Random sector index
-  const idx = Math.floor(Math.random() * N);
-  // Sector center angle (in wheel-local coords, 0 rad = right/east)
-  const sectorCenter = idx * ANGLE + ANGLE / 2;
-  // Pointer is at top = -PI/2 in canvas coords.
-  // We want sectorCenter to end at -PI/2. So rotation_final = -PI/2 - sectorCenter + 2πk
-  const target = -Math.PI / 2 - sectorCenter + Math.PI * 2 * (5 + Math.floor(Math.random() * 3));
-  // Add small jitter
-  const jitter = (Math.random() - 0.5) * (ANGLE * 0.6);
-  rotation = target + jitter;
-
-  canvas.style.transform = `rotate(${rotation}rad)`;
-
-  // Tick sounds during spin
-  const spinDuration = 4500;
-  let lastTick = 0;
-  const tickInterval = setInterval(() => {
-    const now = Date.now();
-    if (now - lastTick > 70 + Math.random() * 80) {
-      playTick();
-      lastTick = now;
-    }
-  }, 40);
-
-  // After animation: reveal result
-  setTimeout(() => {
-    clearInterval(tickInterval);
-    revealSector(idx);
-    spinning = false;
-    spinBtn.disabled = false;
-  }, spinDuration + 100);
 }
 
 function playTick() {
@@ -311,52 +164,83 @@ function playTick() {
   osc.start(t); osc.stop(t + 0.03);
 }
 
-function revealSector(idx) {
-  const s = SECTORS[idx];
-  resultBox.classList.add('active');
-  resultText.textContent = s.label;
-  resultSub.textContent = '"' + s.sub + '"';
+const SECTORS = [
+  { label: 'KICK',      sub: 'your heart is a 909',              play: playKick },
+  { label: 'SNARE',     sub: 'the noise remembers you',          play: playSnare },
+  { label: 'BASS',      sub: 'low frequencies = low truths',     play: playBass },
+  { label: 'SIREN',     sub: 'they are coming',                  play: playSiren },
+  { label: 'BREAKBEAT', sub: 'faster. faster. faster.',          play: playBreakbeat },
+  { label: 'GLITCH',    sub: 'the signal breaks',                play: playGlitch },
+  { label: 'ACID',      sub: 'the 303 never lies',               play: playAcid },
+  { label: 'TOTAL',     sub: 'DIGITAL HARDCORE // ANNIHILATION', play: playTotalMadness }
+];
 
-  // Play the sound
-  try { s.play(); } catch (e) { console.warn(e); }
+const COLORS = [
+  '#0d0d0d', '#1a0008', '#0d0d0d', '#1a0008',
+  '#0d0d0d', '#1a0008', '#0d0d0d', '#2a0010'
+];
 
-  // Visual glitch
-  triggerGlitch(600);
+const canvas = document.getElementById('wheel');
+const ctxC = canvas.getContext('2d');
+const SIZE = canvas.width;
+const CENTER = SIZE / 2;
+const RADIUS = CENTER - 10;
+const N = SECTORS.length;
+const ANGLE = (Math.PI * 2) / N;
 
-  // Log
-  log('&gt; SPIN #' + (spins + 1) + ' → ' + s.label + ' :: "' + s.sub + '"', 'system');
+let rotation = 0;
+let spinning = false;
+let spins = 0;
 
-  spins++;
-  counterEl.textContent = 'SPINS: ' + spins;
-  localStorage.setItem('spins', spins);
+function drawWheel() {
+  ctxC.clearRect(0, 0, SIZE, SIZE);
+  ctxC.beginPath();
+  ctxC.arc(CENTER, CENTER, RADIUS + 5, 0, Math.PI * 2);
+  ctxC.strokeStyle = '#ff0033';
+  ctxC.lineWidth = 2;
+  ctxC.stroke();
 
-  // Progress-based whispers
-  if (spins === 3) setTimeout(() => log('...do you hear it yet?', 'whisper'), 800);
-  if (spins === 7) setTimeout(() => log('seven. you are the seventh.', 'whisper'), 800);
-  if (spins === 13) setTimeout(() => { triggerGlitch(1500); log('THE WHEEL KNOWS YOUR NAME.', 'err'); }, 800);
+  for (let i = 0; i < N; i++) {
+    const start = i * ANGLE + rotation;
+    const end = start + ANGLE;
+    ctxC.beginPath();
+    ctxC.moveTo(CENTER, CENTER);
+    ctxC.arc(CENTER, CENTER, RADIUS, start, end);
+    ctxC.closePath();
+    ctxC.fillStyle = COLORS[i % COLORS.length];
+    ctxC.fill();
+    ctxC.strokeStyle = '#2a0008';
+    ctxC.lineWidth = 1;
+    ctxC.stroke();
 
-  // Secret: hit TOTAL sector
-  if (s.label === 'TOTAL') {
-    setTimeout(() => {
-      triggerGlitch(2500);
-      log('★ DIGITAL HARDCORE OVERLOAD ★', 'err');
-      log('you have reached the bottom. there is only sound down here.', 'whisper');
-      localStorage.setItem('overload', 'true');
-    }, 600);
+    ctxC.save();
+    ctxC.translate(CENTER, CENTER);
+    ctxC.rotate(start + ANGLE / 2);
+    ctxC.textAlign = 'right';
+    ctxC.fillStyle = '#ff0033';
+    ctxC.font = 'bold 18px "Courier New", monospace';
+    ctxC.shadowColor = '#ff0033';
+    ctxC.shadowBlur = 8;
+    ctxC.fillText(SECTORS[i].label, RADIUS - 20, 6);
+    ctxC.restore();
   }
-}
 
-// ---------------------------------------------------------------
-// 5. TERMINAL COMMANDS
-// ---------------------------------------------------------------
-const logEl2 = logEl;
-function log(html, cls = '') {
-  const p = document.createElement('p');
-  p.className = 'line ' + cls;
-  p.innerHTML = html;
-  logEl2.appendChild(p);
-  logEl2.scrollTop = logEl2.scrollHeight;
+  ctxC.beginPath();
+  ctxC.arc(CENTER, CENTER, 70, 0, Math.PI * 2);
+  ctxC.strokeStyle = '#ff0033';
+  ctxC.lineWidth = 2;
+  ctxC.stroke();
+  ctxC.fillStyle = '#050505';
+  ctxC.fill();
 }
+drawWheel();
+
+const spinBtn = document.getElementById('spin-btn');
+const resultBox = document.getElementById('result');
+const resultText = document.getElementById('result-text');
+const resultSub = document.getElementById('result-sub');
+const logEl = document.getElementById('log');
+const counterEl = document.getElementById('counter');
 
 function triggerGlitch(ms = 500) {
   const o = document.getElementById('glitch-overlay');
@@ -364,15 +248,87 @@ function triggerGlitch(ms = 500) {
   setTimeout(() => o.classList.remove('active'), ms);
 }
 
+function log(html, cls = '') {
+  const p = document.createElement('p');
+  p.className = 'line ' + cls;
+  p.innerHTML = html;
+  logEl.appendChild(p);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+spinBtn.addEventListener('click', spin);
+
+function spin() {
+  if (spinning) return;
+  spinning = true;
+  spinBtn.disabled = true;
+
+  try { ctx(); } catch (e) { console.warn('audio init failed', e); }
+
+  const idx = Math.floor(Math.random() * N);
+  const sectorCenter = idx * ANGLE + ANGLE / 2;
+  const target = -Math.PI / 2 - sectorCenter + Math.PI * 2 * (5 + Math.floor(Math.random() * 3));
+  const jitter = (Math.random() - 0.5) * (ANGLE * 0.6);
+  rotation = target + jitter;
+
+  canvas.style.transform = 'rotate(' + rotation + 'rad)';
+
+  const spinDuration = 4500;
+  let lastTick = 0;
+  const tickInterval = setInterval(() => {
+    const now = Date.now();
+    if (now - lastTick > 70 + Math.random() * 80) {
+      playTick();
+      lastTick = now;
+    }
+  }, 40);
+
+  setTimeout(() => {
+    clearInterval(tickInterval);
+    revealSector(idx);
+    spinning = false;
+    spinBtn.disabled = false;
+  }, spinDuration + 100);
+}
+
+function revealSector(idx) {
+  const s = SECTORS[idx];
+  resultBox.classList.add('active');
+  resultText.textContent = s.label;
+  resultSub.textContent = '"' + s.sub + '"';
+
+  try { s.play(); } catch (e) { console.warn('sound failed', e); }
+
+  triggerGlitch(600);
+  log('&gt; SPIN #' + (spins + 1) + ' &rarr; ' + s.label + ' :: "' + s.sub + '"', 'system');
+
+  spins++;
+  counterEl.textContent = 'SPINS: ' + spins;
+  localStorage.setItem('spins', spins);
+
+  if (spins === 3) setTimeout(() => log('...do you hear it yet?', 'whisper'), 800);
+  if (spins === 7) setTimeout(() => log('seven. you are the seventh.', 'whisper'), 800);
+  if (spins === 13) setTimeout(() => { triggerGlitch(1500); log('THE WHEEL KNOWS YOUR NAME.', 'err'); }, 800);
+
+  if (s.label === 'TOTAL') {
+    setTimeout(() => {
+      triggerGlitch(2500);
+      log('* DIGITAL HARDCORE OVERLOAD *', 'err');
+      log('you have reached the bottom. there is only sound down here.', 'whisper');
+      localStorage.setItem('overload', 'true');
+    }, 600);
+  }
+}
+
 const cmds = {
   help: () => {
     log('available commands:', 'system');
-    log('&nbsp;&nbsp;help — this list');
-    log('&nbsp;&nbsp;spin — spin the wheel');
+    log('&nbsp;&nbsp;help &mdash; this list');
+    log('&nbsp;&nbsp;spin &mdash; spin the wheel');
     log('&nbsp;&nbsp;play [kick|snare|bass|siren|breakbeat|glitch|acid|total]');
-    log('&nbsp;&nbsp;whoami — who you are');
-    log('&nbsp;&nbsp;clear — clear log');
-    log('&nbsp;&nbsp;madness — if you are ready');
+    log('&nbsp;&nbsp;whoami &mdash; who you are');
+    log('&nbsp;&nbsp;clear &mdash; clear log');
+    log('&nbsp;&nbsp;madness &mdash; if you are ready');
   },
   spin: () => spin(),
   clear: () => { logEl.innerHTML = ''; },
@@ -383,7 +339,7 @@ const cmds = {
   madness: () => {
     log('...', 'system');
     setTimeout(() => { playTotalMadness(); triggerGlitch(2500); log('DIGITAL HARDCORE.', 'err'); }, 400);
-  },
+  }
 };
 
 function handleCmd(raw) {
@@ -395,7 +351,7 @@ function handleCmd(raw) {
 
   if (c.startsWith('play ')) {
     const name = c.slice(5).trim().toUpperCase();
-    const s = SECTORS.find(s => s.label === name);
+    const s = SECTORS.find(x => x.label === name);
     if (s) { s.play(); log('playing: ' + s.label, 'ok'); }
     else log('unknown sound: ' + name, 'err');
     return;
@@ -423,9 +379,6 @@ document.body.addEventListener('click', () => {
   document.getElementById('cmd').focus();
 }, { passive: true });
 
-// ---------------------------------------------------------------
-// 6. AMBIENT — random whispers & glitches
-// ---------------------------------------------------------------
 setInterval(() => {
   if (Math.random() < 0.12) triggerGlitch(150);
 }, 5000);
@@ -437,14 +390,11 @@ setInterval(() => {
   }
 }, 15000);
 
-// ---------------------------------------------------------------
-// 7. VISITOR ID + CLOCK
-// ---------------------------------------------------------------
 function getSubjectId() {
   let id = localStorage.getItem('subject_id');
   if (!id) {
     const hex = () => Math.floor(Math.random() * 0xFFFF).toString(16).padStart(4, '0').toUpperCase();
-    id = `SUBJECT_${hex()}-${hex()}`;
+    id = 'SUBJECT_' + hex() + '-' + hex();
     localStorage.setItem('subject_id', id);
   }
   return id;
@@ -454,4 +404,10 @@ document.getElementById('visitor-id').textContent = getSubjectId();
 spins = parseInt(localStorage.getItem('spins') || '0');
 counterEl.textContent = 'SPINS: ' + spins;
 
-setInterval(() =>
+setInterval(() => {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const el = document.getElementById('clock');
+  if (el) el.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+}, 1000);
+// END OF FILE
