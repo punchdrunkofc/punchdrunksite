@@ -73,13 +73,18 @@ function drawWheel() {
     ctxC.save();
     ctxC.translate(CENTER, CENTER);
     ctxC.rotate(start + ANGLE / 2);
-    ctxC.textAlign = "right";
-    ctxC.fillStyle = "#ff0033";
-    ctxC.font = "bold 18px 'Courier New', monospace";
-    ctxC.shadowColor = "#ff0033";
-    ctxC.shadowBlur = 8;
+    if (SECTORS[i].label === "TOTAL") {
+      ctxC.fillStyle = "#ffcc33";
+      ctxC.shadowColor = "#ffcc33";
+      ctxC.shadowBlur = 14;
+      ctxC.font = "bold 20px 'Courier New', monospace";
+    } else {
+      ctxC.fillStyle = "#ff0033";
+      ctxC.shadowColor = "#ff0033";
+      ctxC.shadowBlur = 8;
+      ctxC.font = "bold 18px 'Courier New', monospace";
+    }
     ctxC.fillText(SECTORS[i].label, RADIUS - 20, 6);
-    ctxC.restore();
   }
 
   ctxC.beginPath();
@@ -178,10 +183,34 @@ function revealSector(idx) {
 
   if (spins === 3) setTimeout(() => log("...do you hear it yet?", "whisper"), 800);
   if (spins === 7) setTimeout(() => log("seven. you are the seventh.", "whisper"), 800);
-  if (spins === 13) setTimeout(() => {
-    triggerGlitch(1500);
-    log("THE WHEEL KNOWS YOUR NAME.", "err");
-  }, 800);
-}
+    // ===== GOLD JACKPOT =====
+  if (s.label === "TOTAL") {
+    // золотая вспышка на весь экран
+    const flash = document.getElementById("gold-flash");
+    if (flash) {
+      flash.classList.remove("active");
+      void flash.offsetWidth; // перезапуск анимации
+      flash.classList.add("active");
+    }
 
+    // золотой стиль результата
+    resultBox.classList.add("jackpot");
+
+    // золотой счётчик jackpots
+    let jp = parseInt(localStorage.getItem("jackpots") || "0", 10) + 1;
+    localStorage.setItem("jackpots", jp);
+
+    // лог
+    setTimeout(() => {
+      log("&#9733; &#9733; &#9733;  G O L D   J A C K P O T  &#9733; &#9733; &#9733;", "ok");
+      log("TOTAL sector hit. You have reached the core.", "whisper");
+      log("JACKPOTS: " + jp, "system");
+    }, 700);
+
+    // фанфарный звук — простой восходящий арпеджио
+    try { playJackpotFanfare(); } catch (e) {}
+  } else {
+    // сброс золотого стиля, если выпал не TOTAL
+    resultBox.classList.remove("jackpot");
+  }
 // END OF FILE — wheel.js
