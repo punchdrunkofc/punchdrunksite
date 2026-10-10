@@ -18,6 +18,28 @@ html, body {
   cursor: crosshair;
 }
 
+/* ---------- ФОН С ЛОГОТИПОМ ---------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("logo.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: min(70vh, 70vw);
+  opacity: 0.06;
+  filter: invert(1) hue-rotate(270deg) saturate(2);
+  animation: logo-breathe 12s ease-in-out infinite;
+}
+
+/* лёгкое «дыхание» — логотип едва заметно пульсирует */
+@keyframes logo-breathe {
+  0%, 100% { opacity: 0.05; transform: scale(1); }
+  50%      { opacity: 0.09; transform: scale(1.03); }
+}
+
 /* ---------- HUD ---------- */
 .hud {
   display: flex;
