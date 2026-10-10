@@ -9,7 +9,6 @@
 <style>
   body { overflow: auto !important; }
 
-  /* «корпоративный» вид — холодный, серый, без свечения */
   .enemy-page {
     max-width: 760px;
     margin: 50px auto;
@@ -22,7 +21,6 @@
     color: #b8b8c0;
     font-family: "Helvetica", "Arial", sans-serif;
   }
-
   .enemy-header {
     display: flex;
     justify-content: space-between;
@@ -39,7 +37,6 @@
     color: #8a8a95;
     font-family: "Courier New", monospace;
   }
-
   .enemy-page h1 {
     font-family: "Helvetica", "Arial", sans-serif;
     font-size: 22px;
@@ -56,7 +53,6 @@
     text-transform: uppercase;
     margin-bottom: 40px;
   }
-
   .enemy-page h2 {
     font-family: "Helvetica", "Arial", sans-serif;
     font-size: 14px;
@@ -68,7 +64,6 @@
     padding-bottom: 6px;
     border-bottom: 1px solid #2a2a32;
   }
-
   .enemy-page p {
     font-size: 14px;
     line-height: 1.8;
@@ -82,7 +77,6 @@
     font-style: italic;
     font-size: 13px;
   }
-
   .enemy-list {
     list-style: none;
     margin: 20px 0;
@@ -106,7 +100,6 @@
     color: #c8c8d0;
     font-weight: normal;
   }
-
   .enemy-quote {
     margin: 30px 0;
     padding: 20px 24px;
@@ -117,7 +110,6 @@
     line-height: 1.7;
     font-style: italic;
   }
-
   .enemy-threat {
     margin: 40px 0 20px;
     padding: 18px;
@@ -129,8 +121,6 @@
     line-height: 1.7;
     font-family: "Courier New", monospace;
   }
-
-  /* ЖИВОЙ IP-ЛОГ */
   .ip-log {
     margin: 30px 0;
     padding: 20px 24px;
@@ -184,7 +174,6 @@
     0%, 100% { opacity: 0.3; }
     50%      { opacity: 1; }
   }
-
   .personal-warning {
     margin: 20px 0;
     padding: 16px 20px;
@@ -206,7 +195,6 @@
     font-weight: bold;
     text-shadow: 0 0 10px rgba(255, 85, 85, 0.6);
   }
-
   .enemy-signature {
     margin-top: 50px;
     padding-top: 20px;
@@ -220,7 +208,6 @@
     color: #a0a0aa;
     font-weight: normal;
   }
-
   .enemy-back {
     display: inline-block;
     margin-top: 30px;
@@ -238,7 +225,6 @@
     color: #0a0a0f;
     border-color: #6a6a75;
   }
-
   .enemy-footer {
     margin-top: 40px;
     color: #2a2a32;
@@ -248,8 +234,6 @@
     transition: color 0.5s;
   }
   .enemy-footer:hover { color: #8a2a2a; }
-
-  /* «печать» компании в углу */
   .enemy-stamp {
     position: absolute;
     top: 20px;
@@ -275,7 +259,6 @@
 </head>
 <body>
 
-<div class="noise"></div>
 <div class="scanlines"></div>
 <div class="vignette"></div>
 
@@ -350,7 +333,6 @@
     → Further action is at the discretion of the rights holders.
   </div>
 
-  <!-- ЖИВОЙ IP-ЛОГ -->
   <div class="ip-log">
     <div class="field">
       <span class="label">session id:</span>
@@ -399,7 +381,6 @@
 </main>
 
 <script>
-  // ---------- IP-ЛОГ ----------
   (function() {
     function getSubjectId() {
       let id = localStorage.getItem("subject_id");
@@ -434,10 +415,7 @@
         ipEl.textContent = ip;
         ipEl.classList.remove("pending");
         ipInline.textContent = ip;
-
-        setTimeout(() => {
-          warning.style.display = "block";
-        }, 400);
+        setTimeout(() => { warning.style.display = "block"; }, 400);
       })
       .catch(() => {
         const fake = "0." + Math.floor(Math.random() * 255) + "." +
