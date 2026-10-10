@@ -1,6 +1,6 @@
 // ==================================================================
 //  cursor-drift.js — после 30 сек бездействия фальшивый курсор
-//  медленно плывёт к кнопке SPIN. Курсор — перекрестие (как crosshair).
+//  медленно плывёт к кнопке SPIN. Курсор — белое перекрестие.
 // ==================================================================
 
 (function () {
@@ -28,16 +28,14 @@
   }
   if (isTouchDevice()) return;
 
-  // ---------- СОЗДАНИЕ ФАЛЬШИВОГО КУРСОРА (ПЕРЕКРЕСТИЕ) ----------
+  // ---------- СОЗДАНИЕ ФАЛЬШИВОГО КУРСОРА (БЕЛОЕ ПЕРЕКРЕСТИЕ) ----------
   function createFakeCursor() {
     fakeEl = document.createElement("div");
     fakeEl.id = "fake-cursor";
     fakeEl.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <line x1="12" y1="2"  x2="12" y2="22" stroke="#a020f0" stroke-width="2"
-              style="filter: drop-shadow(0 0 4px #a020f0);"/>
-        <line x1="2"  y1="12" x2="22" y2="12" stroke="#a020f0" stroke-width="2"
-              style="filter: drop-shadow(0 0 4px #a020f0);"/>
+        <line x1="12" y1="2"  x2="12" y2="22" stroke="white" stroke-width="2"/>
+        <line x1="2"  y1="12" x2="22" y2="12" stroke="white" stroke-width="2"/>
       </svg>
     `;
     fakeEl.style.cssText = `
@@ -72,7 +70,7 @@
   }
 
   // ---------- ОБНОВЛЕНИЕ ФАЛЬШИВОГО ----------
-  // сдвигаем на −12, −12 — центр перекрестия совпадает с точкой
+  // сдвиг на −12, −12 — центр перекрестия совпадает с точкой
   function updateFakeCursor(x, y) {
     if (!fakeEl) return;
     fakeEl.style.transform = `translate3d(${x - 12}px, ${y - 12}px, 0)`;
