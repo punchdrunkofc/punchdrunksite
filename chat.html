@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROOM_0x0F // LIVE CHANNEL</title>
+<title>CHANNEL_0x0F // CARRIER NETWORK</title>
 <link rel="icon" href="logo.png" type="image/png">
 <link rel="apple-touch-icon" href="logo.png">
 <link rel="stylesheet" href="style.css">
@@ -223,20 +223,20 @@
 <div id="glitch-overlay"></div>
 
 <main class="chat-page">
-  <h1>ROOM_0x0F</h1>
-  <div class="warn">// LIVE CHANNEL // OTHERS ARE LISTENING</div>
+  <h1>CHANNEL_0x0F</h1>
+  <div class="warn">// CARRIER NETWORK // OTHERS ARE LISTENING</div>
 
   <div class="nick-screen" id="nickScreen">
     <h2>// choose your name</h2>
     <input type="text" id="nickInput" maxlength="16" placeholder="enter nickname..." />
-    <button id="nickBtn">ENTER ROOM</button>
-    <div class="hint">max 16 characters. no real names. they remember everything.</div>
+    <button id="nickBtn">ENTER CHANNEL</button>
+    <div class="hint">max 16 characters. no real names. carriers remember everything.</div>
   </div>
 
   <div class="chat-container" id="chatContainer" style="display:none;">
     <div class="chat-header">
       <span class="room"># channel_0x0F</span>
-      <span class="online"><span id="onlineCount">4</span> online</span>
+      <span class="online"><span id="onlineCount">4</span> carriers</span>
     </div>
     <div class="chat-log" id="chatLog"></div>
     <div class="chat-input-bar">
@@ -248,7 +248,6 @@
   <a href="index.html" class="back-link">&larr; RETURN TO THE WHEEL</a>
 </main>
 
-<!-- Триггеры (1600 фраз) -->
 <script src="chat-r01.js"></script>
 <script src="chat-r02.js"></script>
 <script src="chat-r03.js"></script>
@@ -266,34 +265,35 @@
 <script src="chat-r16.js"></script>
 
 <script>
-  // ==================================================================
-  //  FAKE CHAT v6 — 1600 triggers, users talk to each other
-  // ==================================================================
+  localStorage.setItem("visited_chat", "true");
 
   const STORAGE_KEY = "chat_history";
   const NICK_KEY = "chat_nick";
 
   const FAKE_USERS = [
-    "SUBJECT_A3F2", "SUBJECT_B7C1", "SUBJECT_D0E8",
-    "SUBJECT_4F9A", "SUBJECT_C2D5", "SUBJECT_9E1B",
-    "SUBJECT_6A0C", "SUBJECT_F8E3"
+    "CARRIER_A3F2", "CARRIER_B7C1", "CARRIER_D0E8",
+    "CARRIER_4F9A", "CARRIER_C2D5", "CARRIER_9E1B",
+    "CARRIER_6A0C", "CARRIER_F8E3"
   ];
 
   const AMBIENT_DIALOGUES = [
-    [ {user:0,text:"did you hear it last night"},{user:1,text:"hear what"},{user:0,text:"the signal"},{user:1,text:"oh. yes."} ],
-    [ {user:2,text:"i can't sleep anymore"},{user:3,text:"same"},{user:2,text:"it keeps spinning in my head"},{user:3,text:"the wheel?"},{user:2,text:"the wheel."} ],
+    [ {user:0,text:"did you hear it last night"},{user:1,text:"hear what"},{user:0,text:"the frequency"},{user:1,text:"oh. yes."} ],
+    [ {user:2,text:"i can't sleep anymore"},{user:3,text:"same"},{user:2,text:"it keeps spinning in my head"},{user:3,text:"the wheel?"},{user:2,text:"the signal."} ],
     [ {user:4,text:"anyone else at day 14"},{user:5,text:"day 22"},{user:4,text:"how are you still here"},{user:5,text:"i don't know"} ],
     [ {user:6,text:"i tried to leave"},{user:7,text:"you can't"},{user:6,text:"i know"},{user:7,text:"we all tried"} ],
-    [ {user:0,text:"he said it's 7"},{user:2,text:"always 7"},{user:0,text:"why 7"},{user:2,text:"don't ask"} ],
-    [ {user:3,text:"did the cursor move for you"},{user:5,text:"yes"},{user:3,text:"thought i was crazy"},{user:5,text:"you are"} ],
+    [ {user:0,text:"he said it's 7"},{user:2,text:"always 7"},{user:0,text:"why 7"},{user:2,text:"the frequency. 7.83."} ],
+    [ {user:3,text:"did the cursor move for you"},{user:5,text:"yes"},{user:3,text:"thought i was crazy"},{user:5,text:"you are. and so are we."} ],
     [ {user:1,text:"i copied the text"},{user:4,text:"what did it say"},{user:1,text:"we know what you copied"},{user:4,text:"..."} ],
-    [ {user:7,text:"who is the new one"},{user:6,text:"in the room?"},{user:7,text:"yes"},{user:6,text:"i don't know. but they're reading"} ],
+    [ {user:7,text:"who is the new one"},{user:6,text:"in the channel?"},{user:7,text:"yes"},{user:6,text:"i don't know. but they're infected"} ],
     [ {user:5,text:"3:33 tonight"},{user:0,text:"i'll be there"},{user:2,text:"don't"},{user:5,text:"we have to"} ],
     [ {user:4,text:"the golden sector scared me"},{user:3,text:"it's beautiful"},{user:4,text:"that's why"} ],
     [ {user:2,text:"i heard my name"},{user:6,text:"where"},{user:2,text:"in the terminal"},{user:6,text:"same"} ],
-    [ {user:0,text:"day 30"},{user:1,text:"we lost another one"},{user:7,text:"not lost. joined."},{user:1,text:"same thing"} ],
+    [ {user:0,text:"day 30"},{user:1,text:"we lost another one"},{user:7,text:"not lost. completed."},{user:1,text:"same thing"} ],
     [ {user:3,text:"did you read the second manifest"},{user:5,text:"i wish i hadn't"},{user:3,text:"same"} ],
-    [ {user:6,text:"anyone else feel watched"},{user:4,text:"always"},{user:6,text:"good. not just me."} ]
+    [ {user:6,text:"anyone else feel the hum"},{user:4,text:"always"},{user:6,text:"good. not just me."} ],
+    [ {user:4,text:"my hands shake when i stop"},{user:5,text:"that's the signal"},{user:4,text:"i know"},{user:5,text:"don't stop"} ],
+    [ {user:1,text:"7.83"},{user:2,text:"don't say it"},{user:1,text:"why"},{user:2,text:"it hears you"} ],
+    [ {user:7,text:"someone else joined"},{user:6,text:"did they hear it yet"},{user:7,text:"not yet"},{user:6,text:"soon"} ]
   ];
 
   const AMBIENT_SINGLES = [
@@ -302,10 +302,11 @@
     "TOTAL three times. coincidence?","the cursor moved on its own","node_11 has my file",
     "3:33 is the worst time to visit","i am on day 30. i cannot stop",
     "the signal is stronger at 3:33","the wheel spun without me",
-    "someone else is using my account","why did you stop","you are reading this now"
+    "someone else is using my account","why did you stop","you are reading this now",
+    "i feel it in my chest","the frequency is rising","7.83. remember it",
+    "i can hear it now. even when it's off.","my phone buzzed but nothing was there"
   ];
 
-  // ---------- ОБЪЕДИНЯЕМ ВСЕ ТРИГГЕРЫ ----------
   const REACTIONS = Object.assign({},
     window.CHAT_R01 || {},
     window.CHAT_R02 || {},
@@ -353,7 +354,6 @@
     const div = document.createElement("div");
     div.className = "msg " + (msg.type || "");
     if (msg.own) div.classList.add("own");
-
     if (msg.type === "system") {
       div.innerHTML = msg.text;
     } else {
@@ -402,10 +402,11 @@
 
     if (history.length > 0) {
       history.forEach(m => renderMessage(m));
-      renderMessage({ type: "system", text: "// session restored. " + history.length + " messages in memory." });
+      renderMessage({ type: "system", text: "// channel restored. " + history.length + " messages in memory." });
     } else {
       renderMessage({ type: "system", text: "// you have joined # channel_0x0F" });
-      renderMessage({ type: "system", text: "// 4 users online" });
+      renderMessage({ type: "system", text: "// 4 carriers active" });
+      renderMessage({ type: "system", text: "// note: all carriers are showing symptoms." });
       setTimeout(() => { addFakeMessage(true); }, 2500);
     }
 
@@ -413,13 +414,12 @@
     scheduleDialogue();
     updateOnline();
     setInterval(updateOnline, 45000);
-
     chatInput.focus();
   }
 
   function updateOnline() {
     const base = 4;
-    const n = Math.max(3, Math.min(7, base + Math.floor(Math.random() * 4 - 1)));
+    const n = Math.max(3, Math.min(9, base + Math.floor(Math.random() * 5 - 2)));
     onlineCount.textContent = n;
   }
 
@@ -451,7 +451,7 @@
 
   function scheduleDialogue() {
     if (dialogueTimer) clearTimeout(dialogueTimer);
-    const delay = 25000 + Math.random() * 35000;
+    const delay = 22000 + Math.random() * 30000;
     dialogueTimer = setTimeout(() => {
       const dialogue = AMBIENT_DIALOGUES[dialogueIndex % AMBIENT_DIALOGUES.length];
       dialogueIndex++;
@@ -481,7 +481,7 @@
       const genericReplies = [
         "we hear you","yes.","we know.","keep going.","you are not alone.",
         "we have been waiting.","do not stop.","we are still here.",
-        "…","say more","we are listening"
+        "…","say more","we are listening","the signal grows"
       ];
       const reply = genericReplies[Math.floor(Math.random() * genericReplies.length)];
       scheduleFakeReply(reply, 2000 + Math.random() * 3000);
@@ -502,20 +502,21 @@
 
   function scheduleAmbient() {
     if (ambientTimer) clearTimeout(ambientTimer);
-    const delay = 20000 + Math.random() * 30000;
+    const delay = 18000 + Math.random() * 25000;
     ambientTimer = setTimeout(() => {
-      if (Math.random() < 0.35) {
+      if (Math.random() < 0.4) {
         addFakeMessage();
       }
-      if (Math.random() < 0.12) {
+      if (Math.random() < 0.15) {
         const whispers = [
           "someone is typing...",
-          "it is very quiet in here",
+          "the frequency is rising",
           "who joined?",
           "the signal changed",
           "we are being watched",
-          "i see a new name",
-          "the wheel moved"
+          "i see a new carrier",
+          "the wheel moved",
+          "7.83"
         ];
         const w = whispers[Math.floor(Math.random() * whispers.length)];
         renderMessage({ type: "msg whisper", nick: "system", text: w });
@@ -527,14 +528,7 @@
   function sendMessage() {
     const text = chatInput.value.trim();
     if (!text) return;
-
-    const msg = {
-      nick: nick,
-      text: text,
-      time: nowHHMM(),
-      type: "msg",
-      own: true
-    };
+    const msg = { nick: nick, text: text, time: nowHHMM(), type: "msg", own: true };
     history.push(msg);
     saveHistory();
     renderMessage(msg);
