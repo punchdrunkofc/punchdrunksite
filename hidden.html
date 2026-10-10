@@ -41,6 +41,10 @@
     font-style: italic;
     opacity: 0.85;
   }
+  .secret-page .err {
+    color: #ff2b6a;
+    font-weight: bold;
+  }
 
   .video-frame {
     position: relative;
@@ -48,10 +52,12 @@
     padding-bottom: 56.25%;
     margin: 30px 0;
     border: 2px solid #a020f0;
-    box-shadow: 0 0 30px rgba(160, 32, 240, 0.5);
+    box-shadow: 0 0 40px rgba(160, 32, 240, 0.6),
+                inset 0 0 40px rgba(160, 32, 240, 0.15);
     background: #0a0a0f;
     overflow: hidden;
   }
+
   .video-frame iframe {
     position: absolute;
     top: 0; left: 0;
@@ -59,12 +65,111 @@
     height: 100%;
     border: 0;
     z-index: 3;
+    filter: hue-rotate(15deg) saturate(1.1) contrast(1.05);
+  }
+
+  .video-frame::before {
+    content: "FREQUENCY 7.83 Hz // RECOVERED FILE";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 44px;
+    background: linear-gradient(to bottom, #0a0a0f 0%, #0a0a0f 60%, transparent 100%);
+    color: #a020f0;
+    font-size: 11px;
+    letter-spacing: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+    z-index: 5;
+    pointer-events: none;
+    text-shadow: 0 0 8px rgba(160, 32, 240, 0.6);
+  }
+
+  .video-frame::after {
+    content: "";
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 180px;
+    height: 50px;
+    background: linear-gradient(to top right, #0a0a0f 0%, #0a0a0f 50%, transparent 100%);
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .video-scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode: multiply;
+  }
+
+  .video-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center,
+                transparent 40%,
+                rgba(0, 0, 0, 0.55) 100%);
+  }
+
+  .video-glitch {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    background: transparent;
+    opacity: 0;
+    mix-blend-mode: screen;
+  }
+  .video-glitch.active {
+    animation: video-glitch-flash 0.4s ease-out;
+  }
+  @keyframes video-glitch-flash {
+    0%   { opacity: 0; background: rgba(160, 32, 240, 0.4); }
+    20%  { opacity: 1; background: rgba(160, 32, 240, 0.2); }
+    40%  { opacity: 0; }
+    60%  { opacity: 1; background: rgba(216, 168, 255, 0.3); }
+    100% { opacity: 0; }
+  }
+
+  .video-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: #a020f0;
+    z-index: 6;
+    pointer-events: none;
+    filter: drop-shadow(0 0 4px #a020f0);
+  }
+  .video-corner.tl { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; }
+  .video-corner.tr { top: 8px; right: 8px; border-top: 2px solid; border-right: 2px solid; }
+  .video-corner.bl { bottom: 8px; left: 8px; border-bottom: 2px solid; border-left: 2px solid; }
+  .video-corner.br { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; }
+
+  .video-meta {
+    position: absolute;
+    bottom: 8px;
+    left: 16px;
+    z-index: 6;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #4a4055;
+    pointer-events: none;
   }
 
   .video-cover {
     position: absolute;
     inset: 0;
-    z-index: 5;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -103,29 +208,16 @@
     transition: opacity 0.2s;
   }
   .video-cover[data-hits="1"]::before { opacity: 0.35; }
-  .video-cover[data-hits="2"]::before {
-    opacity: 0.55;
-    background-position: 20% 30%, 70% 60%;
-    background-size: 180px 180px, 260px 260px;
-  }
-  .video-cover[data-hits="3"]::before {
-    opacity: 0.75;
-    background-position: 35% 55%, 60% 25%;
-    background-size: 150px 150px, 200px 200px;
-  }
-  .video-cover[data-hits="4"]::before {
-    opacity: 0.9;
-    background-position: 55% 15%, 25% 70%;
-    background-size: 120px 120px, 140px 140px;
-  }
+  .video-cover[data-hits="2"]::before { opacity: 0.55; background-size: 180px 180px, 260px 260px; }
+  .video-cover[data-hits="3"]::before { opacity: 0.75; background-size: 150px 150px, 200px 200px; }
+  .video-cover[data-hits="4"]::before { opacity: 0.9; background-size: 120px 120px, 140px 140px; }
   .video-cover[data-hits="5"]::before {
     opacity: 1;
     background:
       linear-gradient(115deg, transparent 47%, #a020f0 48%, #a020f0 50%, transparent 51%),
       linear-gradient(75deg,  transparent 47%, #d8a8ff 48%, #d8a8ff 50%, transparent 51%),
       linear-gradient(160deg, transparent 48%, #7b2cbf 49%, #7b2cbf 50%, transparent 51%);
-    background-size: 100% 100%, 100% 100%, 100% 100%;
-    background-position: 0 0;
+    background-size: 100% 100%;
     animation: crack-flash 0.4s;
   }
   @keyframes crack-flash {
@@ -139,9 +231,7 @@
     75%  { transform: translate(-2px, -2px); }
     100% { transform: translate(0, 0); }
   }
-  .video-cover.broken {
-    animation: broken-out 0.8s forwards;
-  }
+  .video-cover.broken { animation: broken-out 0.8s forwards; }
   @keyframes broken-out {
     0%   { opacity: 1; transform: scale(1); filter: brightness(1); }
     30%  { opacity: 1; transform: scale(1.05); filter: brightness(3) hue-rotate(45deg); }
@@ -160,22 +250,19 @@
     z-index: 6;
     transition: color 0.3s;
   }
-  .video-cover[data-hits="1"] .hit-counter,
-  .video-cover[data-hits="2"] .hit-counter { color: #6a5a75; }
   .video-cover[data-hits="3"] .hit-counter,
   .video-cover[data-hits="4"] .hit-counter { color: #a020f0; }
   .video-cover[data-hits="5"] .hit-counter { color: #d8a8ff; text-shadow: 0 0 10px #a020f0; }
 
   .hit-hint {
     position: absolute;
-    top: 40px;
+    top: 60px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 11px;
     color: #4a4055;
     letter-spacing: 3px;
     z-index: 6;
-    transition: color 0.3s;
   }
   .video-cover[data-hits="3"] .hit-hint,
   .video-cover[data-hits="4"] .hit-hint { color: #a020f0; }
@@ -200,20 +287,6 @@
     0%, 100% { opacity: 1; }
     50%      { opacity: 0.3; }
   }
-  .cover-coords {
-    position: absolute;
-    bottom: 14px; left: 16px;
-    font-size: 10px;
-    color: #2a2030;
-    letter-spacing: 2px;
-  }
-  .cover-code {
-    position: absolute;
-    bottom: 14px; right: 16px;
-    font-size: 10px;
-    color: #2a2030;
-    letter-spacing: 2px;
-  }
 
   .cover-center {
     display: flex;
@@ -221,10 +294,7 @@
     align-items: center;
     gap: 16px;
     z-index: 3;
-    transition: transform 0.3s;
   }
-  .video-cover:hover .cover-center { transform: scale(1.03); }
-
   .cover-play {
     width: 84px;
     height: 84px;
@@ -243,14 +313,10 @@
     transition: all 0.2s;
   }
   .video-cover:hover .cover-play {
-    box-shadow:
-      0 0 45px rgba(160, 32, 240, 1),
-      inset 0 0 35px rgba(160, 32, 240, 0.5);
+    box-shadow: 0 0 45px rgba(160, 32, 240, 1), inset 0 0 35px rgba(160, 32, 240, 0.5);
     text-shadow: 0 0 12px #a020f0;
     color: #d8a8ff;
   }
-  .video-cover:active .cover-play { transform: scale(0.9); }
-
   .cover-text {
     font-size: 12px;
     color: #4a4055;
@@ -258,32 +324,6 @@
     text-transform: uppercase;
   }
   .video-cover:hover .cover-text { color: #a020f0; }
-
-  .cover-glitch {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(transparent 0%, rgba(160, 32, 240, 0.08) 50%, transparent 100%);
-    background-size: 100% 4px;
-    animation: cover-scan 8s linear infinite;
-    z-index: 1;
-  }
-  @keyframes cover-scan {
-    0%   { background-position: 0 0; }
-    100% { background-position: 0 200px; }
-  }
-
-  .cover-lock {
-    position: absolute;
-    top: 50%; right: 24px;
-    transform: translateY(-50%);
-    font-size: 14px;
-    color: #2a2030;
-    letter-spacing: 2px;
-    writing-mode: vertical-rl;
-    transition: color 0.4s;
-  }
-  .video-cover:hover .cover-lock { color: #a020f0; }
 
   .back-link {
     display: inline-block;
@@ -317,19 +357,18 @@
 
 <main class="secret-page">
   <h1>BREAK_DOWN</h1>
-  <div class="warn">// NODE_0x0F // ACCESS GRANTED // SIGNAL RECOVERED</div>
+  <div class="warn">// NODE_0x0F // CARRIER WAVE // RECOVERED</div>
 
-  <p>&gt; you found the hidden node.</p>
-  <p>&gt; the wheel was a distraction. this is the source.</p>
-  <p class="whisper">they tried to bury this track. but sound always escapes.</p>
+  <p>&gt; this is the source file.</p>
+  <p>&gt; the track is not music. it is a carrier.</p>
+  <p class="whisper">the label tried to delete it. 47 carriers had already heard it by then.</p>
+
+  <p class="err">&gt; if you play this — you accept the signal.</p>
 
   <div class="video-frame" id="videoFrame">
     <div class="video-cover" id="videoCover" data-hits="0">
-      <div class="cover-glitch"></div>
-
-      <div class="cover-status">CHANNEL 0x0F</div>
+      <div class="cover-status">FREQ 7.83 Hz</div>
       <div class="cover-signal">● SIGNAL ENCRYPTED</div>
-      <div class="cover-lock">LOCKED</div>
 
       <div class="hit-hint" id="hitHint">BARRIER INTEGRITY: 100%</div>
 
@@ -339,19 +378,26 @@
       </div>
 
       <div class="hit-counter" id="hitCounter">HITS: 0 / 5</div>
-
-      <div class="cover-coords">N 55.7558 // E 37.6173</div>
-      <div class="cover-code">SNIPPET: br34k_d0wn</div>
     </div>
-    <!-- iframe появится здесь после 5-го клика -->
+
+    <div class="video-scanlines"></div>
+    <div class="video-vignette"></div>
+    <div class="video-glitch" id="videoGlitch"></div>
+
+    <div class="video-corner tl"></div>
+    <div class="video-corner tr"></div>
+    <div class="video-corner bl"></div>
+    <div class="video-corner br"></div>
+
+    <div class="video-meta">FREQUENCY 7.83 Hz // DO NOT REDISTRIBUTE</div>
   </div>
 
-  <p>&gt; snippet recovered. play it if you dare.</p>
-  <p class="whisper">do not share this link. the signal is fragile.</p>
+  <p>&gt; once played, the signal cannot be unheard.</p>
+  <p class="whisper">do not share this link. the signal is fragile. the carriers are not.</p>
 
   <a href="index.html" class="back-link">&larr; RETURN TO THE WHEEL</a>
 
-  <div class="flag">flag: br34k_d0wn_0x0F</div>
+  <div class="flag">flag: br34k_d0wn_7hz_c4rr13r</div>
 </main>
 
 <script>
@@ -360,6 +406,7 @@
   const cover  = document.getElementById("videoCover");
   const counter = document.getElementById("hitCounter");
   const hint    = document.getElementById("hitHint");
+  const glitchOverlay = document.getElementById("videoGlitch");
 
   const MAX_HITS = 5;
   let hits = 0;
@@ -369,23 +416,17 @@
     try {
       if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
       if (AC.state === "suspended") AC.resume();
-
-      const c = AC;
-      const t = c.currentTime;
-
+      const c = AC, t = c.currentTime;
       const osc = c.createOscillator();
       osc.type = "square";
       osc.frequency.setValueAtTime(140 + intensity * 20, t);
       osc.frequency.exponentialRampToValueAtTime(40, t + 0.15);
-
       const g = c.createGain();
       g.gain.setValueAtTime(0.0001, t);
       g.gain.exponentialRampToValueAtTime(0.25, t + 0.005);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
-
       osc.connect(g).connect(c.destination);
-      osc.start(t);
-      osc.stop(t + 0.25);
+      osc.start(t); osc.stop(t + 0.25);
 
       const buf = c.createBuffer(1, c.sampleRate * 0.08, c.sampleRate);
       const d = buf.getChannelData(0);
@@ -400,25 +441,20 @@
       ng.gain.exponentialRampToValueAtTime(0.15, t + 0.001);
       ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
       n.connect(hp).connect(ng).connect(c.destination);
-      n.start(t);
-      n.stop(t + 0.1);
+      n.start(t); n.stop(t + 0.1);
     } catch (e) {}
   }
 
   cover.addEventListener("click", function () {
     if (cover.classList.contains("broken")) return;
-
     hits++;
     if (hits > MAX_HITS) hits = MAX_HITS;
     cover.dataset.hits = hits;
-
     cover.style.animation = "none";
     void cover.offsetWidth;
     cover.style.animation = "shake 0.15s";
-
     hitSound(hits);
     counter.textContent = "HITS: " + hits + " / " + MAX_HITS;
-
     const integrity = Math.max(0, 100 - hits * 20);
     hint.textContent = "BARRIER INTEGRITY: " + integrity + "%";
 
@@ -426,16 +462,13 @@
       document.querySelector(".cover-signal").textContent = "● SIGNAL DESTABILIZING";
     }
     if (hits === 3) {
-      document.querySelector(".cover-signal").textContent = "● CRITICAL FAILURE";
-      document.querySelector(".cover-lock").textContent = "CRACKING";
+      document.querySelector(".cover-signal").textContent = "● CARRIER WAVE EXPOSED";
     }
     if (hits === 4) {
       document.querySelector(".cover-signal").textContent = "● BARRIER COLLAPSING";
-      document.querySelector(".cover-lock").textContent = "BREAKING";
     }
     if (hits === 5) {
-      document.querySelector(".cover-signal").textContent = "● ACCESS UNLOCKED";
-      document.querySelector(".cover-lock").textContent = "OPEN";
+      document.querySelector(".cover-signal").textContent = "● SIGNAL RELEASED";
       breakTheLock();
     }
   });
@@ -445,12 +478,23 @@
 
     const iframe = document.createElement("iframe");
     iframe.src = "https://www.youtube-nocookie.com/embed/" + VIDEO_ID +
-                 "?rel=0&modestbranding=1&autoplay=1";
+                 "?rel=0&modestbranding=1&autoplay=1&controls=1&iv_load_policy=3&color=white";
     iframe.setAttribute("allow",
       "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
     iframe.setAttribute("allowfullscreen", "");
     iframe.title = "Break Down";
     frame.appendChild(iframe);
+
+    // помечаем: игрок прослушал трек
+    localStorage.setItem("heard_track", "true");
+
+    setInterval(() => {
+      if (Math.random() < 0.25) {
+        glitchOverlay.classList.remove("active");
+        void glitchOverlay.offsetWidth;
+        glitchOverlay.classList.add("active");
+      }
+    }, 6000);
 
     setTimeout(() => cover.remove(), 850);
   }
