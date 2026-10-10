@@ -213,4 +213,34 @@ function revealSector(idx) {
     // сброс золотого стиля, если выпал не TOTAL
     resultBox.classList.remove("jackpot");
   }
+  function playJackpotFanfare() {
+  const c = ctx();
+  const t0 = c.currentTime + 0.05;
+  const notes = [523.25, 659.25, 783.99, 1046.50]; // C5 E5 G5 C6
+  notes.forEach((f, i) => {
+    const t = t0 + i * 0.12;
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(f, t);
+    const ws = shaper(curveHard(15));
+    env(g, t, 0.005, 0.4, 0.35);
+    osc.connect(ws).connect(g).connect(c.destination);
+    osc.start(t);
+    osc.stop(t + 0.5);
+  });
+  // финальный аккорд
+  const tEnd = t0 + notes.length * 0.12;
+  [523.25, 659.25, 783.99].forEach(f => {
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.value = f;
+    const ws = shaper(curveHard(30));
+    env(g, tEnd, 0.01, 1.2, 0.25);
+    osc.connect(ws).connect(g).connect(c.destination);
+    osc.start(tEnd);
+    osc.stop(tEnd + 1.4);
+  });
+}
 // END OF FILE — wheel.js
