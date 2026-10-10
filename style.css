@@ -509,7 +509,7 @@ html, body {
   pointer-events: none;
   z-index: 50;
   opacity: 0.55;
-  filter: invert(1) hue-rotate(270deg) saturate(2)
+  filter: 
           drop-shadow(0 0 14px rgba(160, 32, 240, 0.7));
   will-change: transform, filter;
   transform: translate(40px, 40px);
