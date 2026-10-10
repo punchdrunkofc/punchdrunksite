@@ -96,7 +96,7 @@
       }, 100);
 
       // короткий звук удара
-      try { bounceSound(); } catch (e) {}
+    
     } else {
       logo.style.transform = "translate(" + x + "px," + y + "px)";
     }
