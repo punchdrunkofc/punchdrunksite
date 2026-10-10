@@ -3,295 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BREAK_DOWN // NODE_0x0F</title>
+<title>WHEEL_0x07 // DO NOT TURN</title>
 <link rel="stylesheet" href="style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💀</text></svg>">
-<style>
-  body { overflow: auto !important; }
-  .secret-page {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    position: relative;
-    z-index: 10;
-  }
-  .secret-page h1 {
-    font-size: 32px;
-    color: #ff0033;
-    letter-spacing: 6px;
-    text-shadow: 0 0 15px #ff0033;
-    margin-bottom: 10px;
-    animation: flicker 3s infinite;
-  }
-  .secret-page .warn {
-    color: #3a5a3a;
-    font-size: 12px;
-    letter-spacing: 3px;
-    margin-bottom: 30px;
-  }
-  .secret-page p {
-    color: #c8ffc8;
-    font-size: 15px;
-    line-height: 1.7;
-    margin-bottom: 14px;
-  }
-  .secret-page .whisper {
-    color: #4a2a4a;
-    font-style: italic;
-    opacity: 0.8;
-  }
-
-  /* ---------- ЗАГЛУШКА / ПЛЕЕР ---------- */
-  .video-frame {
-    position: relative;
-    width: 100%;
-    padding-bottom: 56.25%; /* 16:9 */
-    margin: 30px 0;
-    border: 2px solid #ff0033;
-    box-shadow: 0 0 30px rgba(255, 0, 51, 0.4);
-    background: #050505;
-    overflow: hidden;
-  }
-  .video-frame iframe {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.6s ease;
-  }
-  .video-frame.unlocked iframe {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  /* --- заглушка --- */
-  .video-cover {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    background:
-      repeating-linear-gradient(
-        0deg,
-        rgba(255, 0, 51, 0.05) 0px,
-        rgba(255, 0, 51, 0.05) 1px,
-        transparent 1px,
-        transparent 4px
-      ),
-      radial-gradient(circle at center, #1a0008 0%, #050505 100%);
-    transition: opacity 0.6s ease;
-    overflow: hidden;
-  }
-  .video-frame.unlocked .video-cover {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  /* «маскировочные» надписи */
-  .cover-status {
-    position: absolute;
-    top: 14px;
-    left: 16px;
-    font-size: 11px;
-    color: #3a5a3a;
-    letter-spacing: 3px;
-  }
-  .cover-signal {
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    font-size: 11px;
-    color: #ff0033;
-    letter-spacing: 3px;
-    animation: pulse-red 1.5s infinite;
-  }
-  @keyframes pulse-red {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0.3; }
-  }
-  .cover-coords {
-    position: absolute;
-    bottom: 14px;
-    left: 16px;
-    font-size: 10px;
-    color: #1a1a1a;
-    letter-spacing: 2px;
-  }
-  .cover-code {
-    position: absolute;
-    bottom: 14px;
-    right: 16px;
-    font-size: 10px;
-    color: #1a1a1a;
-    letter-spacing: 2px;
-  }
-
-  /* центральная кнопка ▶ */
-  .cover-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    z-index: 3;
-    transition: transform 0.3s;
-  }
-  .video-cover:hover .cover-center { transform: scale(1.05); }
-
-  .cover-play {
-    width: 84px;
-    height: 84px;
-    border-radius: 50%;
-    border: 2px solid #ff0033;
-    background: radial-gradient(circle, #1a0008 0%, #050505 100%);
-    color: #ff0033;
-    font-size: 26px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-left: 6px;
-    box-shadow:
-      0 0 25px rgba(255, 0, 51, 0.4),
-      inset 0 0 25px rgba(255, 0, 51, 0.2);
-    transition: all 0.3s;
-  }
-  .video-cover:hover .cover-play {
-    box-shadow:
-      0 0 45px rgba(255, 0, 51, 0.9),
-      inset 0 0 35px rgba(255, 0, 51, 0.4);
-    text-shadow: 0 0 12px #ff0033;
-  }
-  .cover-text {
-    font-size: 12px;
-    color: #3a5a3a;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-  }
-  .video-cover:hover .cover-text { color: #ff0033; }
-
-  /* тонкие бегущие полосы «шума» */
-  .cover-glitch {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    background:
-      linear-gradient(transparent 0%, rgba(255,0,51,0.05) 50%, transparent 100%);
-    background-size: 100% 4px;
-    animation: cover-scan 8s linear infinite;
-    z-index: 1;
-  }
-  @keyframes cover-scan {
-    0%   { background-position: 0 0; }
-    100% { background-position: 0 200px; }
-  }
-
-  /* маленький значок замка */
-  .cover-lock {
-    position: absolute;
-    top: 50%;
-    right: 24px;
-    transform: translateY(-50%);
-    font-size: 14px;
-    color: #1a1a1a;
-    letter-spacing: 2px;
-    writing-mode: vertical-rl;
-    transition: color 0.4s;
-  }
-  .video-cover:hover .cover-lock { color: #ff0033; }
-
-  .back-link {
-    display: inline-block;
-    margin-top: 30px;
-    color: #ff0033;
-    text-decoration: none;
-    font-size: 14px;
-    letter-spacing: 2px;
-    border: 1px solid #ff0033;
-    padding: 10px 20px;
-    transition: all 0.3s;
-  }
-  .back-link:hover {
-    background: #ff0033;
-    color: #050505;
-    box-shadow: 0 0 25px #ff0033;
-  }
-  .flag {
-    margin-top: 40px;
-    color: #1a1a1a;
-    font-size: 11px;
-    letter-spacing: 4px;
-  }
-  .flag:hover { color: #ff0033; }
-</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☢</text></svg>">
 </head>
 <body>
 
 <div class="noise"></div>
 <div class="scanlines"></div>
 <div class="vignette"></div>
+<div id="glitch-overlay"></div>
+<div id="gold-flash"></div>
 
-<main class="secret-page">
-  <h1>BREAK_DOWN</h1>
-  <div class="warn">// NODE_0x0F // ACCESS GRANTED // SIGNAL RECOVERED</div>
+<header class="hud">
+  <div class="hud-left">
+    <span class="dot red"></span>
+    <span class="dot yellow"></span>
+    <span class="dot green"></span>
+    <span class="hud-title">NODE_07 // SIGNAL: <span class="err">UNSTABLE</span></span>
+  </div>
+  <div class="hud-right">
+    <span id="visitor-id">SUBJECT_0000</span>
+    <span class="sep">|</span>
+    <span id="counter">SPINS: 0</span>
+    <span class="sep">|</span>
+    <span id="clock">00:00:00</span>
+  </div>
+</header>
 
-  <p>&gt; you found the hidden node.</p>
-  <p>&gt; the wheel was a distraction. this is the source.</p>
-  <p class="whisper">they tried to bury this track. but sound always escapes.</p>
+<main class="stage">
 
-  <div class="video-frame" id="videoFrame">
-    <iframe
-      id="ytFrame"
-      data-src="https://www.youtube-nocookie.com/embed/Vb8knhx6OtE?rel=0&modestbranding=1&autoplay=1"
-      title="Break Down"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
-
-    <div class="video-cover" id="videoCover">
-      <div class="cover-glitch"></div>
-      <div class="cover-status">CHANNEL 0x0F</div>
-      <div class="cover-signal">● SIGNAL ENCRYPTED</div>
-      <div class="cover-lock">LOCKED</div>
-
-      <div class="cover-center">
-        <div class="cover-play">▶</div>
-        <div class="cover-text">decrypt &amp; play</div>
-      </div>
-
-      <div class="cover-coords">N 55.7558 // E 37.6173</div>
-      <div class="cover-code">SNIPPET: br34k_d0wn</div>
-    </div>
+  <div class="intro" id="intro">
+    <p class="line system">&gt; boot sequence... OK</p>
+    <p class="line system">&gt; loading WHEEL_0x07... <span class="ok">DONE</span></p>
+    <p class="line whisper">you were not supposed to find this</p>
+    <p class="line">Press <span class="glitch-text" data-text="SPIN">SPIN</span> to continue. Each sector plays a sound. They are not random.</p>
+    <p class="line dim">Nothing here is random.</p>
   </div>
 
-  <p>&gt; snippet recovered. play it if you dare.</p>
-  <p class="whisper">do not share this link. the signal is fragile.</p>
+  <div class="wheel-wrap">
+    <div class="wheel-pointer">▼</div>
+    <canvas id="wheel" width="600" height="600"></canvas>
+    <button id="spin-btn" class="spin-btn">
+      <span class="glitch-text" data-text="SPIN">SPIN</span>
+    </button>
+  </div>
 
-  <a href="index.html" class="back-link">&larr; RETURN TO THE WHEEL</a>
+  <div class="result" id="result">
+    <div class="result-label">// DECODED SIGNAL</div>
+    <div class="result-text" id="result-text">—</div>
+    <div class="result-sub" id="result-sub"></div>
+  </div>
 
-  <div class="flag">flag: br34k_d0wn_0x0F</div>
+  <div class="log" id="log">
+    <p class="line system">&gt; terminal ready. try: help</p>
+  </div>
+
+  <div class="terminal-input">
+    <span class="prompt">&gt;</span>
+    <input type="text" id="cmd" autocomplete="off" spellcheck="false" placeholder="type a command...">
+  </div>
+
 </main>
 
-<script>
-  const frame = document.getElementById("videoFrame");
-  const cover = document.getElementById("videoCover");
-  const iframe = document.getElementById("ytFrame");
+<footer class="hidden-footer">
+  <!-- the seventh node has a door. look closer. -->
+  <a href="hidden.html" class="secret-dot" title="you were not supposed to see this">break_down.node</a>
+  <span class="hidden-tag" title="you found it">7</span>
+</footer>
 
-  cover.addEventListener("click", () => {
-    // «разблокировка» — подгружаем iframe с autoplay=1
-    iframe.src = iframe.getAttribute("data-src");
-    frame.classList.add("unlocked");
-  });
-</script>
+<script src="audio.js"></script>
+<script src="wheel-a.js"></script>
+<script src="wheel-b.js"></script>
+<script src="cmd-1.js"></script>
+<script src="cmd-2.js"></script>
+<script src="cmd-3.js"></script>
+<script src="cmd-4.js"></script>
+<script src="cmd-5.js"></script>
 
 </body>
 </html>
