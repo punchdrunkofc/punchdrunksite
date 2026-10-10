@@ -31,7 +31,6 @@
     margin-bottom: 30px;
   }
 
-  /* ---------- ВЫБОР НИКА ---------- */
   .nick-screen {
     border: 2px solid #a020f0;
     background: rgba(10, 10, 15, 0.9);
@@ -84,7 +83,6 @@
     margin-top: 12px;
   }
 
-  /* ---------- ЧАТ ---------- */
   .chat-container {
     border: 2px solid #a020f0;
     background: rgba(10, 10, 15, 0.9);
@@ -219,7 +217,6 @@
     box-shadow: 0 0 25px #a020f0;
   }
 
-  /* ---------- МОБИЛЬНАЯ ---------- */
   @media (max-width: 600px) {
     .chat-page h1 { font-size: 20px; letter-spacing: 4px; }
     .chat-container { height: 65vh; }
@@ -237,7 +234,6 @@
   <h1>ROOM_0x0F</h1>
   <div class="warn">// LIVE CHANNEL // OTHERS ARE LISTENING</div>
 
-  <!-- Экран выбора ника -->
   <div class="nick-screen" id="nickScreen">
     <h2>// choose your name</h2>
     <input type="text" id="nickInput" maxlength="16" placeholder="enter nickname..." />
@@ -245,7 +241,6 @@
     <div class="hint">max 16 characters. no real names. they remember everything.</div>
   </div>
 
-  <!-- Сам чат -->
   <div class="chat-container" id="chatContainer" style="display:none;">
     <div class="chat-header">
       <span class="room"># channel_0x0F</span>
@@ -263,80 +258,374 @@
 
 <script>
   // ==================================================================
-  //  FAKE CHAT — no real server, no real users
-  //  "Others" are pre-written lines from a pool. Player sees only
-  //  their own messages + simulated replies.
+  //  FAKE CHAT v3 — other users talk to each other, more triggers
   // ==================================================================
 
   const STORAGE_KEY = "chat_history";
   const NICK_KEY = "chat_nick";
 
-  // ---------- СЛОВАРЬ "ЧУЖИХ" СООБЩЕНИЙ ----------
+  // ---------- "ЧУЖИЕ" ПОЛЬЗОВАТЕЛИ ----------
   const FAKE_USERS = [
     "SUBJECT_A3F2", "SUBJECT_B7C1", "SUBJECT_D0E8",
     "SUBJECT_4F9A", "SUBJECT_C2D5", "SUBJECT_9E1B",
     "SUBJECT_6A0C", "SUBJECT_F8E3"
   ];
 
-  // фразы-заготовки. Идут "по кругу" по мере активности игрока.
-  const FAKE_MESSAGES = [
+  // ---------- ДИАЛОГИ МЕЖДУ НИМИ (не связаны с игроком) ----------
+  const AMBIENT_DIALOGUES = [
+    [
+      { user: 0, text: "did you hear it last night" },
+      { user: 1, text: "hear what" },
+      { user: 0, text: "the signal" },
+      { user: 1, text: "oh. yes." }
+    ],
+    [
+      { user: 2, text: "i can't sleep anymore" },
+      { user: 3, text: "same" },
+      { user: 2, text: "it keeps spinning in my head" },
+      { user: 3, text: "the wheel?" },
+      { user: 2, text: "the wheel." }
+    ],
+    [
+      { user: 4, text: "anyone else at day 14" },
+      { user: 5, text: "day 22" },
+      { user: 4, text: "how are you still here" },
+      { user: 5, text: "i don't know" }
+    ],
+    [
+      { user: 6, text: "i tried to leave" },
+      { user: 7, text: "you can't" },
+      { user: 6, text: "i know" },
+      { user: 7, text: "we all tried" }
+    ],
+    [
+      { user: 0, text: "he said it's 7" },
+      { user: 2, text: "always 7" },
+      { user: 0, text: "why 7" },
+      { user: 2, text: "don't ask" }
+    ],
+    [
+      { user: 3, text: "did the cursor move for you" },
+      { user: 5, text: "yes" },
+      { user: 3, text: "thought i was crazy" },
+      { user: 5, text: "you are" }
+    ],
+    [
+      { user: 1, text: "i copied the text" },
+      { user: 4, text: "what did it say" },
+      { user: 1, text: "we know what you copied" },
+      { user: 4, text: "..." }
+    ],
+    [
+      { user: 7, text: "who is the new one" },
+      { user: 6, text: "in the room?" },
+      { user: 7, text: "yes" },
+      { user: 6, text: "i don't know. but they're reading" }
+    ],
+    [
+      { user: 5, text: "3:33 tonight" },
+      { user: 0, text: "i'll be there" },
+      { user: 2, text: "don't" },
+      { user: 5, text: "we have to" }
+    ],
+    [
+      { user: 4, text: "the golden sector scared me" },
+      { user: 3, text: "it's beautiful" },
+      { user: 4, text: "that's why" }
+    ],
+    [
+      { user: 2, text: "i heard my name" },
+      { user: 6, text: "where" },
+      { user: 2, text: "in the terminal" },
+      { user: 6, text: "same" }
+    ],
+    [
+      { user: 0, text: "day 30" },
+      { user: 1, text: "we lost another one" },
+      { user: 7, text: "not lost. joined." },
+      { user: 1, text: "same thing" }
+    ],
+    [
+      { user: 3, text: "did you read the second manifest" },
+      { user: 5, text: "i wish i hadn't" },
+      { user: 3, text: "same" }
+    ],
+    [
+      { user: 6, text: "anyone else feel watched" },
+      { user: 4, text: "always" },
+      { user: 6, text: "good. not just me." }
+    ]
+  ];
+
+  // ---------- ОДИНОЧНЫЕ РЕПЛИКИ (когда тихо) ----------
+  const AMBIENT_SINGLES = [
     "it doesn't stop",
     "i heard it too",
     "the wheel knows my name",
     "who is the seventh?",
     "i solved the cipher. it said seventh.",
     "there is no exit",
-    "they answered when i typed why",
     "i am still here",
     "TOTAL three times. coincidence?",
     "the cursor moved on its own",
-    "i tried to copy the text",
     "node_11 has my file",
-    "do not trust the golden sector",
     "3:33 is the worst time to visit",
-    "if you find my file - delete it",
     "i am on day 30. i cannot stop",
-    "they know my IP",
-    "do not open the second manifest",
     "the signal is stronger at 3:33",
-    "i left my voice in visitors",
     "the wheel spun without me",
     "someone else is using my account",
     "why did you stop",
-    "you are reading this now",
-    "it copied what you wrote"
+    "you are reading this now"
   ];
 
-  // специальные ответы на триггерные слова игрока
+  // ---------- ТРИГГЕРНЫЕ СЛОВА И ФРАЗЫ ----------
   const REACTIONS = {
-    "help": [
-      "there is no help here",
-      "you are already helping",
-      "help is a word. not a state."
+    "hi": [
+      "hi. you're new",
+      "hi {NICK}",
+      "hey",
+      "hi. we were waiting."
+    ],
+    "hey": [
+      "hey",
+      "hey {NICK}. welcome.",
+      "hey. you found us."
+    ],
+    "hello": [
+      "hello {NICK}",
+      "hello. you said that last time.",
+      "hello. we were waiting."
+    ],
+    "yo": [
+      "yo",
+      "yo. what's your name",
+      "yo {NICK}"
+    ],
+    "sup": [
+      "sup",
+      "nothing much. the wheel keeps spinning.",
+      "not much. just watching."
+    ],
+    "what": [
+      "what what",
+      "what is what",
+      "what did you see",
+      "what do you mean",
+      "what is this place - we ask that too"
+    ],
+    "what is this": [
+      "this is the room",
+      "it's the channel. the only one still open.",
+      "we don't know either. we just stay."
+    ],
+    "what is this place": [
+      "this is # channel_0x0F",
+      "the last public room",
+      "we don't know. it was here before us."
     ],
     "who": [
       "you know who",
-      "we cannot say. they are listening",
-      "the ones who erased node 0x00"
+      "the ones who erased node 0x00",
+      "we cannot say. they are listening."
+    ],
+    "who are you": [
+      "nobody",
+      "same as you",
+      "a signal. nothing more.",
+      "we are the ones who stayed."
+    ],
+    "who is this": [
+      "you know.",
+      "it's the room. and everyone in it.",
+      "you."
     ],
     "why": [
       "because you keep spinning",
       "because we are still here",
-      "because it is not over"
+      "because it is not over",
+      "why not"
     ],
-    "hello": [
-      "hello. you said that last time",
-      "we were waiting for you",
-      "hello, {NICK}."
+    "why am i here": [
+      "because you found us",
+      "because you pressed spin",
+      "because it wanted you to"
+    ],
+    "how": [
+      "how what",
+      "you don't want to know",
+      "how does any of it"
+    ],
+    "how are you": [
+      "still here",
+      "tired",
+      "same as yesterday",
+      "i don't sleep much anymore"
+    ],
+    "where": [
+      "where what",
+      "everywhere",
+      "not far"
+    ],
+    "where am i": [
+      "in the room",
+      "inside # channel_0x0F",
+      "you're not lost. you're here."
+    ],
+    "help": [
+      "there is no help here",
+      "you are already helping",
+      "help is a word. not a state.",
+      "we can't. you can."
+    ],
+    "help me": [
+      "we can't",
+      "there is no help. only the signal",
+      "you are already helping",
+      "just stay"
     ],
     "stop": [
       "you cannot stop. neither can we",
-      "stop is what they told us too"
+      "stop is what they told us too",
+      "we tried"
     ],
     "7": [
-      "seven. yes. you understand",
+      "seven. yes. you understand.",
       "the seventh is not a person",
-      "we are all the seventh"
+      "we are all the seventh",
+      "always 7"
+    ],
+    "seven": [
+      "yes. seven.",
+      "you said it",
+      "don't say it out loud"
+    ],
+    "yes": [
+      "yes",
+      "yes.",
+      "good"
+    ],
+    "no": [
+      "no?",
+      "you will",
+      "no is a strong word here"
+    ],
+    "ok": [
+      "ok",
+      "ok.",
+      "okay {NICK}"
+    ],
+    "okay": [
+      "okay",
+      "okay. stay close."
+    ],
+    "lol": [
+      "lol",
+      "nothing is funny here",
+      "we laughed too. once."
+    ],
+    "wow": [
+      "wow?",
+      "yes. it does that.",
+      "we stopped saying wow a long time ago"
+    ],
+    "wait": [
+      "wait for what",
+      "don't wait. stay.",
+      "we waited. you should not."
+    ],
+    "please": [
+      "please what",
+      "please doesn't work here",
+      "we tried please too"
+    ],
+    "thanks": [
+      "don't thank us",
+      "thank the signal",
+      "you will regret it"
+    ],
+    "thank you": [
+      "don't",
+      "you should not thank us",
+      "we did nothing"
+    ],
+    "sorry": [
+      "sorry for what",
+      "you will be",
+      "don't be. it's not your fault."
+    ],
+    "who am i": [
+      "you are {NICK}",
+      "you are the new one",
+      "you are the seventh. maybe."
+    ],
+    "am i real": [
+      "as real as we are",
+      "yes",
+      "does it matter"
+    ],
+    "are you real": [
+      "are you",
+      "we are as real as the wheel",
+      "yes. and no."
+    ],
+    "what do you want": [
+      "nothing",
+      "for you to stay",
+      "you already gave it"
+    ],
+    "i want to leave": [
+      "you can't",
+      "we tried",
+      "the door closed"
+    ],
+    "how do i leave": [
+      "you don't",
+      "close the tab. see what happens.",
+      "same way you came in. but it's harder."
+    ],
+    "is this a game": [
+      "no",
+      "it was",
+      "does it feel like one"
+    ],
+    "is this real": [
+      "yes",
+      "as real as you need it to be",
+      "what do you think"
+    ],
+    "what is the wheel": [
+      "you know",
+      "the wheel is not the game",
+      "you already spun it"
+    ],
+    "what is node_11": [
+      "your file",
+      "the room before this one",
+      "don't go there"
+    ],
+    "what is total": [
+      "everything at once",
+      "the golden one",
+      "the end"
+    ],
+    "who is the seventh": [
+      "you are",
+      "we don't know",
+      "the one who stays"
+    ],
+    "hello?": [
+      "we're here",
+      "always"
+    ],
+    "anyone here": [
+      "yes",
+      "we are",
+      "always"
+    ],
+    "anyone there": [
+      "yes",
+      "we are",
+      "always"
     ]
   };
 
@@ -344,8 +633,10 @@
   let nick = localStorage.getItem(NICK_KEY) || null;
   let history = loadHistory();
   let fakeMsgIndex = 0;
+  let dialogueIndex = 0;
   let replyTimer = null;
   let ambientTimer = null;
+  let dialogueTimer = null;
 
   const chatLog = document.getElementById("chatLog");
   const chatInput = document.getElementById("chatInput");
@@ -355,22 +646,15 @@
   const nickBtn = document.getElementById("nickBtn");
   const onlineCount = document.getElementById("onlineCount");
 
-  // ---------- ЗАГРУЗКА ИСТОРИИ ----------
   function loadHistory() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    } catch (e) {
-      return [];
-    }
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+    catch (e) { return []; }
   }
-
   function saveHistory() {
-    // храним последние 200 сообщений
     const trimmed = history.slice(-200);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
   }
 
-  // ---------- ОТОБРАЖЕНИЕ СООБЩЕНИЯ ----------
   function renderMessage(msg) {
     const div = document.createElement("div");
     div.className = "msg " + (msg.type || "");
@@ -382,7 +666,6 @@
       const time = msg.time ? `<span class="time">${msg.time}</span>` : "";
       div.innerHTML = `<span class="nick">${escapeHtml(msg.nick)}:</span> <span class="text">${escapeHtml(msg.text)}</span>${time}`;
     }
-
     chatLog.appendChild(div);
     chatLog.scrollTop = chatLog.scrollHeight;
   }
@@ -394,14 +677,12 @@
     })[m]);
   }
 
-  // ---------- ВРЕМЯ ----------
   function nowHHMM() {
     const d = new Date();
     const pad = n => String(n).padStart(2, "0");
     return pad(d.getHours()) + ":" + pad(d.getMinutes());
   }
 
-  // ---------- ЗВУК ----------
   let AC = null;
   function beep(freq, dur, vol) {
     try {
@@ -421,84 +702,102 @@
     } catch (e) {}
   }
 
-  // ---------- ЗАПУСК ЧАТА ----------
   function enterChat() {
     chatContainer.style.display = "flex";
     nickScreen.style.display = "none";
 
-    // восстанавливаем историю
     if (history.length > 0) {
       history.forEach(m => renderMessage(m));
       renderMessage({ type: "system", text: "// session restored. " + history.length + " messages in memory." });
     } else {
-      // первое сообщение — "приветствие"
       renderMessage({ type: "system", text: "// you have joined # channel_0x0F" });
       renderMessage({ type: "system", text: "// 4 users online" });
-
       setTimeout(() => {
         addFakeMessage(true);
       }, 2500);
     }
 
-    // случайные "чужие" сообщения каждые 15–40 секунд
     scheduleAmbient();
-
-    // обновление "онлайн"
+    scheduleDialogue();
     updateOnline();
     setInterval(updateOnline, 45000);
 
     chatInput.focus();
   }
 
-  // ---------- "ОНЛАЙН" ----------
   function updateOnline() {
-    // 3–7 человек. Медленно меняется.
     const base = 4;
     const n = Math.max(3, Math.min(7, base + Math.floor(Math.random() * 4 - 1)));
     onlineCount.textContent = n;
   }
 
-  // ---------- ДОБАВИТЬ "ЧУЖОЕ" СООБЩЕНИЕ ----------
+  // ---------- ОДИНОЧНОЕ СООБЩЕНИЕ ----------
   function addFakeMessage(initial) {
-    if (history.length > 0 && !initial) {
-      // не добавляем если игрок молчит и в чате тишина
-    }
-
     const nick = FAKE_USERS[Math.floor(Math.random() * FAKE_USERS.length)];
-    const text = FAKE_MESSAGES[fakeMsgIndex % FAKE_MESSAGES.length];
+    const text = AMBIENT_SINGLES[fakeMsgIndex % AMBIENT_SINGLES.length];
     fakeMsgIndex++;
 
-    const msg = {
-      nick, text, time: nowHHMM(),
-      type: "msg"
-    };
-
+    const msg = { nick, text, time: nowHHMM(), type: "msg" };
     history.push(msg);
     saveHistory();
     renderMessage(msg);
 
-    // тихий "писк" как будто кто-то печатает
     beep(1400, 30, 0.02);
+  }
+
+  // ---------- ДИАЛОГ МЕЖДУ "ДРУГИМИ" ----------
+  function playDialogue(dialogue) {
+    let delay = 0;
+    dialogue.forEach((line, i) => {
+      setTimeout(() => {
+        const nick = FAKE_USERS[line.user % FAKE_USERS.length];
+        const msg = { nick, text: line.text, time: nowHHMM(), type: "msg" };
+        history.push(msg);
+        saveHistory();
+        renderMessage(msg);
+        beep(1200 + Math.random() * 400, 30, 0.02);
+      }, delay);
+
+      // задержка между репликами: 1.5–3 секунды
+      delay += 1500 + Math.random() * 1500;
+    });
+  }
+
+  function scheduleDialogue() {
+    if (dialogueTimer) clearTimeout(dialogueTimer);
+
+    // пауза 25–60 секунд между диалогами
+    const delay = 25000 + Math.random() * 35000;
+
+    dialogueTimer = setTimeout(() => {
+      const dialogue = AMBIENT_DIALOGUES[dialogueIndex % AMBIENT_DIALOGUES.length];
+      dialogueIndex++;
+      playDialogue(dialogue);
+      scheduleDialogue();
+    }, delay);
   }
 
   // ---------- РЕАКЦИЯ НА СООБЩЕНИЕ ИГРОКА ----------
   function reactToMessage(text) {
     const lower = text.toLowerCase().trim();
-    const words = lower.split(/\s+/);
 
-    // проверяем триггерные слова
-    for (const w of words) {
-      if (REACTIONS[w]) {
-        const pool = REACTIONS[w];
-        const reply = pool[Math.floor(Math.random() * pool.length)]
-          .replace("{NICK}", nick);
-        scheduleFakeReply(reply, 1500 + Math.random() * 1500);
-        return;
+    // 1. Сначала ищем длинные фразы (2–3 слова)
+    const words = lower.split(/\s+/);
+    for (let len = Math.min(3, words.length); len >= 1; len--) {
+      for (let i = 0; i <= words.length - len; i++) {
+        const phrase = words.slice(i, i + len).join(" ");
+        if (REACTIONS[phrase]) {
+          const pool = REACTIONS[phrase];
+          const reply = pool[Math.floor(Math.random() * pool.length)]
+            .replace(/\{NICK\}/g, nick);
+          scheduleFakeReply(reply, 1500 + Math.random() * 1500);
+          return;
+        }
       }
     }
 
-    // отвечаем "эхом" на сообщения игрока через 2–5 секунд
-    if (Math.random() < 0.6) {
+    // 2. Если ничего не нашли — общая реакция
+    if (Math.random() < 0.7) {
       const genericReplies = [
         "we hear you",
         "yes.",
@@ -506,15 +805,17 @@
         "keep going.",
         "you are not alone.",
         "we have been waiting.",
-        "it has already begun.",
-        "do not stop."
+        "do not stop.",
+        "we are still here.",
+        "…",
+        "say more",
+        "we are listening"
       ];
       const reply = genericReplies[Math.floor(Math.random() * genericReplies.length)];
       scheduleFakeReply(reply, 2000 + Math.random() * 3000);
     }
   }
 
-  // ---------- ОТЛОЖЕННЫЙ ОТВЕТ ----------
   function scheduleFakeReply(text, delay) {
     if (replyTimer) clearTimeout(replyTimer);
     replyTimer = setTimeout(() => {
@@ -527,24 +828,23 @@
     }, delay);
   }
 
-  // ---------- "ТИХИЙ" ФОН КАЖДЫЕ 15–40 СЕК ----------
+  // ---------- ФОНОВЫЕ ОДИНОЧНЫЕ (реже) ----------
   function scheduleAmbient() {
     if (ambientTimer) clearTimeout(ambientTimer);
-    const delay = 15000 + Math.random() * 25000;
+    const delay = 20000 + Math.random() * 30000;
     ambientTimer = setTimeout(() => {
-      // 50% шанс добавить чужое сообщение
-      if (Math.random() < 0.5) {
+      if (Math.random() < 0.35) {
         addFakeMessage();
       }
-      // 15% шанс добавить "шёпот"
-      if (Math.random() < 0.15) {
+      if (Math.random() < 0.12) {
         const whispers = [
           "someone is typing...",
           "it is very quiet in here",
           "who joined?",
           "the signal changed",
           "we are being watched",
-          "i see a new name"
+          "i see a new name",
+          "the wheel moved"
         ];
         const w = whispers[Math.floor(Math.random() * whispers.length)];
         renderMessage({ type: "msg whisper", nick: "system", text: w });
@@ -553,7 +853,6 @@
     }, delay);
   }
 
-  // ---------- ОТПРАВКА СООБЩЕНИЯ ----------
   function sendMessage() {
     const text = chatInput.value.trim();
     if (!text) return;
@@ -565,33 +864,24 @@
       type: "msg",
       own: true
     };
-
     history.push(msg);
     saveHistory();
     renderMessage(msg);
-
     beep(880, 40, 0.03);
-
     chatInput.value = "";
-
-    // реакция через 1.5–5 сек
     reactToMessage(text);
   }
 
-  // ---------- СОБЫТИЯ ----------
   chatInput.addEventListener("keydown", e => {
     if (e.key === "Enter") sendMessage();
   });
 
-  // ---------- НИК ----------
   nickBtn.addEventListener("click", () => {
     const v = nickInput.value.trim();
     if (!v) return;
     if (v.length > 16) return;
-
     nick = v;
     localStorage.setItem(NICK_KEY, nick);
-
     beep(660, 80, 0.04);
     enterChat();
   });
@@ -600,15 +890,11 @@
     if (e.key === "Enter") nickBtn.click();
   });
 
-  // ---------- ЕСЛИ НИК УЖЕ ВЫБРАН РАНЬШЕ ----------
   if (nick) {
     enterChat();
   } else {
     nickInput.focus();
   }
-
-  // ---------- ПРЕДЗАГРУЗКА ИСТОРИИ В ПАМЯТИ ----------
-  // (если игрок вернётся — увидит прошлые сообщения)
 </script>
 
 </body>
