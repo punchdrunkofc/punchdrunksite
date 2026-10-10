@@ -760,3 +760,29 @@ body::before {
   .privacy-buttons { flex-direction: column; }
   .boot-btn { font-size: 12px; padding: 10px 16px; }
 }
+/* ---------- VISITOR COUNTER ---------- */
+#visitor-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #6a5a75;
+  font-size: 12px;
+  letter-spacing: 1px;
+  transition: color 0.3s;
+}
+
+#visitor-counter .counter-label {
+  color: #4a4055;
+}
+
+#visitor-counter .counter-value {
+  color: #d8a8ff;
+  font-weight: bold;
+  text-shadow: 0 0 6px rgba(160, 32, 240, 0.6);
+  transition: color 0.2s, text-shadow 0.2s;
+}
+
+/* редкий сбой — цифры становятся красными */
+#visitor-counter .counter-value[style*="ff2b6a"] {
+  text-shadow: 0 0 10px #ff2b6a;
+}
