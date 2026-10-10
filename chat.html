@@ -30,7 +30,6 @@
     letter-spacing: 3px;
     margin-bottom: 30px;
   }
-
   .nick-screen {
     border: 2px solid #a020f0;
     background: rgba(10, 10, 15, 0.9);
@@ -82,7 +81,6 @@
     letter-spacing: 2px;
     margin-top: 12px;
   }
-
   .chat-container {
     border: 2px solid #a020f0;
     background: rgba(10, 10, 15, 0.9);
@@ -92,7 +90,6 @@
     height: 70vh;
     max-height: 700px;
   }
-
   .chat-header {
     display: flex;
     justify-content: space-between;
@@ -123,7 +120,6 @@
     0%, 100% { opacity: 1; }
     50%      { opacity: 0.3; }
   }
-
   .chat-log {
     flex: 1;
     padding: 16px;
@@ -134,7 +130,6 @@
   }
   .chat-log::-webkit-scrollbar { width: 6px; }
   .chat-log::-webkit-scrollbar-thumb { background: #2a2030; }
-
   .msg {
     margin-bottom: 12px;
     animation: msg-in 0.4s ease-out;
@@ -173,7 +168,6 @@
     font-style: italic;
     opacity: 0.85;
   }
-
   .chat-input-bar {
     display: flex;
     border-top: 1px solid #2a2030;
@@ -199,7 +193,6 @@
     padding: 6px 0;
   }
   .chat-input-bar input::placeholder { color: #2a2030; }
-
   .back-link {
     display: inline-block;
     margin-top: 30px;
@@ -216,7 +209,6 @@
     color: #0a0a0f;
     box-shadow: 0 0 25px #a020f0;
   }
-
   @media (max-width: 600px) {
     .chat-page h1 { font-size: 20px; letter-spacing: 4px; }
     .chat-container { height: 65vh; }
@@ -256,15 +248,26 @@
   <a href="index.html" class="back-link">&larr; RETURN TO THE WHEEL</a>
 </main>
 
-<!-- Загружаем триггеры -->
+<!-- Триггеры (1600 фраз) -->
 <script src="chat-r01.js"></script>
 <script src="chat-r02.js"></script>
 <script src="chat-r03.js"></script>
 <script src="chat-r04.js"></script>
+<script src="chat-r06.js"></script>
+<script src="chat-r07.js"></script>
+<script src="chat-r08.js"></script>
+<script src="chat-r09.js"></script>
+<script src="chat-r10.js"></script>
+<script src="chat-r11.js"></script>
+<script src="chat-r12.js"></script>
+<script src="chat-r13.js"></script>
+<script src="chat-r14.js"></script>
+<script src="chat-r15.js"></script>
+<script src="chat-r16.js"></script>
 
 <script>
   // ==================================================================
-  //  FAKE CHAT v5 — 400 triggers + user-to-user dialogues
+  //  FAKE CHAT v6 — 1600 triggers, users talk to each other
   // ==================================================================
 
   const STORAGE_KEY = "chat_history";
@@ -307,7 +310,18 @@
     window.CHAT_R01 || {},
     window.CHAT_R02 || {},
     window.CHAT_R03 || {},
-    window.CHAT_R04 || {}
+    window.CHAT_R04 || {},
+    window.CHAT_R06 || {},
+    window.CHAT_R07 || {},
+    window.CHAT_R08 || {},
+    window.CHAT_R09 || {},
+    window.CHAT_R10 || {},
+    window.CHAT_R11 || {},
+    window.CHAT_R12 || {},
+    window.CHAT_R13 || {},
+    window.CHAT_R14 || {},
+    window.CHAT_R15 || {},
+    window.CHAT_R16 || {}
   );
 
   let nick = localStorage.getItem(NICK_KEY) || null;
@@ -448,9 +462,8 @@
 
   function reactToMessage(text) {
     const lower = text.toLowerCase().trim();
-
-    // 1. сначала длинные фразы (до 4 слов)
     const words = lower.split(/\s+/);
+
     for (let len = Math.min(4, words.length); len >= 1; len--) {
       for (let i = 0; i <= words.length - len; i++) {
         const phrase = words.slice(i, i + len).join(" ");
@@ -464,7 +477,6 @@
       }
     }
 
-    // 2. если ничего не нашли — общая реакция
     if (Math.random() < 0.7) {
       const genericReplies = [
         "we hear you","yes.","we know.","keep going.","you are not alone.",
