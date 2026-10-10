@@ -6,7 +6,15 @@ const cmds = {
     log("&nbsp;&nbsp;play [kick|snare|bass|siren|breakbeat|glitch|acid|total]");
     log("&nbsp;&nbsp;whoami &mdash; who you are");
     log("&nbsp;&nbsp;clear &mdash; clear log");
-      void: () => {
+    log("&nbsp;&nbsp;void &mdash; ???");
+  },
+  spin: () => spin(),
+  clear: () => { logEl.innerHTML = ""; },
+  whoami: () => {
+    log("you are " + getSubjectId() + ".", "system");
+    log("but that is not your real name, is it?", "whisper");
+  },
+  void: () => {
     log("...", "dim");
     log("searching for node 0x00...", "system");
     setTimeout(() => {
@@ -16,13 +24,6 @@ const cmds = {
         window.location.href = "void.html";
       }, 1200);
     }, 900);
-  },
-  },
-  spin: () => spin(),
-  clear: () => { logEl.innerHTML = ""; },
-  whoami: () => {
-    log("you are " + getSubjectId() + ".", "system");
-    log("but that is not your real name, is it?", "whisper");
   }
 };
 
@@ -67,5 +68,3 @@ document.getElementById("cmd").addEventListener("keydown", e => {
 document.body.addEventListener("click", () => {
   document.getElementById("cmd").focus();
 }, { passive: true });
-window.handleCmd = handleCmd;
-window.cmds = cmds;
