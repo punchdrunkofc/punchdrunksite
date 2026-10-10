@@ -786,3 +786,102 @@ body::before {
 #visitor-counter .counter-value[style*="ff2b6a"] {
   text-shadow: 0 0 10px #ff2b6a;
 }
+/* ---------- CHANNEL BUTTON (bottom-left) ---------- */
+.channel-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 14px 18px;
+  background: rgba(10, 10, 15, 0.95);
+  border: 2px solid #a020f0;
+  border-radius: 3px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow:
+    0 0 25px rgba(160, 32, 240, 0.6),
+    inset 0 0 15px rgba(160, 32, 240, 0.15);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  animation: channel-pulse 2s ease-in-out infinite;
+}
+
+.channel-btn:hover {
+  box-shadow:
+    0 0 45px rgba(160, 32, 240, 1),
+    inset 0 0 25px rgba(160, 32, 240, 0.3);
+  transform: translateY(-2px);
+  animation: none;
+}
+
+@keyframes channel-pulse {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(160, 32, 240, 0.6),
+                inset 0 0 15px rgba(160, 32, 240, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(160, 32, 240, 0.95),
+                inset 0 0 22px rgba(160, 32, 240, 0.3);
+  }
+}
+
+.channel-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.channel-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00ff88;
+  box-shadow: 0 0 8px #00ff88;
+  animation: channel-dot-blink 1.5s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes channel-dot-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+.channel-text {
+  color: #a020f0;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  letter-spacing: 3px;
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(160, 32, 240, 0.7);
+}
+
+.channel-count {
+  color: #d8a8ff;
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  opacity: 0.8;
+  padding-left: 16px;
+}
+
+/* ---------- MOBILE ---------- */
+@media (max-width: 600px) {
+  .channel-btn {
+    bottom: 90px;
+    left: 10px;
+    padding: 10px 14px;
+  }
+  .channel-text {
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+  .channel-count {
+    font-size: 9px;
+    padding-left: 14px;
+  }
+}
