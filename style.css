@@ -280,34 +280,67 @@ html, body {
   bottom: 6px;
   right: 10px;
   z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 12px;
+  background: rgba(10, 10, 15, 0.75);
+  border: 1px solid #2a2030;
+  border-radius: 2px;
+  backdrop-filter: blur(4px);
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
+.hidden-footer:hover {
+  border-color: #a020f0;
+  box-shadow: 0 0 15px rgba(160, 32, 240, 0.4);
+}
+
 .secret-dot {
-  color: #1a1020;
+  color: #6a5a75;
   font-size: 13px;
   font-family: "Courier New", monospace;
   letter-spacing: 2px;
   text-decoration: none;
-  margin-right: 10px;
   cursor: crosshair;
-  opacity: 0.4;
-  transition: all 0.6s ease;
-  text-shadow: 0 0 4px rgba(160, 32, 240, 0.2);
+  opacity: 1;
+  transition: all 0.4s ease;
+  text-shadow: 0 0 6px rgba(160, 32, 240, 0.35);
 }
 .secret-dot:hover {
   color: var(--accent);
-  opacity: 1;
   text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 40px var(--accent);
   letter-spacing: 4px;
 }
+
+/* void.node — ярче и мерцает */
+.secret-dot[href="void.html"] {
+  color: #a020f0;
+  text-shadow: 0 0 8px #a020f0, 0 0 15px rgba(160, 32, 240, 0.6);
+  animation: void-flicker 3s infinite;
+}
+.secret-dot[href="void.html"]:hover {
+  color: #d8a8ff;
+  text-shadow: 0 0 15px #d8a8ff, 0 0 30px #a020f0, 0 0 50px #a020f0;
+}
+
+@keyframes void-flicker {
+  0%, 88%, 100% { opacity: 1; }
+  90%           { opacity: 0.25; }
+  92%           { opacity: 1; }
+  94%           { opacity: 0.4; }
+  96%           { opacity: 1; }
+}
+
 .hidden-tag {
-  color: #1a1020;
+  color: #4a4055;
   font-size: 13px;
   transition: color 0.5s;
   cursor: help;
+  text-shadow: 0 0 6px rgba(160, 32, 240, 0.3);
 }
 .hidden-tag:hover {
   color: var(--accent);
-  text-shadow: 0 0 8px var(--accent);
+  text-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
 }
 
 /* ---------- GOLD JACKPOT (TOTAL) ---------- */
