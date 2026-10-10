@@ -13,7 +13,7 @@ const SECTORS = [
 
 const COLORS = [
   "#0d0d0d", "#1a0008", "#0d0d0d", "#1a0008",
-  "#0d0d0d", "#1a0008", "#0d0d0d", "#2a0010"
+  "#0d0d0d", "#1a0008", "#0d0d0d", "#4a3500"
 ];
 
 const canvas = document.getElementById("wheel");
