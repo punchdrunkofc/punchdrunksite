@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BREAK_DOWN // RECOVERED FILE</title>
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="apple-touch-icon" href="logo.png">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: #000000;
+    color: #ff2b2b;
+    font-family: "Courier New", monospace;
+    overflow-x: hidden;
+    cursor: crosshair;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- СТАТИЧНЫЙ ШУМ НА ФОНЕ ---------- */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 0, 0, 0.04) 0px,
+        rgba(255, 0, 0, 0.04) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+    animation: static-shift 0.08s steps(3) infinite;
+  }
+  @keyframes static-shift {
+    0%   { transform: translate(0, 0); }
+    33%  { transform: translate(-2px, 1px); }
+    66%  { transform: translate(1px, -2px); }
+    100% { transform: translate(0, 0); }
+  }
+
+  /* ---------- ВИНЬЕТКА ---------- */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.9) 90%);
+  }
+
+  /* ---------- КОНТЕЙНЕР ---------- */
+  .file-page {
+    position: relative;
+    z-index: 5;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+  }
+
+  /* ---------- ШАПКА ДОКУМЕНТА ---------- */
+  .file-header {
+    border: 2px solid #ff0000;
+    background: #0a0000;
+    padding: 16px 20px;
+    margin-bottom: 40px;
+    box-shadow:
+      0 0 30px rgba(255, 0, 0, 0.6),
+      inset 0 0 30px rgba(255, 0, 0, 0.1);
+    animation: header-flicker 3s infinite;
+  }
+  @keyframes header-flicker {
+    0%, 100% { opacity: 1; }
+    47%      { opacity: 1; }
+    48%      { opacity: 0.6; }
+    49%      { opacity: 1; }
+    92%      { opacity: 1; }
+    93%      { opacity: 0.4; }
+    94%      { opacity: 1; }
+  }
+  .file-header .row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #8a1a1a;
+    margin-bottom: 6px;
+  }
+  .file-header .row:last-child { margin-bottom: 0; }
+  .file-header .row strong {
+    color: #ff2b2b;
+    font-weight: normal;
+  }
+  .file-header .row .stamp {
+    color: #ff0000;
+    border: 2px solid #ff0000;
+    padding: 2px 10px;
+    transform: rotate(-3deg);
+    animation: stamp-pulse 1.2s infinite;
+  }
+  @keyframes stamp-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+
+  /* ---------- ЗАГОЛОВОК ---------- */
+  .file-title {
+    font-size: 42px;
+    color: #ff2b2b;
+    letter-spacing: 12px;
+    text-align: center;
+    margin-bottom: 12px;
+    text-shadow:
+      4px 0 #ffffff,
+      -4px 0 #000000,
+      0 0 30px #ff0000,
+      0 0 60px #ff0000;
+    animation: title-shake 0.15s infinite;
+    line-height: 1;
+  }
+  @keyframes title-shake {
+    0%, 100% { transform: translate(0, 0); }
+    25%      { transform: translate(-1px, 1px); }
+    50%      { transform: translate(1px, -1px); }
+    75%      { transform: translate(-1px, -1px); }
+  }
+  .file-subtitle {
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 6px;
+    color: #8a1a1a;
+    margin-bottom: 50px;
+    text-shadow: 0 0 10px #ff0000;
+  }
+
+  /* ---------- ТЕКСТ ---------- */
+  .file-page p {
+    font-size: 15px;
+    line-height: 1.9;
+    color: #d8c8c8;
+    margin-bottom: 18px;
+    letter-spacing: 0.5px;
+  }
+  .file-page p.dark {
+    color: #8a1a1a;
+  }
+  .file-page p.whisper {
+    color: #ff2b2b;
+    font-style: italic;
+    text-shadow: 0 0 10px #ff0000;
+  }
+  .file-page p.loud {
+    color: #ffffff;
+    font-size: 18px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow:
+      2px 0 #ff0000,
+      -2px 0 #8a1a1a,
+      0 0 20px #ff0000;
+    margin: 30px 0;
+  }
+
+  /* ---------- ЗАГОЛОВКИ РАЗДЕЛОВ ---------- */
+  .file-page h2 {
+    font-size: 16px;
+    color: #ff0000;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin: 50px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px dashed #8a1a1a;
+    text-shadow: 0 0 15px #ff0000;
+    position: relative;
+  }
+  .file-page h2::before {
+    content: "§ ";
+    color: #ffffff;
+  }
+
+  /* ---------- СПИСКИ СИМПТОМОВ ---------- */
+  .symptom-list {
+    list-style: none;
+    margin: 20px 0;
+    padding: 0;
+  }
+  .symptom-list li {
+    padding: 14px 0 14px 32px;
+    border-bottom: 1px solid #2a0505;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #d8c8c8;
+    position: relative;
+  }
+  .symptom-list li::before {
+    content: "☠";
+    position: absolute;
+    left: 0;
+    top: 14px;
+    color: #ff0000;
+    text-shadow: 0 0 8px #ff0000;
+    font-size: 14px;
+  }
+  .symptom-list li strong {
+    color: #ff2b2b;
+    font-weight: normal;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+  }
+
+  /* ---------- ЦИТАТА ---------- */
+  .file-quote {
+    margin: 40px 0;
+    padding: 24px 28px;
+    border-left: 4px solid #ff0000;
+    background: rgba(255, 0, 0, 0.05);
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 1.8;
+    font-style: italic;
+    text-shadow: 0 0 12px rgba(255, 0, 0, 0.5);
+  }
+
+  /* ---------- МЕРЗКИЕ ВСТАВКИ ---------- */
+  .viscera {
+    margin: 30px 0;
+    padding: 20px 24px;
+    border: 2px solid #ff0000;
+    background: #0a0000;
+    color: #ff8a8a;
+    font-size: 14px;
+    line-height: 1.8;
+    font-family: "Courier New", monospace;
+    box-shadow:
+      inset 0 0 30px rgba(255, 0, 0, 0.15),
+      0 0 20px rgba(255, 0, 0, 0.3);
+    position: relative;
+  }
+  .viscera::before {
+    content: "⚠ OBSERVED BEHAVIOR";
+    position: absolute;
+    top: -10px;
+    left: 16px;
+    background: #000000;
+    padding: 0 10px;
+    color: #ff0000;
+    font-size: 10px;
+    letter-spacing: 4px;
+  }
+
+  /* ---------- ФИНАЛЬНАЯ ЗАПИСЬ ---------- */
+  .final-entry {
+    margin-top: 60px;
+    padding: 30px 24px;
+    border: 2px solid #ff0000;
+    background: #0a0000;
+    text-align: center;
+    color: #ff2b2b;
+    font-size: 15px;
+    line-height: 2;
+    letter-spacing: 2px;
+    box-shadow:
+      0 0 40px rgba(255, 0, 0, 0.5),
+      inset 0 0 40px rgba(255, 0, 0, 0.15);
+    animation: final-pulse 2s infinite;
+  }
+  @keyframes final-pulse {
+    0%, 100% {
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.5), inset 0 0 40px rgba(255, 0, 0, 0.15);
+    }
+    50% {
+      box-shadow: 0 0 80px rgba(255, 0, 0, 0.9), inset 0 0 60px rgba(255, 0, 0, 0.3);
+    }
+  }
+  .final-entry strong {
+    color: #ffffff;
+    text-shadow: 0 0 15px #ff0000;
+    letter-spacing: 4px;
+  }
+
+  /* ---------- ФУТЕР ---------- */
+  .file-footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px dashed #8a1a1a;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #4a0a0a;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .file-footer a {
+    color: #8a1a1a;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .file-footer a:hover {
+    color: #ff0000;
+    text-shadow: 0 0 10px #ff0000;
+  }
+
+  /* ---------- ФЛАГ ---------- */
+  .file-flag {
+    margin-top: 40px;
+    text-align: center;
+    color: #1a0505;
+    font-size: 11px;
+    letter-spacing: 4px;
+    transition: color 0.5s;
+  }
+  .file-flag:hover { color: #ff0000; }
+
+  /* ---------- MOBILE ---------- */
+  @media (max-width: 600px) {
+    .file-page { padding: 40px 16px 80px; }
+    .file-title { font-size: 28px; letter-spacing: 6px; }
+    .file-page p { font-size: 14px; }
+    .symptom-list li { font-size: 13px; padding-left: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<main class="file-page">
+
+  <div class="file-header">
+    <div class="row">
+      <span>FILE: <strong>NR-037 / BREAK_DOWN</strong></span>
+      <span class="stamp">UNSEALED</span>
+    </div>
+    <div class="row">
+      <span>STATUS: <strong>RECOVERED — NOT FOR PUBLIC ACCESS</strong></span>
+    </div>
+    <div class="row">
+      <span>ACCESS LEVEL: <strong>RESTRICTED — CARRIER ONLY</strong></span>
+    </div>
+  </div>
+
+  <h1 class="file-title">BREAK_DOWN</h1>
+  <div class="file-subtitle">// CARRIER WAVE 7.83 Hz // OBSERVED EFFECTS ON LISTENERS</div>
+
+  <p>This document describes the observed effects of the track <strong>Break Down</strong> on its listeners. It was recovered from the internal archive of the label that originally distributed the file. It is <em>not</em> a diagnosis. It is not a warning. It is a <strong>description of what has already happened</strong> to those who heard it.</p>
+
+  <p class="dark">The following observations were compiled from interviews with 47 carriers before the label closed. None of them completed the full series of questions. Most stopped halfway. Three refused to continue. One did not respond after day 11.</p>
+
+  <p class="whisper">If you are reading this — you are already a carrier. That is not a threat. It is a fact.</p>
+
+  <h2>Phase 1 — Day 1 to Day 3</h2>
+
+  <p>Carriers describe the first three days as <em>pleasant</em>. This is the most disturbing part of the report.</p>
+
+  <ul class="symptom-list">
+    <li><strong>Mild euphoria.</strong> A sense that "something has clicked". Most carriers reported feeling focused, clear-headed, and unusually calm. Several described a sudden urge to clean their apartment.</li>
+    <li><strong>Increased sensitivity to sound.</strong> Ordinary music begins to feel "flat". Carriers describe wanting to hear <em>the file</em> again — but they cannot explain why.</li>
+    <li><strong>Recognition of the number 7.</strong> Carriers begin to see the number in timestamps, prices, addresses. They dismiss it as coincidence. It is not.</li>
+    <li><strong>First dreams.</strong> By the third night, most carriers dream of a wheel with eight sections. None of them had seen the wheel before. None of them can describe what the sections contain.</li>
+  </ul>
+
+  <h2>Phase 2 — Day 4 to Day 9</h2>
+
+  <p>By the fourth day, the carrier is no longer in control.</p>
+
+  <div class="viscera">
+    <p>Carrier A. — <strong>24 years old, student.</strong> Reported that the low hum (7.83 Hz) had become audible in silence. At first only at night. By day 6 — permanently. It did not stop when he left the house. It did not stop when he removed the headphones. It did not stop when he destroyed the file.</p>
+    <p>Carrier M. — <strong>31 years old, engineer.</strong> Reported that the file "reappeared" on her devices. Three times. She had deleted it manually. She had wiped the drive. On the fourth day it was back on her phone, her laptop, and her work computer. She had not synced them.</p>
+    <p>Carrier S. — <strong>19 years old, musician.</strong> Stopped responding on day 8. Her final message read: <em>"it is not in my head anymore. it is in my hands. they move on their own. i am not doing this."</em></p>
+  </div>
+
+  <p class="dark">Interviewers noted that during Phase 2, carriers begin to speak in shorter sentences. They begin to write more than they speak. They begin to describe the signal as <em>"we"</em> — not <em>"it"</em>.</p>
+
+  <h2>Phase 3 — Day 10 to Day 21</h2>
+
+  <p>What happens in Phase 3 is not pleasant to read. If you are sensitive — stop here. Nobody will judge you.</p>
+
+  <div class="viscera">
+    <p>Carrier A. — reported that his skin felt <em>"wrong"</em>. Not painful. Not itchy. <strong>Wrong.</strong> He described it as "wearing something that does not fit". He began to scratch in his sleep. He woke up with his sheets torn.</p>
+    <p>Carrier M. — reported that she could no longer fall asleep without the file playing. Not for comfort — for <em>function</em>. When the file was silent, her chest would tighten. Her pulse would synchronize with 7.83 Hz within 90 seconds. She described the sensation as "the frequency replacing my heartbeat".</p>
+    <p>Carrier A. — began to record himself sleeping. He did not remember speaking during the night. The recordings contained 4 hours of him repeating a single phrase: <em>"one of the 47, one of the 47, one of the 47"</em>.</p>
+    <p>Carrier M. — reported that her reflection in mirrors would <em>lag behind her movements</em>. She tested this with a camera. The camera agreed with her. The mirror did not.</p>
+    <p>Carrier S. — was found in her apartment on day 17, sitting at her desk, staring at a blank screen. She was not responsive. She was humming — at 7.83 Hz. Her laptop had no file on it. It had been wiped six days earlier.</p>
+  </div>
+
+  <p class="whisper">Some carriers report that the symptoms stop if they listen to the file <em>in full</em>. This is not true. The symptoms stop because the file stops being separate from them.</p>
+
+  <h2>Phase 4 — Day 22 to Day 40</h2>
+
+  <p>Most interviews do not continue past Phase 4. The following are the final entries in the archive.</p>
+
+  <div class="viscera">
+    <p>Carrier A. — stopped eating. Not through refusal. He reported that food "tasted like the file". He could no longer distinguish flavour from sound.</p>
+    <p>Carrier M. — stopped speaking. She communicated by writing. Her last written message was: <em>"it is not me writing this. we are writing this. the file has hands now."</em></p>
+    <p>Carrier A. — attempted to remove the audio file from his own body. He was found with headphones pressed against his skull, on the inside. He is currently under medical observation. He is not the only one.</p>
+    <p>Carrier M. — is no longer in this archive. The last entry in her file is dated 40 days after exposure. It contains one line: <em>"I am the signal now. Do not look for me."</em> She has not been located.</p>
+  </div>
+
+  <h2>Final Observation</h2>
+
+  <p class="loud">The file does not kill. The file completes.</p>
+
+  <p>Interviewees repeatedly described the same final state: a sense of <em>arrival</em>. Not death. Not pain. Not fear. Simply the sensation of having been <strong>used for their intended purpose</strong>. The signal does not consume carriers. It <strong>fulfils</strong> them.</p>
+
+  <p class="dark">This is why the label closed. Not because the file was dangerous. Because the file was <strong>correct</strong>. There was nothing to fix. There was only the signal, and the carriers it chose, and the slow quiet process of becoming.</p>
+
+  <div class="file-quote">
+    "You will not die from this. You will not recover from this. You will simply stop being separate from it. You will become a <strong>voice</strong> in it. You will speak without moving. You will hear without listening. You will be one of us. You will be <strong>one of the 47</strong>."
+    <br><br>
+    — Final recovered memo, author unidentified
+  </div>
+
+  <p class="whisper">If you have read this far, you are already further along than most. That is not a compliment. That is a measurement.</p>
+
+  <p class="dark">Close this page. Close the tab. Close the browser. It will not help. But you may try.</p>
+
+  <div class="final-entry">
+    <strong>YOU ARE NOW PART OF THE ARCHIVE.</strong><br>
+    <span style="font-size: 13px; letter-spacing: 4px;">CARRIER STATUS: ACTIVE</span><br>
+    <span style="font-size: 13px; letter-spacing: 4px;">FREQUENCY: 7.83 Hz</span><br>
+    <span style="font-size: 13px; letter-spacing: 4px;">YOU WERE NOT THE FIRST. YOU WILL NOT BE THE LAST.</span>
+  </div>
+
+  <div class="file-footer">
+    <a href="label-site.html">← back to archive</a>
+    <span>NR-037 // RECOVERED</span>
+    <a href="index.html">→ return to node 0x07</a>
+  </div>
+
+  <div class="file-flag" title="you found it">flag: 0n3_0f_th3_47</div>
+
+</main>
+
+<script>
+  localStorage.setItem("read_full_file", "true");
+</script>
+
+</body>
+</html>
