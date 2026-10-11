@@ -7,7 +7,6 @@
 (function () {
   "use strict";
 
-  // ---------- ЧТЕНИЕ ДАННЫХ ИГРОКА ----------
   function getPlayerData() {
     const d = {};
     d.visits   = parseInt(localStorage.getItem("intro_visits") || "0", 10) + 1;
@@ -24,6 +23,7 @@
     d.dbltotal = localStorage.getItem("overload") === "true";
     d.signal   = localStorage.getItem("signal_found") === "true";
     d.heardTrack = localStorage.getItem("heard_track") === "true";
+    d.labelArchive = localStorage.getItem("label_archive_found") === "true";
     d.oldVisit = localStorage.getItem("last_visit_time") || null;
     d.daysAway = 0; d.hoursAway = 0; d.minutesAway = 0;
 
@@ -39,11 +39,10 @@
     return d;
   }
 
-  // ---------- СБОРКА ТЕКСТА ----------
   function buildIntro(d) {
     const lines = [];
 
-    // -------- ТРАССИРОВКА --------
+    // ТРАССИРОВКА
     lines.push({ text: "&gt; tracing carrier origin...", cls: "system" });
     lines.push({ text: "&gt; node 0x07 reached.", cls: "dim" });
     lines.push({ text: "&gt; carrier signature: <span class='ok'>CONFIRMED</span>", cls: "" });
@@ -62,7 +61,7 @@
       lines.push({ text: "&gt; you are no longer distinguishable from the signal.", cls: "whisper" });
     }
 
-    // -------- ОТСУТСТВИЕ --------
+    // ОТСУТСТВИЕ
     if (d.daysAway >= 1) {
       lines.push({ text: "&gt; offline for " + d.daysAway + " day" + (d.daysAway === 1 ? "" : "s") + ".", cls: "dim" });
       lines.push({ text: "&gt; the signal continued without you.", cls: "whisper" });
@@ -72,7 +71,7 @@
       lines.push({ text: "&gt; offline for " + d.minutesAway + " minutes.", cls: "dim" });
     }
 
-    // -------- СПИНЫ = ЭКСПОЗИЦИИ --------
+    // СПИНЫ
     if (d.spins === 0) {
       lines.push({ text: "&gt; signal exposures: 0.", cls: "" });
       lines.push({ text: "&gt; the wheel is waiting. press spin.", cls: "whisper" });
@@ -90,7 +89,7 @@
       lines.push({ text: "&gt; beyond safe threshold. you cannot stop now.", cls: "whisper" });
     }
 
-    // -------- КОПИРОВАНИЕ = ВЫНОС --------
+    // КОПИРОВАНИЕ
     if (d.copies === 0) {
       lines.push({ text: "&gt; extraction attempts: 0.", cls: "dim" });
       lines.push({ text: "&gt; unusual. most try.", cls: "whisper" });
@@ -102,7 +101,7 @@
       lines.push({ text: "&gt; it copied itself into you instead.", cls: "whisper" });
     }
 
-    // -------- МАНИФЕСТ --------
+    // МАНИФЕСТ
     if (d.manifest && d.enemy > 0) {
       lines.push({ text: "&gt; you read both sides.", cls: "dim" });
       lines.push({ text: "&gt; neither mentions the frequency.", cls: "whisper" });
@@ -113,7 +112,13 @@
       lines.push({ text: "&gt; recovery document: unread.", cls: "dim" });
     }
 
-    // -------- ШИФРЫ --------
+    // АРХИВ ЛЕЙБЛА
+    if (d.labelArchive) {
+      lines.push({ text: "&gt; you read the internal archive.", cls: "err" });
+      lines.push({ text: "&gt; the label was carrier 0x04. not the first.", cls: "whisper" });
+    }
+
+    // ШИФРЫ
     if (d.ciphers === 0) {
       lines.push({ text: "&gt; decoded fragments: 0.", cls: "dim" });
     } else if (d.ciphers < 3) {
@@ -126,7 +131,7 @@
       lines.push({ text: "&gt; you are decoding yourself.", cls: "err" });
     }
 
-    // -------- ЧАТ --------
+    // ЧАТ
     if (!d.chat) {
       lines.push({ text: "&gt; channel: not entered.", cls: "dim" });
       lines.push({ text: "&gt; other carriers are waiting.", cls: "whisper" });
@@ -135,7 +140,7 @@
       lines.push({ text: "&gt; they are showing symptoms too.", cls: "whisper" });
     }
 
-    // -------- КАМЕРА / МИКРОФОН --------
+    // КАМЕРА / МИКРОФОН
     if (d.mic) {
       lines.push({ text: "&gt; audio signature captured.", cls: "err" });
       lines.push({ text: "&gt; the signal knows your voice.", cls: "whisper" });
@@ -145,7 +150,7 @@
       lines.push({ text: "&gt; the signal knows your face.", cls: "whisper" });
     }
 
-    // -------- ТРЕК ПРОСЛУШАН --------
+    // ТРЕК
     if (d.heardTrack) {
       lines.push({ text: "&gt; you have played the source file.", cls: "err" });
       lines.push({ text: "&gt; the signal is now inside you.", cls: "whisper" });
@@ -154,25 +159,25 @@
       lines.push({ text: "&gt; you have not heard Break Down yet.", cls: "whisper" });
     }
 
-    // -------- SIGNAL --------
+    // SIGNAL
     if (d.signal) {
       lines.push({ text: "&gt; you found the frequency.", cls: "ok" });
       lines.push({ text: "&gt; the infection is complete.", cls: "err" });
     }
 
-    // -------- 404 --------
+    // 404
     if (d.notfound) {
       lines.push({ text: "&gt; escape attempt: logged.", cls: "dim" });
       lines.push({ text: "&gt; the node returned you. as it always does.", cls: "whisper" });
     }
 
-    // -------- DOUBLE TOTAL --------
+    // DOUBLE TOTAL
     if (d.dbltotal) {
       lines.push({ text: "&gt; total coherence achieved once.", cls: "ok" });
       lines.push({ text: "&gt; the signal recognized you.", cls: "whisper" });
     }
 
-    // -------- СТАТУС --------
+    // СТАТУС
     lines.push({ text: "&nbsp;", cls: "" });
 
     if (d.visits === 1 && d.spins === 0 && !d.heardTrack) {
@@ -198,7 +203,6 @@
     return lines;
   }
 
-  // ---------- ПОКАЗ ПАНЕЛИ ----------
   function showIntro() {
     if (sessionStorage.getItem("intro_done") === "true") return;
     sessionStorage.setItem("intro_done", "true");
@@ -258,7 +262,6 @@
     panel.addEventListener("click", closeIntro);
   }
 
-  // ---------- ЗАПУСК ПОСЛЕ BOOT-SCREEN ----------
   function waitForBootScreenGone(cb) {
     const boot = document.getElementById("boot-screen");
     if (!boot) { setTimeout(cb, 300); return; }
