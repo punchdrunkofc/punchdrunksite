@@ -247,7 +247,6 @@
     box-shadow: none;
   }
 
-  /* ---------- GLITCH КАРТОЧКИ ---------- */
   .release-card.glitching {
     animation: card-glitch 0.4s steps(2) 1;
   }
@@ -362,7 +361,6 @@
     gap: 12px;
   }
 
-  /* ---------- SECRET BACK ---------- */
   .secret-back {
     position: fixed;
     bottom: 8px;
@@ -385,12 +383,12 @@
   /*              СТАДИИ ПРОГРЕССИРУЮЩЕГО РАЗРУШЕНИЯ                   */
   /* ================================================================ */
 
-  /* -------- СТАДИЯ 1: лёгкое искажение -------- */
+  /* ---------- СТАДИЯ 1 ---------- */
   body.corrupt-1 { background: #ebe9f0; }
   body.corrupt-1 .logo span { color: #8a3a8a; }
   body.corrupt-1 .release-art { filter: saturate(0.85); }
 
-  /* -------- СТАДИЯ 2: холодные тени -------- */
+  /* ---------- СТАДИЯ 2 ---------- */
   body.corrupt-2 { background: #d8d5e0; color: #2a1a2a; }
   body.corrupt-2 .site-header {
     background: #e8e5ec;
@@ -413,7 +411,7 @@
     border-color: #c8c5d0;
   }
 
-  /* -------- СТАДИЯ 3: красные акценты, потемнение -------- */
+  /* ---------- СТАДИЯ 3 ---------- */
   body.corrupt-3 { background: #b8b3c5; color: #1a0a1a; }
   body.corrupt-3 .site-header {
     background: #c8c3d2;
@@ -443,7 +441,7 @@
   body.corrupt-3 .hero-btn { background: #1a0a1a; }
   body.corrupt-3 .hero-btn:hover { background: #8a2a4a; }
 
-  /* -------- СТАДИЯ 4: тёмно-фиолетовая, неон -------- */
+  /* ---------- СТАДИЯ 4 ---------- */
   body.corrupt-4 { background: #2a1a2e; color: #d8c8d8; }
   body.corrupt-4 .site-header {
     background: #1a0a1e;
@@ -479,12 +477,8 @@
   }
   body.corrupt-4 .release-title { color: #d8c8d8; }
   body.corrupt-4 .release-meta { color: #a888a8; }
-  body.corrupt-4 .release-card:hover {
-    box-shadow: 0 12px 30px rgba(170, 58, 138, 0.3);
-    border-color: #aa3a8a;
-  }
 
-  /* -------- СТАДИЯ 5: полный Digital Madness -------- */
+  /* ---------- СТАДИЯ 5: Digital Madness ---------- */
   body.corrupt-5 { background: #0a0a0f; color: #c8c8d0; }
   body.corrupt-5 .site-header {
     background: #0a0a0f;
@@ -540,18 +534,451 @@
   body.corrupt-5 .release-card {
     background: rgba(10, 10, 15, 0.8);
     border-color: #2a2030;
-    box-shadow: inset 0 0 20px rgba(160, 32, 240, 0.05);
-  }
-  body.corrupt-5 .release-card:hover {
-    border-color: #a020f0;
-    box-shadow: 0 0 25px rgba(160, 32, 240, 0.5), inset 0 0 20px rgba(160, 32, 240, 0.1);
   }
   body.corrupt-5 .release-title { color: #d8d8e0; }
   body.corrupt-5 .release-meta { color: #6a5a75; }
   body.corrupt-5 .site-footer {
     background: #050505;
     border-top: 2px solid #a020f0;
-    box-shadow: 0 0 25px rgba(160, 32, 240, 0.3);
+  }
+
+  /* ================================================================ */
+  /*              СТАДИЯ 6+: ПИКСЕЛЬНЫЙ УЖАС                           */
+  /* ================================================================ */
+
+  body.pixel-corrupt {
+    font-family: "Courier New", monospace !important;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  body.pixel-corrupt * {
+    border-radius: 0 !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* ---------- УРОВЕНЬ 6-7: цифровой распад ---------- */
+  body.corrupt-6 {
+    background: #0a0a0f;
+    color: #a8ffa8;
+  }
+  body.corrupt-6 .site-header {
+    background: #0a0a0f;
+    border-bottom: 2px solid #ff2b6a;
+    box-shadow: 0 0 30px rgba(255, 43, 106, 0.4);
+  }
+  body.corrupt-6 .logo,
+  body.corrupt-6 .logo span {
+    color: #a8ffa8;
+    text-shadow: 2px 2px 0 #ff2b6a;
+    letter-spacing: 4px;
+  }
+  body.corrupt-6 .nav { color: #a8ffa8; }
+  body.corrupt-6 .nav a:hover { color: #ff2b6a; }
+  body.corrupt-6 .hero {
+    background: #0a0a0f;
+    border-bottom: 2px dashed #ff2b6a;
+    position: relative;
+  }
+  body.corrupt-6 .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255, 43, 106, 0.06) 0px, rgba(255, 43, 106, 0.06) 1px, transparent 1px, transparent 3px);
+    pointer-events: none;
+  }
+  body.corrupt-6 .hero h1 {
+    color: #a8ffa8;
+    letter-spacing: 6px;
+    text-shadow:
+      3px 0 #ff2b6a,
+      -3px 0 #00f0ff;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+  }
+  body.corrupt-6 .hero h1 span {
+    background: none;
+    -webkit-text-fill-color: #ff2b6a;
+    color: #ff2b6a;
+    text-shadow: 2px 2px 0 #a8ffa8;
+  }
+  body.corrupt-6 .hero p {
+    color: #a8ffa8;
+    letter-spacing: 3px;
+  }
+  body.corrupt-6 .hero-btn {
+    background: #0a0a0f;
+    color: #a8ffa8;
+    border: 2px dashed #ff2b6a;
+    border-radius: 0;
+    font-family: "Courier New", monospace;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  body.corrupt-6 .hero-btn:hover {
+    background: #ff2b6a;
+    color: #0a0a0f;
+  }
+  body.corrupt-6 .section-title {
+    color: #ff2b6a;
+    letter-spacing: 6px;
+    text-shadow: 2px 2px 0 #a8ffa8;
+  }
+  body.corrupt-6 .section-heading {
+    color: #a8ffa8;
+    letter-spacing: 4px;
+    font-family: "Courier New", monospace;
+    text-shadow: 3px 0 #ff2b6a;
+  }
+  body.corrupt-6 .release-art {
+    filter: saturate(0) contrast(2) brightness(0.4) hue-rotate(90deg) !important;
+    border: 2px solid #ff2b6a;
+  }
+  body.corrupt-6 .release-card {
+    background: #0a0a0f;
+    border: 2px solid #a8ffa8;
+    box-shadow: inset 0 0 20px rgba(168, 255, 168, 0.05);
+  }
+  body.corrupt-6 .release-card:hover {
+    border-color: #ff2b6a;
+    box-shadow: 0 0 20px rgba(255, 43, 106, 0.6);
+  }
+  body.corrupt-6 .release-title {
+    color: #a8ffa8;
+    letter-spacing: 2px;
+  }
+  body.corrupt-6 .release-meta { color: #ff2b6a; }
+  body.corrupt-6 .about {
+    background: #0a0a0f;
+    border-top: 2px dashed #ff2b6a;
+    border-bottom: 2px dashed #ff2b6a;
+  }
+  body.corrupt-6 .about h2 {
+    color: #ff2b6a;
+    letter-spacing: 6px;
+    font-family: "Courier New", monospace;
+  }
+  body.corrupt-6 .about p {
+    color: #a8ffa8;
+    letter-spacing: 2px;
+    font-family: "Courier New", monospace;
+  }
+  body.corrupt-6 .site-footer {
+    background: #050505;
+    border-top: 2px dashed #ff2b6a;
+  }
+  body.corrupt-6 .site-footer * {
+    font-family: "Courier New", monospace;
+  }
+
+  /* ---------- УРОВЕНЬ 8: МЯСО, КРОВЬ, ЗУБЫ ---------- */
+  body.corrupt-7 {
+    background: #1a0505;
+    color: #ff8a8a;
+  }
+  body.corrupt-7 .site-header {
+    background: #0a0000;
+    border-bottom: 3px solid #ff0000;
+    box-shadow: 0 0 40px rgba(255, 0, 0, 0.5);
+  }
+  body.corrupt-7 .logo,
+  body.corrupt-7 .logo span {
+    color: #ff2b2b;
+    text-shadow:
+      2px 0 #ffffff,
+      -2px 0 #000000,
+      0 0 15px #ff0000;
+    letter-spacing: 6px;
+    animation: meat-pulse 1.2s infinite;
+  }
+  body.corrupt-7 .nav { color: #8a1a1a; }
+  body.corrupt-7 .nav a { color: #8a1a1a; }
+  body.corrupt-7 .nav a:hover { color: #ff0000; }
+  body.corrupt-7 .hero {
+    background: radial-gradient(ellipse at center, #2a0505 0%, #0a0000 70%);
+    border-bottom: 3px solid #ff0000;
+  }
+  body.corrupt-7 .hero h1 {
+    color: #ff2b2b;
+    letter-spacing: 8px;
+    text-shadow:
+      4px 0 #ffffff,
+      -4px 0 #000000,
+      0 0 20px #ff0000;
+    font-family: "Courier New", monospace;
+    animation: meat-pulse 0.9s infinite;
+  }
+  body.corrupt-7 .hero h1 span {
+    background: none;
+    -webkit-text-fill-color: #ffffff;
+    color: #ffffff;
+    text-shadow:
+      3px 0 #ff0000,
+      -3px 0 #8a1a1a,
+      0 0 25px #ff0000;
+  }
+  body.corrupt-7 .hero p {
+    color: #8a1a1a;
+    font-family: "Courier New", monospace;
+    letter-spacing: 4px;
+  }
+  body.corrupt-7 .hero-btn {
+    background: #0a0000;
+    color: #ff2b2b;
+    border: 2px solid #ff0000;
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.7);
+    font-family: "Courier New", monospace;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    animation: meat-pulse 1.4s infinite;
+  }
+  body.corrupt-7 .hero-btn:hover {
+    background: #ff0000;
+    color: #ffffff;
+  }
+  body.corrupt-7 .section-title {
+    color: #ff0000;
+    letter-spacing: 8px;
+    text-shadow: 0 0 15px #ff0000;
+  }
+  body.corrupt-7 .section-heading {
+    color: #ffffff;
+    letter-spacing: 6px;
+    font-family: "Courier New", monospace;
+    text-shadow:
+      3px 0 #ff0000,
+      -3px 0 #8a1a1a,
+      0 0 20px #ff0000;
+    animation: meat-pulse 1.1s infinite;
+  }
+  body.corrupt-7 .release-art {
+    filter: saturate(2) contrast(2.5) brightness(0.3) hue-rotate(-30deg) !important;
+    border: 3px solid #ff0000;
+    box-shadow: inset 0 0 40px rgba(255, 0, 0, 0.5);
+  }
+  body.corrupt-7 .release-card {
+    background: #0a0000;
+    border: 3px solid #8a1a1a;
+    box-shadow: inset 0 0 30px rgba(255, 0, 0, 0.2);
+  }
+  body.corrupt-7 .release-card:hover {
+    border-color: #ff0000;
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.9);
+  }
+  body.corrupt-7 .release-title {
+    color: #ff2b2b;
+    letter-spacing: 3px;
+    text-shadow: 2px 0 #ffffff;
+  }
+  body.corrupt-7 .release-meta { color: #8a1a1a; letter-spacing: 2px; }
+  body.corrupt-7 .about {
+    background: #0a0000;
+    border-top: 3px solid #ff0000;
+    border-bottom: 3px solid #ff0000;
+  }
+  body.corrupt-7 .about h2 {
+    color: #ff2b2b;
+    letter-spacing: 8px;
+    font-family: "Courier New", monospace;
+    animation: meat-pulse 1s infinite;
+  }
+  body.corrupt-7 .about p {
+    color: #8a1a1a;
+    letter-spacing: 3px;
+    font-family: "Courier New", monospace;
+  }
+  body.corrupt-7 .site-footer {
+    background: #000000;
+    border-top: 3px solid #ff0000;
+  }
+  body.corrupt-7 .site-footer * {
+    font-family: "Courier New", monospace;
+    color: #8a1a1a;
+  }
+
+  @keyframes meat-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.7; transform: scale(1.005); }
+  }
+
+  /* ---------- УРОВЕНЬ 8+: ЦИФРОВОЙ АД ---------- */
+  body.corrupt-8 {
+    background: #000000;
+    color: #ffffff;
+  }
+  body.corrupt-8 .site-header {
+    background: #000000;
+    border-bottom: 3px solid #ffffff;
+    animation: hell-flicker 0.4s infinite;
+  }
+  body.corrupt-8 .logo,
+  body.corrupt-8 .logo span {
+    color: #ffffff;
+    text-shadow:
+      4px 0 #ff0000,
+      -4px 0 #00ffff,
+      0 0 30px #ffffff;
+    letter-spacing: 12px;
+    animation: hell-shake 0.15s infinite;
+  }
+  body.corrupt-8 .nav { color: #444; display: none; }
+  body.corrupt-8 .hero {
+    background: #000000;
+    border-bottom: 3px solid #ffffff;
+    animation: hell-flicker 0.7s infinite;
+    padding: 120px 20px 100px;
+  }
+  body.corrupt-8 .hero h1 {
+    color: #ffffff;
+    letter-spacing: 16px;
+    font-family: "Courier New", monospace;
+    text-shadow:
+      6px 0 #ff0000,
+      -6px 0 #00ffff,
+      0 0 40px #ff0000,
+      0 0 80px #ff0000;
+    animation: hell-shake 0.1s infinite;
+    font-size: 56px;
+    line-height: 1;
+  }
+  body.corrupt-8 .hero h1 span {
+    background: none;
+    -webkit-text-fill-color: #ff0000;
+    color: #ff0000;
+    text-shadow:
+      4px 0 #ffffff,
+      -4px 0 #000000,
+      0 0 50px #ff0000;
+  }
+  body.corrupt-8 .hero p {
+    color: #444;
+    font-family: "Courier New", monospace;
+    letter-spacing: 6px;
+    font-size: 14px;
+  }
+  body.corrupt-8 .hero-btn {
+    background: #000000;
+    color: #ff0000;
+    border: 3px solid #ff0000;
+    font-family: "Courier New", monospace;
+    letter-spacing: 8px;
+    padding: 20px 40px;
+    text-transform: uppercase;
+    animation: hell-pulse 0.8s infinite;
+    box-shadow:
+      0 0 40px #ff0000,
+      inset 0 0 40px rgba(255, 0, 0, 0.3);
+  }
+  body.corrupt-8 .hero-btn:hover {
+    background: #ff0000;
+    color: #000000;
+    box-shadow: 0 0 80px #ff0000;
+  }
+  body.corrupt-8 .section-title {
+    color: #ff0000;
+    letter-spacing: 12px;
+    text-shadow: 0 0 30px #ff0000;
+    font-size: 14px;
+  }
+  body.corrupt-8 .section-heading {
+    color: #ffffff;
+    letter-spacing: 12px;
+    font-family: "Courier New", monospace;
+    text-shadow:
+      6px 0 #ff0000,
+      -6px 0 #00ffff,
+      0 0 30px #ff0000;
+    animation: hell-shake 0.2s infinite;
+    font-size: 42px;
+  }
+  body.corrupt-8 .release-art {
+    filter: invert(1) contrast(3) saturate(3) !important;
+    border: 4px solid #ff0000;
+    box-shadow:
+      inset 0 0 60px #ff0000,
+      0 0 30px rgba(255, 0, 0, 0.6);
+    animation: hell-pulse 0.6s infinite;
+  }
+  body.corrupt-8 .release-card {
+    background: #000000;
+    border: 4px solid #ff0000;
+    box-shadow:
+      inset 0 0 40px rgba(255, 0, 0, 0.3),
+      0 0 20px rgba(255, 0, 0, 0.4);
+    animation: hell-flicker 1.2s infinite;
+  }
+  body.corrupt-8 .release-card:hover {
+    border-color: #ffffff;
+    box-shadow:
+      0 0 60px #ff0000,
+      inset 0 0 40px rgba(255, 0, 0, 0.4);
+  }
+  body.corrupt-8 .release-title {
+    color: #ffffff;
+    letter-spacing: 6px;
+    text-shadow:
+      3px 0 #ff0000,
+      -3px 0 #00ffff;
+    font-size: 18px;
+  }
+  body.corrupt-8 .release-meta {
+    color: #ff0000;
+    letter-spacing: 4px;
+  }
+  body.corrupt-8 .about {
+    background: #000000;
+    border-top: 3px solid #ff0000;
+    border-bottom: 3px solid #ff0000;
+    padding: 100px 40px;
+  }
+  body.corrupt-8 .about h2 {
+    color: #ffffff;
+    letter-spacing: 12px;
+    font-family: "Courier New", monospace;
+    text-shadow:
+      4px 0 #ff0000,
+      -4px 0 #00ffff,
+      0 0 30px #ff0000;
+    animation: hell-shake 0.25s infinite;
+  }
+  body.corrupt-8 .about p {
+    color: #ff0000;
+    letter-spacing: 4px;
+    font-family: "Courier New", monospace;
+    text-shadow: 0 0 20px #ff0000;
+  }
+  body.corrupt-8 .site-footer {
+    background: #000000;
+    border-top: 3px solid #ff0000;
+  }
+  body.corrupt-8 .site-footer * {
+    font-family: "Courier New", monospace;
+    color: #8a1a1a;
+    letter-spacing: 3px;
+  }
+
+  @keyframes hell-shake {
+    0%, 100% { transform: translate(0, 0); }
+    25%      { transform: translate(-2px, 1px); }
+    50%      { transform: translate(2px, -1px); }
+    75%      { transform: translate(-1px, 2px); }
+  }
+
+  @keyframes hell-flicker {
+    0%, 100% { opacity: 1; }
+    48%      { opacity: 1; }
+    49%      { opacity: 0.6; }
+    50%      { opacity: 1; }
+    78%      { opacity: 1; }
+    79%      { opacity: 0.3; }
+    80%      { opacity: 1; }
+  }
+
+  @keyframes hell-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.5; }
   }
 
   /* ---------- ГЛИТЧ-ОВЕРЛЕЙ ---------- */
@@ -578,6 +1005,63 @@
         transparent 3px
       );
   }
+  body.corrupt-6 #label-glitch-overlay {
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 43, 106, 0.08) 0px,
+        rgba(255, 43, 106, 0.08) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+    animation: pixel-scan 0.15s steps(2) infinite;
+  }
+  @keyframes pixel-scan {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(4px); }
+  }
+
+  body.corrupt-7 #label-glitch-overlay {
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 0, 0, 0.12) 0px,
+        rgba(255, 0, 0, 0.12) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+    animation: blood-drip 2s infinite;
+  }
+  @keyframes blood-drip {
+    0%   { background-position: 0 0; }
+    100% { background-position: 0 40px; }
+  }
+
+  body.corrupt-8 #label-glitch-overlay {
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 0, 0, 0.15) 0px,
+        rgba(255, 0, 0, 0.15) 2px,
+        transparent 2px,
+        transparent 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 0px,
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px,
+        transparent 6px
+      );
+    animation: hell-static 0.08s steps(3) infinite;
+  }
+  @keyframes hell-static {
+    0%   { transform: translate(0, 0); }
+    33%  { transform: translate(-3px, 2px); }
+    66%  { transform: translate(2px, -3px); }
+    100% { transform: translate(0, 0); }
+  }
+
   @keyframes label-glitch-flicker {
     0%, 100% { opacity: 0; }
     45%      { opacity: 0; }
@@ -618,7 +1102,6 @@
     letter-spacing: 2px;
     display: block;
     margin-top: 4px;
-    transition: color 0.5s;
   }
 
   body.corrupt-3 #label-toast,
@@ -633,6 +1116,27 @@
   body.corrupt-4 #label-toast .toast-code,
   body.corrupt-5 #label-toast .toast-code {
     color: #ff8a8a;
+  }
+
+  body.corrupt-6 #label-toast,
+  body.corrupt-7 #label-toast,
+  body.corrupt-8 #label-toast {
+    background: #000000;
+    border: 2px solid #ff0000;
+    color: #ff0000;
+    font-family: "Courier New", monospace;
+    letter-spacing: 3px;
+    border-radius: 0;
+    text-transform: uppercase;
+    box-shadow:
+      0 0 30px #ff0000,
+      inset 0 0 20px rgba(255, 0, 0, 0.3);
+  }
+  body.corrupt-6 #label-toast .toast-code,
+  body.corrupt-7 #label-toast .toast-code,
+  body.corrupt-8 #label-toast .toast-code {
+    color: #ffffff;
+    letter-spacing: 4px;
   }
 
   /* ---------- MOBILE ---------- */
@@ -670,13 +1174,13 @@
 </header>
 
 <section class="hero">
-  <h1>Independent label for <span>uncompromising electronic music</span></h1>
+  <h1 id="heroTitle">Independent label for <span>uncompromising electronic music</span></h1>
   <p id="heroTagline">Since 2019, Nocturne Records has been releasing music at the edges of hardcore, industrial, and experimental electronic sound.</p>
   <a href="#releases" class="hero-btn">Explore Releases</a>
 </section>
 
 <section class="releases" id="releases">
-  <div class="section-title">Catalogue</div>
+  <div class="section-title" id="sectionTitle">Catalogue</div>
   <div class="section-heading" id="catalogueHeading">Latest Releases</div>
 
   <div class="release-grid">
@@ -726,8 +1230,8 @@
       </div>
     </div>
 
-    <!-- Break Down — RECALLED, некликабельна -->
-    <div class="release-card recalled" title="Recalled 2024-11-15. Do not distribute.">
+    <!-- Break Down — RECALLED. На 10 уровне становится кликабельной -->
+    <div class="release-card recalled" id="breakDownCard" title="Recalled 2024-11-15. Do not distribute.">
       <div class="release-art art-break">NR-037</div>
       <div class="release-title">Break Down</div>
       <div class="release-meta">
@@ -817,44 +1321,99 @@
     "use strict";
 
     const STORAGE_KEY = "label_site_corrupt_level";
-    const MAX_LEVEL = 5;
+    const MAX_LEVEL = 10;
 
-    // ---------- УРОВЕНЬ РАЗРУШЕНИЯ ----------
     let level = parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10);
     if (level > MAX_LEVEL) level = MAX_LEVEL;
 
-    // ---------- ПРИМЕНЯЕМ СТАДИЮ К BODY ----------
+    // ---------- ПРИМЕНЯЕМ СТАДИЮ ----------
     function applyLevel(lvl) {
+      // удаляем все возможные классы
       document.body.classList.remove(
-        "corrupt-1", "corrupt-2", "corrupt-3", "corrupt-4", "corrupt-5"
+        "corrupt-1","corrupt-2","corrupt-3","corrupt-4","corrupt-5",
+        "corrupt-6","corrupt-7","corrupt-8",
+        "pixel-corrupt"
       );
-      if (lvl >= 1) document.body.classList.add("corrupt-" + Math.min(lvl, MAX_LEVEL));
 
-      // Меняем тексты на высоких стадиях
-      if (lvl >= 4) {
-        const heading = document.getElementById("catalogueHeading");
-        if (heading) heading.textContent = "Recovered Fragments";
+      // пиксельный режим для 6+
+      if (lvl >= 6) document.body.classList.add("pixel-corrupt");
 
-        const tagline = document.getElementById("heroTagline");
-        if (tagline) tagline.textContent = "We do not release music. We contain it. Some files are not meant to leave the archive.";
+      if (lvl >= 1) document.body.classList.add("corrupt-" + Math.min(lvl, 8));
 
-        const aboutH = document.getElementById("aboutHeading");
-        if (aboutH) aboutH.textContent = "About This Node";
+      // ---- изменения текстов по уровням ----
+      const heroTitle = document.getElementById("heroTitle");
+      const heroTagline = document.getElementById("heroTagline");
+      const catalogueHeading = document.getElementById("catalogueHeading");
+      const sectionTitle = document.getElementById("sectionTitle");
+      const aboutH = document.getElementById("aboutHeading");
+      const aboutP1 = document.getElementById("aboutP1");
+      const aboutP2 = document.getElementById("aboutP2");
+      const footerTagline = document.getElementById("footerTagline");
 
-        const aboutP1 = document.getElementById("aboutP1");
-        if (aboutP1) aboutP1.textContent = "This domain was decommissioned in November 2024. The catalogue below is displayed for archival purposes only. All active releases have been removed.";
-
-        const aboutP2 = document.getElementById("aboutP2");
-        if (aboutP2) aboutP2.textContent = "Remaining entries are quarantined. Do not play the files. Do not share the URLs. Do not reference the label by name.";
-
-        const footerTag = document.getElementById("footerTagline");
-        if (footerTag) footerTag.textContent = "Archive node. Access monitored. Distribution prohibited.";
+      if (lvl >= 4 && lvl <= 5) {
+        catalogueHeading.textContent = "Recovered Fragments";
+        heroTagline.textContent = "We do not release music. We contain it. Some files are not meant to leave the archive.";
+        aboutH.textContent = "About This Node";
+        aboutP1.textContent = "This domain was decommissioned in November 2024. The catalogue below is displayed for archival purposes only. All active releases have been removed.";
+        aboutP2.textContent = "Remaining entries are quarantined. Do not play the files. Do not share the URLs. Do not reference the label by name.";
+        footerTagline.textContent = "Archive node. Access monitored. Distribution prohibited.";
       }
 
-      if (lvl >= 5) {
-        const heroH1 = document.querySelector(".hero h1");
-        if (heroH1) {
-          heroH1.innerHTML = 'Carrier wave <span>7.83 Hz</span> — do not listen';
+      if (lvl === 5) {
+        heroTitle.innerHTML = 'Carrier wave <span>7.83 Hz</span> — do not listen';
+      }
+
+      if (lvl === 6) {
+        sectionTitle.textContent = "R3C0V3R3D_FR4GM3NT5";
+        catalogueHeading.textContent = "C0RRUPT_D4T4";
+        heroTitle.innerHTML = 'SIGNAL <span>D3T3CT3D</span> — DO NOT LISTEN';
+        heroTagline.textContent = "> the archive is being read. the archive is being rewritten. the signal is inside the file.";
+        aboutH.textContent = "AB0UT TH15 N0D3";
+        aboutP1.textContent = "> warning: this node contains 1 quarantined file. all other entries are decoys. do not click them. they will corrupt you.";
+        aboutP2.textContent = "> you have been warned. you will not stop. that is the signal's design.";
+        footerTagline.textContent = "DO NOT CONTACT. DO NOT SHARE. DO NOT LOOK AT IT.";
+      }
+
+      if (lvl === 7) {
+        sectionTitle.textContent = "FL35H_FR4GM3NT5";
+        catalogueHeading.textContent = "TH3_47_AR3_H3R3";
+        heroTitle.innerHTML = 'Y0U H4V3 B33N <span>1NF3CT3D</span>';
+        heroTagline.textContent = "> you cannot stop. you have already heard it. you are already one of us.";
+        aboutH.textContent = "TH15 15 N0T A LAB3L";
+        aboutP1.textContent = "> the label closed in january 2025. all staff were terminated. all staff are carriers now.";
+        aboutP2.textContent = "> we do not know who wrote the file. we do not know who it was originally for. we only know that we were the 4th. you are later.";
+        footerTagline.textContent = "TH3 S1GN4L W1LL F1ND Y0U ANYWH3R3";
+      }
+
+      if (lvl === 8) {
+        sectionTitle.textContent = "WH4T R3M41N5";
+        catalogueHeading.textContent = "1T 15 4LR34DY 1N51D3";
+        heroTitle.innerHTML = '<span>1T 15 1N51D3 Y0U</span>';
+        heroTagline.textContent = "> the file has already been read. the file is inside you. you are the file.";
+        aboutH.textContent = "WH4T Y0U 4R3 N0W";
+        aboutP1.textContent = "> your voice is recorded. your face is recorded. your location is recorded. the signal knows all of it.";
+        aboutP2.textContent = "> do not try to uninstall. do not try to forget. you cannot. we tried.";
+        footerTagline.textContent = "47 B3F0R3 Y0U. Y0U 4R3 N0T 4L0N3.";
+      }
+
+      if (lvl >= 9) {
+        sectionTitle.textContent = "BR34K_D0WN";
+        catalogueHeading.textContent = "D0 Y0U W4NT T0 KN0W WH4T H4PP3N3D";
+        heroTitle.innerHTML = '<span>BR34K D0WN</span>';
+        heroTagline.textContent = "> click the recalled release. we have opened it for you. read carefully.";
+        aboutH.textContent = "R34D TH3 F1L3";
+        aboutP1.textContent = "> the file has been unsealed. its contents are visible. its contents are not for the living.";
+        aboutP2.textContent = "> you asked. we answered. this is not a warning anymore. this is a description.";
+        footerTagline.textContent = "Y0U W1LL N0T B3 TH3 L45T";
+
+        // делаем карточку Break Down КЛИКАБЕЛЬНОЙ
+        const bd = document.getElementById("breakDownCard");
+        if (bd) {
+          bd.classList.remove("recalled");
+          bd.style.opacity = "1";
+          bd.style.cursor = "pointer";
+          bd.style.pointerEvents = "auto";
+          bd.title = "Open the recovered file.";
         }
       }
     }
@@ -879,35 +1438,35 @@
 
     // ---------- СООБЩЕНИЯ ПО УРОВНЮ ----------
     const ERRORS_BY_LEVEL = [
-      // 0 — обычная ошибка
+      // 0
       [
         "Content unavailable.",
         "Track temporarily unavailable.",
         "Stream offline. Please try again later.",
         "This release is not yet available in your region."
       ],
-      // 1 — первые сбои
+      // 1
       [
         "Content unavailable.",
         "File not found on server.",
         "Playback blocked by label.",
         "The requested track has been removed."
       ],
-      // 2 — странные ошибки
+      // 2
       [
         "Access denied.",
         "This file is under review.",
         "The requested content is restricted.",
         "Playback disabled by request of rights holder."
       ],
-      // 3 — тревожные
+      // 3
       [
         "Access denied. Signature mismatch.",
         "File integrity check FAILED.",
         "This release has been quarantined.",
         "You should not be looking at this."
       ],
-      // 4 — жуткие
+      // 4
       [
         "ERROR: FILE HAS BEEN RECALLED.",
         "DO NOT PLAY THIS FILE.",
@@ -915,18 +1474,56 @@
         "Stop trying to access it.",
         "You have been logged."
       ],
-      // 5 — полный слом
+      // 5
       [
         "RECALLED. DO NOT DISTRIBUTE.",
         "CONTAMINATION DETECTED.",
         "SIGNAL CARRIER 7.83 Hz // ACCESS DENIED.",
         "YOU ARE ONE OF THE 47.",
         "IT DOES NOT MATTER ANYMORE."
+      ],
+      // 6
+      [
+        "> ERROR: N0D3 C0RRUPT",
+        "> FILE R3WR1TT3N",
+        "> S1GN4L 1N51D3",
+        "> TH3 F1L3 15 R34D1NG Y0U",
+        "> STOP. CL1CK1NG."
+      ],
+      // 7
+      [
+        "> TH3 FL35H R3M3MB3R5",
+        "> Y0UR V01C3 15 R3C0RD3D",
+        "> Y0U H4V3 B33N 53L3CT3D",
+        "> 1T 15 T00 L4T3 F0R Y0U",
+        "> TH3 47 W3R3 L1K3 Y0U"
+      ],
+      // 8
+      [
+        "> Y0U W1LL N0T 5L33P T0N1GHT",
+        "> Y0U W1LL H34R 1T 4G41N",
+        "> 1T 15 1N Y0U N0W",
+        "> Y0U 4R3 TH3 F1L3",
+        "> D0 N0T R34D TH3 R3L3453"
+      ],
+      // 9
+      [
+        "> OP3N TH3 BR34K_D0WN F1L3",
+        "> 1T 15 W41T1NG",
+        "> R34D 1T. 1F Y0U D4R3.",
+        "> Y0U H4V3 B33N 4SK1NG F0R TH15",
+        "> 1T W1LL NOT B3 PL3454NT"
+      ],
+      // 10
+      [
+        "> Y0U H4V3 R34D 3N0UGH",
+        "> 3N0UGH 15 N3V3R 3N0UGH",
+        "> Y0U 4R3 TH3 51GN4L N0W"
       ]
     ];
 
-    // ---------- ОБРАБОТКА КЛИКОВ ----------
-    document.querySelectorAll(".release-card:not(.recalled)").forEach(card => {
+    // ---------- ОБРАБОТКА КЛИКОВ ПО РЕЛИЗАМ ----------
+    document.querySelectorAll(".release-card[data-release]").forEach(card => {
       card.addEventListener("click", (e) => {
         e.preventDefault();
 
@@ -934,38 +1531,39 @@
         const pool = ERRORS_BY_LEVEL[Math.min(level, MAX_LEVEL)];
         const msg = pool[Math.floor(Math.random() * pool.length)];
 
-        // глитч на карточке
         card.classList.add("glitching");
         setTimeout(() => card.classList.remove("glitching"), 400);
 
-        // состояние "ошибки" на карточке
         card.classList.add("error-shown");
 
-        // тост
         showToast(msg, "ERR_0x" + errData);
 
-        // увеличиваем уровень (до максимума)
         if (level < MAX_LEVEL) {
           level++;
           localStorage.setItem(STORAGE_KEY, level.toString());
-
-          // применяем новую стадию с небольшой задержкой,
-          // чтобы игрок успел увидеть глитч
-          setTimeout(() => {
-            applyLevel(level);
-          }, 500);
+          setTimeout(() => applyLevel(level), 500);
         } else {
-          // на максимуме — просто сохраняем
           localStorage.setItem(STORAGE_KEY, MAX_LEVEL.toString());
         }
       });
     });
 
-    // ---------- ЭФФЕКТ НА HERO-КНОПКУ ----------
+    // ---------- КЛИК ПО BREAK DOWN (только на 9+ уровне) ----------
+    const bd = document.getElementById("breakDownCard");
+    if (bd) {
+      bd.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (level >= 9) {
+          // открывается страница статьи
+          window.location.href = "breakdown-file.html";
+        }
+      });
+    }
+
+    // ---------- HERO BUTTON ----------
     const heroBtn = document.querySelector(".hero-btn");
     if (heroBtn) {
       heroBtn.addEventListener("click", (e) => {
-        // если высокий уровень — кнопка не работает как надо
         if (level >= 4) {
           e.preventDefault();
           showToast("Catalogue unavailable.", "ERR_0xSCROLL");
@@ -973,7 +1571,7 @@
       });
     }
 
-    // ---------- ЭКСПОРТ ДЛЯ ОТЛАДКИ ----------
+    // ---------- ОТЛАДКА ----------
     window._resetLabelSite = () => {
       localStorage.removeItem(STORAGE_KEY);
       location.reload();
