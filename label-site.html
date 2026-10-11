@@ -783,4 +783,207 @@
     <div>
       <h4>Music</h4>
       <a href="#">Catalogue</a>
-      <
+      <a href="#">Vinyl</a>
+      <a href="#">Digital</a>
+    </div>
+    <div>
+      <h4>Label</h4>
+      <a href="#">About</a>
+      <a href="#">Artists</a>
+      <a href="#">Contact</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="#">Imprint</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Nocturne Records. All rights reserved.</span>
+    <span>Made in Europe.</span>
+  </div>
+</footer>
+
+<a href="label.html" class="secret-back" title="">← back to the other side</a>
+
+<div id="label-toast">
+  <span id="toastText">Content unavailable.</span>
+  <span class="toast-code" id="toastCode">ERR_0x00</span>
+</div>
+
+<script>
+  (function () {
+    "use strict";
+
+    const STORAGE_KEY = "label_site_corrupt_level";
+    const MAX_LEVEL = 5;
+
+    // ---------- УРОВЕНЬ РАЗРУШЕНИЯ ----------
+    let level = parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10);
+    if (level > MAX_LEVEL) level = MAX_LEVEL;
+
+    // ---------- ПРИМЕНЯЕМ СТАДИЮ К BODY ----------
+    function applyLevel(lvl) {
+      document.body.classList.remove(
+        "corrupt-1", "corrupt-2", "corrupt-3", "corrupt-4", "corrupt-5"
+      );
+      if (lvl >= 1) document.body.classList.add("corrupt-" + Math.min(lvl, MAX_LEVEL));
+
+      // Меняем тексты на высоких стадиях
+      if (lvl >= 4) {
+        const heading = document.getElementById("catalogueHeading");
+        if (heading) heading.textContent = "Recovered Fragments";
+
+        const tagline = document.getElementById("heroTagline");
+        if (tagline) tagline.textContent = "We do not release music. We contain it. Some files are not meant to leave the archive.";
+
+        const aboutH = document.getElementById("aboutHeading");
+        if (aboutH) aboutH.textContent = "About This Node";
+
+        const aboutP1 = document.getElementById("aboutP1");
+        if (aboutP1) aboutP1.textContent = "This domain was decommissioned in November 2024. The catalogue below is displayed for archival purposes only. All active releases have been removed.";
+
+        const aboutP2 = document.getElementById("aboutP2");
+        if (aboutP2) aboutP2.textContent = "Remaining entries are quarantined. Do not play the files. Do not share the URLs. Do not reference the label by name.";
+
+        const footerTag = document.getElementById("footerTagline");
+        if (footerTag) footerTag.textContent = "Archive node. Access monitored. Distribution prohibited.";
+      }
+
+      if (lvl >= 5) {
+        const heroH1 = document.querySelector(".hero h1");
+        if (heroH1) {
+          heroH1.innerHTML = 'Carrier wave <span>7.83 Hz</span> — do not listen';
+        }
+      }
+    }
+
+    applyLevel(level);
+
+    // ---------- TOAST ----------
+    const toast = document.getElementById("label-toast");
+    const toastText = document.getElementById("toastText");
+    const toastCode = document.getElementById("toastCode");
+    let toastTimer = null;
+
+    function showToast(text, code) {
+      toastText.textContent = text;
+      toastCode.textContent = code;
+      toast.classList.add("show");
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2600);
+    }
+
+    // ---------- СООБЩЕНИЯ ПО УРОВНЮ ----------
+    const ERRORS_BY_LEVEL = [
+      // 0 — обычная ошибка
+      [
+        "Content unavailable.",
+        "Track temporarily unavailable.",
+        "Stream offline. Please try again later.",
+        "This release is not yet available in your region."
+      ],
+      // 1 — первые сбои
+      [
+        "Content unavailable.",
+        "File not found on server.",
+        "Playback blocked by label.",
+        "The requested track has been removed."
+      ],
+      // 2 — странные ошибки
+      [
+        "Access denied.",
+        "This file is under review.",
+        "The requested content is restricted.",
+        "Playback disabled by request of rights holder."
+      ],
+      // 3 — тревожные
+      [
+        "Access denied. Signature mismatch.",
+        "File integrity check FAILED.",
+        "This release has been quarantined.",
+        "You should not be looking at this."
+      ],
+      // 4 — жуткие
+      [
+        "ERROR: FILE HAS BEEN RECALLED.",
+        "DO NOT PLAY THIS FILE.",
+        "This content has been flagged as unsafe.",
+        "Stop trying to access it.",
+        "You have been logged."
+      ],
+      // 5 — полный слом
+      [
+        "RECALLED. DO NOT DISTRIBUTE.",
+        "CONTAMINATION DETECTED.",
+        "SIGNAL CARRIER 7.83 Hz // ACCESS DENIED.",
+        "YOU ARE ONE OF THE 47.",
+        "IT DOES NOT MATTER ANYMORE."
+      ]
+    ];
+
+    // ---------- ОБРАБОТКА КЛИКОВ ----------
+    document.querySelectorAll(".release-card:not(.recalled)").forEach(card => {
+      card.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        const errData = card.dataset.err || "00";
+        const pool = ERRORS_BY_LEVEL[Math.min(level, MAX_LEVEL)];
+        const msg = pool[Math.floor(Math.random() * pool.length)];
+
+        // глитч на карточке
+        card.classList.add("glitching");
+        setTimeout(() => card.classList.remove("glitching"), 400);
+
+        // состояние "ошибки" на карточке
+        card.classList.add("error-shown");
+
+        // тост
+        showToast(msg, "ERR_0x" + errData);
+
+        // увеличиваем уровень (до максимума)
+        if (level < MAX_LEVEL) {
+          level++;
+          localStorage.setItem(STORAGE_KEY, level.toString());
+
+          // применяем новую стадию с небольшой задержкой,
+          // чтобы игрок успел увидеть глитч
+          setTimeout(() => {
+            applyLevel(level);
+          }, 500);
+        } else {
+          // на максимуме — просто сохраняем
+          localStorage.setItem(STORAGE_KEY, MAX_LEVEL.toString());
+        }
+      });
+    });
+
+    // ---------- ЭФФЕКТ НА HERO-КНОПКУ ----------
+    const heroBtn = document.querySelector(".hero-btn");
+    if (heroBtn) {
+      heroBtn.addEventListener("click", (e) => {
+        // если высокий уровень — кнопка не работает как надо
+        if (level >= 4) {
+          e.preventDefault();
+          showToast("Catalogue unavailable.", "ERR_0xSCROLL");
+        }
+      });
+    }
+
+    // ---------- ЭКСПОРТ ДЛЯ ОТЛАДКИ ----------
+    window._resetLabelSite = () => {
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    };
+    window._setLabelLevel = (n) => {
+      localStorage.setItem(STORAGE_KEY, Math.min(Math.max(n, 0), MAX_LEVEL).toString());
+      location.reload();
+    };
+  })();
+</script>
+
+</body>
+</html>
