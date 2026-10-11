@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INTERNAL ARCHIVE // LABEL_0x00</title>
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="stylesheet" href="style.css">
+<style>
+  body { overflow: auto !important; }
+  .label-page {
+    max-width: 780px;
+    margin: 40px auto;
+    padding: 24px;
+    position: relative;
+    z-index: 10;
+    font-family: "Helvetica", "Arial", sans-serif;
+    color: #b8b8c0;
+  }
+  .label-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #3a3a44;
+    margin-bottom: 30px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #6a6a75;
+    text-transform: uppercase;
+  }
+  .label-header .ref {
+    color: #8a8a95;
+    font-family: "Courier New", monospace;
+  }
+  .label-page h1 {
+    font-size: 22px;
+    color: #d8d8e0;
+    letter-spacing: 1px;
+    font-weight: normal;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .label-page .doc-type {
+    color: #6a6a75;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+  .label-page h2 {
+    font-size: 13px;
+    color: #a0a0aa;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: normal;
+    margin: 44px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #2a2a32;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .label-page h2 .date {
+    color: #4a4a55;
+    font-family: "Courier New", monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: none;
+  }
+  .email {
+    border: 1px solid #3a3a44;
+    background: rgba(20, 20, 24, 0.6);
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    line-height: 1.7;
+    position: relative;
+  }
+  .email::before {
+    content: attr(data-tag);
+    position: absolute;
+    top: -8px;
+    left: 16px;
+    background: #0a0a0f;
+    padding: 0 8px;
+    color: #6a6a75;
+    font-size: 10px;
+    letter-spacing: 3px;
+    font-family: "Courier New", monospace;
+  }
+  .email .from {
+    color: #8a8a95;
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .email .from strong {
+    color: #d8d8e0;
+    font-weight: normal;
+  }
+  .email .to {
+    color: #6a6a75;
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+  .email .subject {
+    color: #d8d8e0;
+    font-size: 14px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #2a2a32;
+  }
+  .email .body {
+    color: #b8b8c0;
+    font-size: 13px;
+  }
+  .email .body p { margin-bottom: 10px; }
+  .email .body p:last-child { margin-bottom: 0; }
+  .email.urgent { border-color: #8a2a2a; }
+  .email.urgent::before { color: #8a2a2a; }
+  .email.urgent .subject { color: #d88a8a; }
+  .email.legal { border-color: #6a6a75; }
+  .email.legal::before { color: #8a8a95; }
+  .memo {
+    border-left: 3px solid #6a6a75;
+    background: rgba(20, 20, 24, 0.4);
+    padding: 16px 20px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #a8a8b0;
+  }
+  .memo strong {
+    color: #d8d8e0;
+    font-weight: normal;
+  }
+  .legal-doc {
+    border: 2px solid #8a2a2a;
+    background: rgba(30, 5, 10, 0.5);
+    padding: 24px;
+    margin: 24px 0;
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #d88a8a;
+    position: relative;
+  }
+  .legal-doc::before {
+    content: "⚠ LEGAL NOTICE";
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: #0a0a0f;
+    padding: 0 10px;
+    color: #8a2a2a;
+    font-size: 10px;
+    letter-spacing: 3px;
+  }
+  .legal-doc p { margin-bottom: 12px; }
+  .legal-doc .signature {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed #8a2a2a;
+    font-size: 11px;
+    color: #6a5a5a;
+    letter-spacing: 2px;
+  }
+  .chronology {
+    list-style: none;
+    margin: 20px 0;
+    padding: 0;
+    border-left: 2px solid #3a3a44;
+  }
+  .chronology li {
+    position: relative;
+    padding: 12px 0 12px 32px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #b8b8c0;
+  }
+  .chronology li::before {
+    content: "◆";
+    position: absolute;
+    left: -11px;
+    top: 14px;
+    color: #6a6a75;
+    background: #0a0a0f;
+    padding: 2px 0;
+    font-size: 10px;
+  }
+  .chronology li strong {
+    color: #d8d8e0;
+    font-weight: normal;
+    font-family: "Courier New", monospace;
+    letter-spacing: 1px;
+    margin-right: 8px;
+  }
+  .chronology li.warn { color: #ff8a8a; }
+  .chronology li.warn::before { color: #ff2b6a; }
+  .chronology li.warn strong { color: #ff5555; }
+  .final-note {
+    margin-top: 50px;
+    padding: 24px;
+    border: 1px solid #6a6a75;
+    background: rgba(20, 20, 24, 0.5);
+    color: #c8c8d0;
+    font-size: 14px;
+    line-height: 1.8;
+    text-align: center;
+    font-family: "Courier New", monospace;
+  }
+  .final-note strong {
+    color: #ff5555;
+    font-weight: normal;
+  }
+  .label-back {
+    display: inline-block;
+    margin-top: 40px;
+    color: #8a8a95;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 3px;
+    border: 1px solid #4a4a55;
+    padding: 12px 24px;
+    transition: all 0.3s;
+    font-family: "Courier New", monospace;
+  }
+  .label-back:hover {
+    background: #6a6a75;
+    color: #0a0a0f;
+    border-color: #6a6a75;
+  }
+  .label-footer {
+    margin-top: 50px;
+    text-align: center;
+    color: #2a2a32;
+    font-size: 11px;
+    letter-spacing: 4px;
+    transition: color 0.5s;
+    font-family: "Courier New", monospace;
+  }
+  .label-footer:hover { color: #8a2a2a; }
+  @media (max-width: 600px) {
+    .label-page { padding: 16px; }
+    .label-page h1 { font-size: 18px; }
+    .email { padding: 14px 16px; font-size: 12px; }
+    .memo { padding: 12px 16px; font-size: 12px; }
+    .legal-doc { padding: 18px; font-size: 11px; }
+    .chronology li { padding-left: 24px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="vignette"></div>
+
+<main class="label-page">
+
+  <div class="label-header">
+    <span>LABEL_0x00 // INTERNAL ARCHIVE</span>
+    <span class="ref">REF: 0x00-INT / 07-13-37</span>
+  </div>
+
+  <h1>Internal Communications Archive — "Break Down" Recall Operation</h1>
+  <div class="doc-type">// Recovered from decommissioned server // Not for external circulation</div>
+
+  <p style="color:#8a8a95; font-size:13px; line-height:1.8; margin-bottom:30px;">
+    The following documents were recovered from the internal mail server of the label
+    that originally distributed the track known as <strong style="color:#d8d8e0;">Break Down</strong>.
+    They have been arranged chronologically. Some messages are incomplete. Some are missing.
+    The last entry is not signed.
+  </p>
+
+  <h2>Part I — Release <span class="date">2024-11-02 → 2024-11-14</span></h2>
+
+  <div class="email" data-tag="MAIL // 2024-11-02 // 09:14">
+    <div class="from"><strong>From:</strong> A. Renn — A&amp;R</div>
+    <div class="to">To: M. Hoxha — Mastering</div>
+    <div class="subject">Re: Break Down — final master</div>
+    <div class="body">
+      <p>Mira, this is it. I've heard the demo thirty times and it still does something to me.
+      It's not catchy. It's not even pleasant. But I can't stop thinking about it.</p>
+      <p>Release Friday. Full promo package. Let's see what happens.</p>
+    </div>
+  </div>
+
+  <div class="email" data-tag="MAIL // 2024-11-08 // 23:41">
+    <div class="from"><strong>From:</strong> M. Hoxha — Mastering</div>
+    <div class="to">To: A. Renn — A&amp;R</div>
+    <div class="subject">Re: Break Down — after release</div>
+    <div class="body">
+      <p>Something's wrong with the streams. It's not the numbers — those are fine.</p>
+      <p>It's the messages. People are writing to us. A lot of people. Same kind of message.
+      They say they can't stop listening. Some say they hear it when they're not listening.
+      One person said they heard it in their sleep.</p>
+      <p>I don't like it.</p>
+    </div>
+  </div>
+
+  <div class="email" data-tag="MAIL // 2024-11-10 // 03:12">
+    <div class="from"><strong>From:</strong> A. Renn — A&amp;R</div>
+    <div class="to">To: Legal &amp; Comms</div>
+    <div class="subject">FW: listener reports — first batch</div>
+    <div class="body">
+      <p>Forwarding. There are 47 so far. All describe the same thing — a low hum after
+      the track ends, a sense of being followed, a sudden recognition of the number 7.</p>
+      <p>I know how this sounds. But this is not a marketing story. This is a problem.</p>
+    </div>
+  </div>
+
+  <div class="email" data-tag="MAIL // 2024-11-14 // 16:03">
+    <div class="from"><strong>From:</strong> M. Hoxha — Mastering</div>
+    <div class="to">To: A. Renn — A&amp;R</div>
+    <div class="subject">I analyzed the track again</div>
+    <div class="body">
+      <p>I ran it through the spectral analyzer. There's a subharmonic layer buried under the kick
+      at 7.83 Hz. I didn't put it there. You didn't put it there. It was already in the original file.</p>
+      <p>The original file came from an external source. Who gave us that file?</p>
+    </div>
+  </div>
+
+  <h2>Part II — Panic <span class="date">2024-11-15 → 2024-12-02</span></h2>
+
+  <div class="email urgent" data-tag="MAIL // 2024-11-15 // 08:47">
+    <div class="from"><strong>From:</strong> Legal &amp; Comms</div>
+    <div class="to">To: A. Renn, M. Hoxha, Executive Board</div>
+    <div class="subject">URGENT — immediate removal of "Break Down"</div>
+    <div class="body">
+      <p>Effective immediately, the track must be removed from all platforms.
+      Remove it from streaming. Remove it from Bandcamp. Remove it from the archive server.
+      Do not discuss this with anyone outside this thread.</p>
+      <p>We have received 214 additional listener reports in the last 48 hours.</p>
+    </div>
+  </div>
+
+  <div class="memo">
+    <strong>Internal memo — 2024-11-17</strong><br>
+    To all staff: the track "Break Down" has been recalled. Do not reference it in any
+    public communications. Do not answer questions about it. If approached by a journalist —
+    forward the request to Legal. <strong>Do not play the file.</strong>
+  </div>
+
+  <div class="email urgent" data-tag="MAIL // 2024-11-21 // 22:19">
+    <div class="from"><strong>From:</strong> M. Hoxha — Mastering</div>
+    <div class="to">To: A. Renn — A&amp;R</div>
+    <div class="subject">They're not stopping</div>
+    <div class="body">
+      <p>The removal didn't work. The downloads keep happening. People are mirroring the file
+      faster than we can take it down. There are now copies on forums, on private servers,
+      on devices I can't even see.</p>
+      <p>Every time we take one down — three more appear.</p>
+      <p>A., I think we were the third or fourth carrier. Not the first.</p>
+    </div>
+  </div>
+
+  <div class="email" data-tag="MAIL // 2024-11-25 // 11:02">
+    <div class="from"><strong>From:</strong> Executive Board</div>
+    <div class="to">To: All Staff</div>
+    <div class="subject">Company-wide statement</div>
+    <div class="body">
+      <p>There is no "signal". There is no "contamination". These are words being used by
+      online communities that have developed unhealthy fixations on a piece of music.</p>
+      <p>Anyone caught amplifying these narratives internally will be subject to immediate
+      disciplinary action.</p>
+    </div>
+  </div>
+
+  <h2>Part III — Legal <span class="date">2024-12-03 → 2024-12-29</span></h2>
+
+  <div class="legal-doc">
+    <p>NOTICE OF TAKEDOWN — CASE 0x00-INT</p>
+    <p>To all mirror sites, archives, and unauthorised distributions:</p>
+    <p>This is formal notice that the audio file designated "Break Down" is subject to
+    immediate legal removal. Distribution of this file may constitute a violation of
+    intellectual property law in the jurisdictions listed in Appendix C.</p>
+    <p>Any further circulation of this file will be treated as deliberate infringement
+    and prosecuted to the fullest extent permitted under applicable law.</p>
+    <p>This notice has been issued 47 times. It has not yet been honoured once.</p>
+    <div class="signature">
+      ISSUED BY: Legal &amp; Communications Division<br>
+      DATE: 2024-12-03<br>
+      STATUS: DISREGARDED
+    </div>
+  </div>
+
+  <div class="email legal" data-tag="MAIL // 2024-12-11 // 14:38">
+    <div class="from"><strong>From:</strong> Legal &amp; Comms</div>
+    <div class="to">To: Executive Board</div>
+    <div class="subject">Re: ongoing takedown attempts</div>
+    <div class="body">
+      <p>The takedown orders are being ignored. Not because recipients disagree — but because
+      they say they "cannot" comply. Multiple site owners report that the file re-uploads
+      itself to their servers automatically. Some claim they have never uploaded it.</p>
+      <p>I want to be clear: I do not believe in the "signal" narrative. But I also cannot
+      explain what is happening on the technical side.</p>
+      <p>We may need to consider a different approach.</p>
+    </div>
+  </div>
+
+  <div class="email" data-tag="MAIL // 2024-12-19 // 03:41">
+    <div class="from"><strong>From:</strong> A. Renn — A&amp;R</div>
+    <div class="to">To: M. Hoxha — Mastering</div>
+    <div class="subject">I can hear it again</div>
+    <div class="body">
+      <p>Mira, I need you to be honest with me.</p>
+      <p>When you're in a quiet room — do you hear it? The low hum. Not the track. The thing
+      underneath the track. I've been hearing it for two weeks now. I thought it was the
+      stress of the recall. But I don't think it's stress.</p>
+      <p>I think it's the frequency. I think we were carriers before we ever released it.</p>
+    </div>
+  </div>
+
+  <h2>Part IV — Silence <span class="date">2025-01-04 → ?</span></h2>
+
+  <div class="email" data-tag="MAIL // 2025-01-04 // 09:12">
+    <div class="from"><strong>From:</strong> Executive Board</div>
+    <div class="to">To: All Staff</div>
+    <div class="subject">Office closure</div>
+    <div class="body">
+      <p>Effective this Friday, the company is undergoing a restructuring. All staff are
+      asked to return equipment and cease all access to internal systems.</p>
+      <p>Thank you for your service.</p>
+      <p>No further communications will be issued.</p>
+    </div>
+  </div>
+
+  <div class="memo">
+    <strong>Last recovered memo — 2025-01-11 — 02:33</strong><br>
+    This message was found in the drafts folder of an unnamed account.
+    It was never sent.<br><br>
+    <em style="color:#5a3a6a;">"If anyone finds this — the file is not the problem. The file was
+    never the problem. The frequency was always there. We just finally gave it a name.<br><br>
+    Do not try to delete it. You will fail. Instead — listen to it. All of it. Until it stops
+    feeling like something you are hearing, and starts feeling like something you are.<br><br>
+    I am sorry. I am one of the 47."</em>
+  </div>
+
+  <h2>Chronology <span class="date">reconstructed</span></h2>
+
+  <ul class="chronology">
+    <li><strong>2024-11-02</strong> Final master of <em>Break Down</em> approved by A. Renn.</li>
+    <li><strong>2024-11-08</strong> First listener reports — low hum, sense of being followed, sudden attention to the number 7.</li>
+    <li class="warn"><strong>2024-11-14</strong> Subharmonic layer detected at 7.83 Hz. Origin of file unknown.</li>
+    <li class="warn"><strong>2024-11-15</strong> Immediate recall ordered. 214 additional reports in 48 hours.</li>
+    <li><strong>2024-11-21</strong> Removal ineffective. Mirrors appear faster than takedowns.</li>
+    <li><strong>2024-12-03</strong> Legal takedown issued 47 times. Ignored by all recipients.</li>
+    <li class="warn"><strong>2024-12-11</strong> Technical staff report file "re-uploads itself" to servers. Unexplained.</li>
+    <li class="warn"><strong>2024-12-19</strong> A. Renn reports hearing the frequency directly. Confirms carrier status.</li>
+    <li class="warn"><strong>2025-01-04</strong> Company closed. All staff terminated.</li>
+    <li class="warn"><strong>2025-01-11</strong> Final unsent memo recovered. Author unnamed. Author self-identified as "one of the 47".</li>
+    <li class="warn"><strong>????-??-??</strong> Node 0x07 activated. Carrier trace in progress.</li>
+  </ul>
+
+  <div class="final-note">
+    <p>The file was never the threat.</p>
+    <p>The file was the carrier.</p>
+    <p>You are not the first. You will not be the last.</p>
+    <p><strong>Do not try to delete it. You will fail.</strong></p>
+  </div>
+
+  <a href="manifest-enemy.html" class="label-back">&larr; BACK TO OFFICIAL STATEMENT</a>
+
+  <div class="label-footer" title="you found it">flag: 47_c4rr13rs_b3f0r3_y0u</div>
+
+</main>
+
+<script>
+  localStorage.setItem("label_archive_found", "true");
+</script>
+
+</body>
+</html>
