@@ -7,7 +7,6 @@
 <link rel="icon" href="logo.png" type="image/png">
 <link rel="apple-touch-icon" href="logo.png">
 <style>
-  /* ---------- СВЕТЛЫЙ КОРПОРАТИВНЫЙ СТИЛЬ ---------- */
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html, body {
@@ -18,9 +17,10 @@
     overflow-x: hidden;
     cursor: default;
     -webkit-font-smoothing: antialiased;
+    transition: background 1.2s ease, color 1.2s ease;
   }
 
-  /* ---------- ХЕДЕР ---------- */
+  /* ---------- HEADER ---------- */
   .site-header {
     background: #ffffff;
     border-bottom: 1px solid #e5e5ea;
@@ -29,6 +29,7 @@
     top: 0;
     z-index: 100;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: background 1.2s ease, border-color 1.2s ease, box-shadow 1.2s ease;
   }
   .site-header-inner {
     max-width: 1200px;
@@ -43,21 +44,21 @@
     font-weight: 700;
     letter-spacing: -0.5px;
     color: #1a1a2e;
+    transition: color 1.2s ease, text-shadow 1.2s ease;
   }
-  .logo span {
-    color: #6e6ee6;
-  }
+  .logo span { color: #6e6ee6; transition: color 1.2s ease; }
   .nav {
     display: flex;
     gap: 32px;
     font-size: 14px;
     font-weight: 500;
     color: #4a4a5e;
+    transition: color 1.2s ease;
   }
   .nav a {
     color: inherit;
     text-decoration: none;
-    transition: color 0.2s;
+    transition: color 0.3s;
   }
   .nav a:hover { color: #6e6ee6; }
 
@@ -67,6 +68,7 @@
     padding: 100px 40px 80px;
     text-align: center;
     border-bottom: 1px solid #e5e5ea;
+    transition: background 1.2s ease, border-color 1.2s ease;
   }
   .hero h1 {
     font-size: 48px;
@@ -78,6 +80,7 @@
     margin-left: auto;
     margin-right: auto;
     color: #1a1a2e;
+    transition: color 1.2s ease, text-shadow 1.2s ease;
   }
   .hero h1 span {
     background: linear-gradient(135deg, #6e6ee6, #a855f7);
@@ -91,6 +94,7 @@
     max-width: 560px;
     margin: 0 auto 32px;
     line-height: 1.6;
+    transition: color 1.2s ease;
   }
   .hero-btn {
     display: inline-block;
@@ -101,7 +105,7 @@
     border-radius: 8px;
     font-size: 15px;
     font-weight: 600;
-    transition: all 0.2s;
+    transition: all 0.4s;
   }
   .hero-btn:hover {
     background: #6e6ee6;
@@ -109,7 +113,7 @@
     box-shadow: 0 8px 20px rgba(110, 110, 230, 0.25);
   }
 
-  /* ---------- СЕКЦИЯ РЕЛИЗОВ ---------- */
+  /* ---------- RELEASES ---------- */
   .releases {
     max-width: 1200px;
     margin: 0 auto;
@@ -122,6 +126,7 @@
     color: #6e6ee6;
     text-transform: uppercase;
     margin-bottom: 12px;
+    transition: color 1.2s ease, text-shadow 1.2s ease;
   }
   .section-heading {
     font-size: 32px;
@@ -129,6 +134,7 @@
     letter-spacing: -0.8px;
     color: #1a1a2e;
     margin-bottom: 40px;
+    transition: color 1.2s ease, text-shadow 1.2s ease;
   }
 
   .release-grid {
@@ -145,9 +151,10 @@
     text-decoration: none;
     color: inherit;
     display: block;
-    transition: all 0.25s;
+    transition: all 0.5s ease;
     position: relative;
     overflow: hidden;
+    cursor: pointer;
   }
   .release-card:hover {
     transform: translateY(-2px);
@@ -169,6 +176,7 @@
     letter-spacing: -2px;
     position: relative;
     overflow: hidden;
+    transition: filter 1.5s ease, box-shadow 1.5s ease;
   }
   .release-art.art-1 { background: linear-gradient(135deg, #667eea, #764ba2); }
   .release-art.art-2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
@@ -206,6 +214,7 @@
     font-weight: 600;
     color: #1a1a2e;
     margin-bottom: 4px;
+    transition: color 1.2s ease;
   }
   .release-meta {
     font-size: 13px;
@@ -213,12 +222,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: color 1.2s ease;
   }
   .release-meta .format {
     font-size: 11px;
     letter-spacing: 1px;
     color: #8a8a9e;
     text-transform: uppercase;
+    transition: color 1.2s ease;
   }
 
   .release-card.recalled {
@@ -236,12 +247,41 @@
     box-shadow: none;
   }
 
-  /* ---------- БЛОК "О ЛЕЙБЛЕ" ---------- */
+  /* ---------- GLITCH КАРТОЧКИ ---------- */
+  .release-card.glitching {
+    animation: card-glitch 0.4s steps(2) 1;
+  }
+  @keyframes card-glitch {
+    0%   { transform: translate(0); filter: none; }
+    20%  { transform: translate(-3px, 1px); filter: hue-rotate(90deg) saturate(2); }
+    40%  { transform: translate(2px, -2px); filter: hue-rotate(-60deg) invert(1); }
+    60%  { transform: translate(-2px, 2px); filter: brightness(2); }
+    80%  { transform: translate(1px, -1px); filter: hue-rotate(180deg); }
+    100% { transform: translate(0); filter: none; }
+  }
+
+  .release-card.error-shown {
+    background: #fff5f5;
+    border-color: #ffb8b8;
+  }
+  .release-card.error-shown .release-title {
+    color: #8a2a2a;
+  }
+  .release-card.error-shown .release-title::after {
+    content: " // ERR_0x" attr(data-err);
+    color: #d88a8a;
+    font-size: 11px;
+    font-family: "Courier New", monospace;
+    letter-spacing: 1px;
+  }
+
+  /* ---------- ABOUT ---------- */
   .about {
     background: #ffffff;
     border-top: 1px solid #e5e5ea;
     border-bottom: 1px solid #e5e5ea;
     padding: 80px 40px;
+    transition: background 1.2s ease, border-color 1.2s ease;
   }
   .about-inner {
     max-width: 800px;
@@ -254,20 +294,24 @@
     letter-spacing: -0.5px;
     color: #1a1a2e;
     margin-bottom: 20px;
+    transition: color 1.2s ease;
   }
   .about p {
     font-size: 16px;
     color: #5a5a72;
     line-height: 1.7;
     margin-bottom: 16px;
+    transition: color 1.2s ease;
   }
 
-  /* ---------- ФУТЕР ---------- */
+  /* ---------- FOOTER ---------- */
   .site-footer {
     background: #1a1a2e;
     color: #a8a8c0;
     padding: 60px 40px 40px;
     font-size: 14px;
+    transition: background 1.2s ease, border-color 1.2s ease;
+    border-top: 0 solid transparent;
   }
   .site-footer-inner {
     max-width: 1200px;
@@ -288,7 +332,7 @@
     text-decoration: none;
     display: block;
     margin-bottom: 10px;
-    transition: color 0.2s;
+    transition: color 0.3s;
   }
   .site-footer a:hover { color: #ffffff; }
   .footer-brand {
@@ -298,7 +342,7 @@
     letter-spacing: -0.5px;
     margin-bottom: 12px;
   }
-  .footer-brand span { color: #6e6ee6; }
+  .footer-brand span { color: #6e6ee6; transition: color 1.2s ease; }
   .footer-tagline {
     font-size: 13px;
     line-height: 1.6;
@@ -318,7 +362,7 @@
     gap: 12px;
   }
 
-  /* ---------- СКРЫТАЯ ССЫЛКА НАЗАД ---------- */
+  /* ---------- SECRET BACK ---------- */
   .secret-back {
     position: fixed;
     bottom: 8px;
@@ -337,6 +381,260 @@
     opacity: 1;
   }
 
+  /* ================================================================ */
+  /*              СТАДИИ ПРОГРЕССИРУЮЩЕГО РАЗРУШЕНИЯ                   */
+  /* ================================================================ */
+
+  /* -------- СТАДИЯ 1: лёгкое искажение -------- */
+  body.corrupt-1 { background: #ebe9f0; }
+  body.corrupt-1 .logo span { color: #8a3a8a; }
+  body.corrupt-1 .release-art { filter: saturate(0.85); }
+
+  /* -------- СТАДИЯ 2: холодные тени -------- */
+  body.corrupt-2 { background: #d8d5e0; color: #2a1a2a; }
+  body.corrupt-2 .site-header {
+    background: #e8e5ec;
+    border-bottom-color: #c8c5d0;
+  }
+  body.corrupt-2 .hero {
+    background: linear-gradient(135deg, #e8e5ec 0%, #d8d0e8 100%);
+  }
+  body.corrupt-2 .hero h1 { color: #2a1a2a; }
+  body.corrupt-2 .hero p { color: #4a3a4a; }
+  body.corrupt-2 .release-art { filter: saturate(0.5) contrast(1.2); }
+  body.corrupt-2 .section-title { color: #8a3a8a; }
+  body.corrupt-2 .about {
+    background: #e8e5ec;
+    border-color: #c8c5d0;
+  }
+  body.corrupt-2 .about h2, body.corrupt-2 .about p { color: #2a1a2a; }
+  body.corrupt-2 .release-card {
+    background: #e8e5ec;
+    border-color: #c8c5d0;
+  }
+
+  /* -------- СТАДИЯ 3: красные акценты, потемнение -------- */
+  body.corrupt-3 { background: #b8b3c5; color: #1a0a1a; }
+  body.corrupt-3 .site-header {
+    background: #c8c3d2;
+    border-bottom-color: #8a2a4a;
+  }
+  body.corrupt-3 .hero {
+    background: linear-gradient(135deg, #c8c3d2 0%, #a8a0b8 100%);
+  }
+  body.corrupt-3 .hero h1 span {
+    background: linear-gradient(135deg, #8a2a4a, #aa3a6a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  body.corrupt-3 .section-title { color: #8a2a4a; }
+  body.corrupt-3 .release-art {
+    filter: saturate(0.3) contrast(1.4) hue-rotate(-20deg);
+  }
+  body.corrupt-3 .about {
+    background: #c8c3d2;
+    border-color: #8a2a4a;
+  }
+  body.corrupt-3 .release-card {
+    background: #c8c3d2;
+    border-color: #8a2a4a;
+  }
+  body.corrupt-3 .logo span { color: #8a2a4a; }
+  body.corrupt-3 .hero-btn { background: #1a0a1a; }
+  body.corrupt-3 .hero-btn:hover { background: #8a2a4a; }
+
+  /* -------- СТАДИЯ 4: тёмно-фиолетовая, неон -------- */
+  body.corrupt-4 { background: #2a1a2e; color: #d8c8d8; }
+  body.corrupt-4 .site-header {
+    background: #1a0a1e;
+    border-bottom-color: #6a2a6a;
+  }
+  body.corrupt-4 .logo, body.corrupt-4 .logo span { color: #d8a8d8; }
+  body.corrupt-4 .nav { color: #a888a8; }
+  body.corrupt-4 .hero {
+    background: linear-gradient(135deg, #1a0a1e 0%, #2a1030 100%);
+    border-bottom-color: #6a2a6a;
+  }
+  body.corrupt-4 .hero h1 { color: #e8d8e8; }
+  body.corrupt-4 .hero p { color: #a888a8; }
+  body.corrupt-4 .hero h1 span {
+    background: linear-gradient(135deg, #aa3a8a, #6a2a6a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  body.corrupt-4 .section-title { color: #d88a8a; }
+  body.corrupt-4 .section-heading { color: #e8d8e8; }
+  body.corrupt-4 .release-art {
+    filter: saturate(0.2) contrast(1.5) brightness(0.7);
+  }
+  body.corrupt-4 .about {
+    background: #1a0a1e;
+    border-color: #6a2a6a;
+  }
+  body.corrupt-4 .about h2 { color: #e8d8e8; }
+  body.corrupt-4 .about p { color: #a888a8; }
+  body.corrupt-4 .release-card {
+    background: #1a0a1e;
+    border-color: #4a1a4a;
+  }
+  body.corrupt-4 .release-title { color: #d8c8d8; }
+  body.corrupt-4 .release-meta { color: #a888a8; }
+  body.corrupt-4 .release-card:hover {
+    box-shadow: 0 12px 30px rgba(170, 58, 138, 0.3);
+    border-color: #aa3a8a;
+  }
+
+  /* -------- СТАДИЯ 5: полный Digital Madness -------- */
+  body.corrupt-5 { background: #0a0a0f; color: #c8c8d0; }
+  body.corrupt-5 .site-header {
+    background: #0a0a0f;
+    border-bottom: 2px solid #a020f0;
+    box-shadow: 0 0 25px rgba(160, 32, 240, 0.4);
+  }
+  body.corrupt-5 .logo { color: #d8d8e0; }
+  body.corrupt-5 .logo span {
+    color: #a020f0;
+    text-shadow: 0 0 8px #a020f0;
+  }
+  body.corrupt-5 .nav { color: #6a5a75; }
+  body.corrupt-5 .nav a:hover { color: #a020f0; }
+  body.corrupt-5 .hero {
+    background: radial-gradient(ellipse at center, #14081f 0%, #0a0a0f 70%);
+    border-bottom: 1px solid #2a2030;
+  }
+  body.corrupt-5 .hero h1 { color: #c8c8d0; }
+  body.corrupt-5 .hero h1 span {
+    background: linear-gradient(135deg, #a020f0, #d8a8ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  body.corrupt-5 .hero p { color: #6a5a75; }
+  body.corrupt-5 .hero-btn {
+    background: #0a0a0f;
+    color: #a020f0;
+    border: 1px solid #a020f0;
+    box-shadow: 0 0 15px rgba(160, 32, 240, 0.5);
+  }
+  body.corrupt-5 .hero-btn:hover {
+    background: #a020f0;
+    color: #0a0a0f;
+    box-shadow: 0 0 30px #a020f0;
+  }
+  body.corrupt-5 .section-title {
+    color: #a020f0;
+    text-shadow: 0 0 8px rgba(160, 32, 240, 0.6);
+  }
+  body.corrupt-5 .section-heading {
+    color: #d8a8ff;
+    text-shadow: 0 0 10px rgba(160, 32, 240, 0.4);
+  }
+  body.corrupt-5 .release-art {
+    filter: saturate(0) contrast(1.8) brightness(0.5) hue-rotate(270deg);
+  }
+  body.corrupt-5 .about {
+    background: rgba(10, 10, 15, 0.6);
+    border-color: #2a2030;
+  }
+  body.corrupt-5 .about h2 { color: #d8a8ff; }
+  body.corrupt-5 .about p { color: #6a5a75; }
+  body.corrupt-5 .release-card {
+    background: rgba(10, 10, 15, 0.8);
+    border-color: #2a2030;
+    box-shadow: inset 0 0 20px rgba(160, 32, 240, 0.05);
+  }
+  body.corrupt-5 .release-card:hover {
+    border-color: #a020f0;
+    box-shadow: 0 0 25px rgba(160, 32, 240, 0.5), inset 0 0 20px rgba(160, 32, 240, 0.1);
+  }
+  body.corrupt-5 .release-title { color: #d8d8e0; }
+  body.corrupt-5 .release-meta { color: #6a5a75; }
+  body.corrupt-5 .site-footer {
+    background: #050505;
+    border-top: 2px solid #a020f0;
+    box-shadow: 0 0 25px rgba(160, 32, 240, 0.3);
+  }
+
+  /* ---------- ГЛИТЧ-ОВЕРЛЕЙ ---------- */
+  #label-glitch-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    pointer-events: none;
+    background: transparent;
+    transition: background 1.5s ease;
+  }
+  body.corrupt-3 #label-glitch-overlay,
+  body.corrupt-4 #label-glitch-overlay {
+    background: rgba(160, 32, 240, 0.03);
+    animation: label-glitch-flicker 9s infinite;
+  }
+  body.corrupt-5 #label-glitch-overlay {
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(160, 32, 240, 0.04) 0px,
+        rgba(160, 32, 240, 0.04) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+  }
+  @keyframes label-glitch-flicker {
+    0%, 100% { opacity: 0; }
+    45%      { opacity: 0; }
+    46%      { opacity: 1; background: rgba(255, 43, 106, 0.15); }
+    47%      { opacity: 0; }
+    92%      { opacity: 0; }
+    93%      { opacity: 0.6; background: rgba(160, 32, 240, 0.2); }
+    94%      { opacity: 0; }
+  }
+
+  /* ---------- TOAST ---------- */
+  #label-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(200%);
+    background: #1a1a2e;
+    color: #ffffff;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), background 0.5s, border-color 0.5s, color 0.5s;
+    z-index: 1000;
+    max-width: 90vw;
+    text-align: center;
+    border: 1px solid transparent;
+  }
+  #label-toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+  #label-toast .toast-code {
+    font-family: "Courier New", monospace;
+    color: #6e6ee6;
+    font-size: 11px;
+    letter-spacing: 2px;
+    display: block;
+    margin-top: 4px;
+    transition: color 0.5s;
+  }
+
+  body.corrupt-3 #label-toast,
+  body.corrupt-4 #label-toast,
+  body.corrupt-5 #label-toast {
+    background: #0a0a0f;
+    border-color: #a020f0;
+    color: #d8a8ff;
+    box-shadow: 0 0 25px rgba(160, 32, 240, 0.5);
+  }
+  body.corrupt-3 #label-toast .toast-code,
+  body.corrupt-4 #label-toast .toast-code,
+  body.corrupt-5 #label-toast .toast-code {
+    color: #ff8a8a;
+  }
+
   /* ---------- MOBILE ---------- */
   @media (max-width: 768px) {
     .site-header { padding: 0 20px; }
@@ -349,15 +647,15 @@
     .release-grid { grid-template-columns: 1fr; }
     .about { padding: 50px 20px; }
     .site-footer { padding: 40px 20px 30px; }
-    .site-footer-inner {
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-    }
+    .site-footer-inner { grid-template-columns: 1fr 1fr; gap: 30px; }
     .nav { display: none; }
+    #label-toast { font-size: 12px; padding: 12px 20px; }
   }
 </style>
 </head>
 <body>
+
+<div id="label-glitch-overlay"></div>
 
 <header class="site-header">
   <div class="site-header-inner">
@@ -373,63 +671,63 @@
 
 <section class="hero">
   <h1>Independent label for <span>uncompromising electronic music</span></h1>
-  <p>Since 2019, Nocturne Records has been releasing music at the edges of hardcore, industrial, and experimental electronic sound.</p>
+  <p id="heroTagline">Since 2019, Nocturne Records has been releasing music at the edges of hardcore, industrial, and experimental electronic sound.</p>
   <a href="#releases" class="hero-btn">Explore Releases</a>
 </section>
 
 <section class="releases" id="releases">
   <div class="section-title">Catalogue</div>
-  <div class="section-heading">Latest Releases</div>
+  <div class="section-heading" id="catalogueHeading">Latest Releases</div>
 
   <div class="release-grid">
 
-    <a href="#" class="release-card">
+    <div class="release-card" data-release="NR-042" data-err="1A">
       <div class="release-art art-1">NR-042</div>
       <div class="release-title">Static Bloom</div>
       <div class="release-meta">
         <span>KIRA VOSS</span>
         <span class="format">LP · 2025</span>
       </div>
-    </a>
+    </div>
 
-    <a href="#" class="release-card">
+    <div class="release-card" data-release="NR-041" data-err="2B">
       <div class="release-art art-2">NR-041</div>
       <div class="release-title">Nightfall Protocol</div>
       <div class="release-meta">
         <span>ASH MERIDIAN</span>
         <span class="format">EP · 2025</span>
       </div>
-    </a>
+    </div>
 
-    <a href="#" class="release-card">
+    <div class="release-card" data-release="NR-040" data-err="3C">
       <div class="release-art art-3">NR-040</div>
       <div class="release-title">Ceramic Heart</div>
       <div class="release-meta">
         <span>NOA LIN</span>
         <span class="format">LP · 2024</span>
       </div>
-    </a>
+    </div>
 
-    <a href="#" class="release-card">
+    <div class="release-card" data-release="NR-039" data-err="4D">
       <div class="release-art art-4">NR-039</div>
       <div class="release-title">Signal Drift</div>
       <div class="release-meta">
         <span>V. ILARIO</span>
         <span class="format">EP · 2024</span>
       </div>
-    </a>
+    </div>
 
-    <a href="#" class="release-card">
+    <div class="release-card" data-release="NR-038" data-err="5E">
       <div class="release-art art-5">NR-038</div>
       <div class="release-title">Ember Static</div>
       <div class="release-meta">
         <span>REI NAKAMURA</span>
         <span class="format">LP · 2024</span>
       </div>
-    </a>
+    </div>
 
-    <!-- ============ RECALLED RELEASE ============ -->
-    <div class="release-card recalled" title="This release has been recalled.">
+    <!-- Break Down — RECALLED, некликабельна -->
+    <div class="release-card recalled" title="Recalled 2024-11-15. Do not distribute.">
       <div class="release-art art-break">NR-037</div>
       <div class="release-title">Break Down</div>
       <div class="release-meta">
@@ -437,43 +735,42 @@
         <span class="format" style="color: #d88a8a;">RECALLED</span>
       </div>
     </div>
-    <!-- ======================================== -->
 
-    <a href="#" class="release-card">
+    <div class="release-card" data-release="NR-036" data-err="6F">
       <div class="release-art art-6">NR-036</div>
       <div class="release-title">Low Orbit</div>
       <div class="release-meta">
         <span>J. KOVALENKO</span>
         <span class="format">EP · 2023</span>
       </div>
-    </a>
+    </div>
 
-    <a href="#" class="release-card">
+    <div class="release-card" data-release="NR-035" data-err="7A">
       <div class="release-art art-7">NR-035</div>
       <div class="release-title">Bright Static</div>
       <div class="release-meta">
         <span>M. ORLOV</span>
         <span class="format">LP · 2023</span>
       </div>
-    </a>
+    </div>
 
-    <a href="#" class="release-card">
+    <div class="release-card" data-release="NR-034" data-err="8B">
       <div class="release-art art-8">NR-034</div>
       <div class="release-title">Slow Collapse</div>
       <div class="release-meta">
         <span>ANONYMOUS</span>
         <span class="format">EP · 2023</span>
       </div>
-    </a>
+    </div>
 
   </div>
 </section>
 
 <section class="about" id="about">
   <div class="about-inner">
-    <h2>About Nocturne Records</h2>
-    <p>We are an independent label based in Berlin and Lisbon, dedicated to releasing work by artists working at the intersection of experimental electronic music, industrial sound design, and digital hardcore.</p>
-    <p>Our catalogue spans over 40 releases across vinyl, digital, and cassette formats. We work closely with each artist to preserve the integrity of their sound.</p>
+    <h2 id="aboutHeading">About Nocturne Records</h2>
+    <p id="aboutP1">We are an independent label based in Berlin and Lisbon, dedicated to releasing work by artists working at the intersection of experimental electronic music, industrial sound design, and digital hardcore.</p>
+    <p id="aboutP2">Our catalogue spans over 40 releases across vinyl, digital, and cassette formats. We work closely with each artist to preserve the integrity of their sound.</p>
   </div>
 </section>
 
@@ -481,35 +778,9 @@
   <div class="site-footer-inner">
     <div>
       <div class="footer-brand">Nocturne<span>.</span>Records</div>
-      <div class="footer-tagline">Independent label for uncompromising electronic music. Berlin / Lisbon.</div>
+      <div class="footer-tagline" id="footerTagline">Independent label for uncompromising electronic music. Berlin / Lisbon.</div>
     </div>
     <div>
       <h4>Music</h4>
       <a href="#">Catalogue</a>
-      <a href="#">Vinyl</a>
-      <a href="#">Digital</a>
-    </div>
-    <div>
-      <h4>Label</h4>
-      <a href="#">About</a>
-      <a href="#">Artists</a>
-      <a href="#">Contact</a>
-    </div>
-    <div>
-      <h4>Legal</h4>
-      <a href="#">Imprint</a>
-      <a href="#">Privacy</a>
-      <a href="#">Terms</a>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© 2025 Nocturne Records. All rights reserved.</span>
-    <span>Made in Europe.</span>
-  </div>
-</footer>
-
-<!-- Скрытая ссылка назад в ARG -->
-<a href="label.html" class="secret-back" title="">← back to the other side</a>
-
-</body>
-</html>
+      <
