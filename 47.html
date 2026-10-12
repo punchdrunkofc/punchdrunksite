@@ -236,7 +236,6 @@
     color: #4a3a3a;
   }
 
-  /* ---------- PLAYER (когда играет) ---------- */
   .voicemail-player.playing {
     border-color: #ff2b2b;
     background: rgba(30, 0, 0, 0.8);
@@ -263,7 +262,6 @@
     50%      { opacity: 0.5; }
   }
 
-  /* Прогресс-бар */
   .voicemail-progress {
     width: 100%;
     height: 4px;
@@ -280,16 +278,6 @@
     transition: width 0.5s linear;
   }
 
-  /* Счётчик времени */
-  .voicemail-time {
-    font-size: 10px;
-    color: #ff8a8a;
-    letter-spacing: 1px;
-    margin-top: 4px;
-    font-family: "Courier New", monospace;
-  }
-
-  /* Подсказка под плеером */
   .voicemail-hint {
     margin-top: 8px;
     font-size: 10px;
@@ -498,7 +486,6 @@
         Left a voicemail on 2025-01-03 at 03:33. Message duration: <em>7 minutes 13 seconds</em>. The entire message is <em>silence</em>. Family reported they were last seen humming at 7.83 Hz.
       </div>
 
-      <!-- Плеер для прослушивания -->
       <div class="voicemail-player" id="vmPlayer">
         <button class="voicemail-btn" id="vmBtn" aria-label="Play voicemail">▶</button>
         <div class="voicemail-info">
@@ -648,7 +635,7 @@
 
   // ============================================================
   //  ВОСПРОИЗВЕДЕНИЕ ГОЛОСОВОГО СООБЩЕНИЯ CARRIER_05
-  //  7 минут 13 секунд «тишины» с очень тихим гулом 7.83 Hz
+  //  Тишина + 7.83 Hz гул + тихий шёпот "one of the 47"
   // ============================================================
   (function () {
     const btn = document.getElementById("vmBtn");
@@ -658,7 +645,7 @@
     const hint = document.getElementById("vmHint");
     if (!btn || !player) return;
 
-    const TOTAL_SEC = 7 * 60 + 13;   // 433 секунды
+    const TOTAL_SEC = 7 * 60 + 13;
     let AC = null;
     let masterGain = null;
     let osc = null;
@@ -666,11 +653,34 @@
     let startedAt = 0;
     let rafId = null;
     let playing = false;
+    let whisperTimers = [];
 
     function fmt(sec) {
       const m = Math.floor(sec / 60);
       const s = Math.floor(sec % 60);
       return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+
+    // ---------- ШЁПОТ ----------
+    function speakWhisper(text, delay, options) {
+      const opts = options || {};
+      const t = setTimeout(() => {
+        if (!playing) return;
+        try {
+          if (!window.speechSynthesis) return;
+          const utter = new SpeechSynthesisUtterance(text);
+          utter.rate = opts.rate || 0.55;
+          utter.pitch = opts.pitch || 0.1;
+          utter.volume = opts.volume || 0.15;
+          const voices = window.speechSynthesis.getVoices();
+          const enVoice = voices.find(v => v.lang && v.lang.startsWith("en"));
+          if (enVoice) utter.voice = enVoice;
+          window.speechSynthesis.speak(utter);
+        } catch (e) {
+          console.warn("whisper failed:", e);
+        }
+      }, delay);
+      whisperTimers.push(t);
     }
 
     // ---------- ИНИЦИАЛИЗАЦИЯ ЗВУКА ----------
@@ -682,25 +692,26 @@
       masterGain = AC.createGain();
       masterGain.gain.value = 0.0001;
 
-      // Основной oscillator — 7.83 Hz, слышим как гуляющая волна
+      // Слой 1: гул 7.83 Hz
+      const humGain = AC.createGain();
+      humGain.gain.value = 0.25;
+
       osc = AC.createOscillator();
       osc.type = "sine";
       osc.frequency.value = 7.83;
 
-      const oscGain = AC.createGain();
-      oscGain.gain.value = 0.25;   // очень тихо
-
-      // Слабая амплитудная модуляция — «дыхание» сигнала
       const lfo = AC.createOscillator();
       lfo.type = "sine";
-      lfo.frequency.value = 0.05;    // очень медленно
+      lfo.frequency.value = 0.05;
       const lfoGain = AC.createGain();
       lfoGain.gain.value = 0.08;
       lfo.connect(lfoGain);
-      lfoGain.connect(oscGain.gain);
+      lfoGain.connect(humGain.gain);
       lfo.start();
 
-      // Постоянный белый шум — «тишина» с плёночным шумом
+      osc.connect(humGain).connect(masterGain);
+
+      // Слой 2: белый шум
       const buf = AC.createBuffer(1, AC.sampleRate * 4, AC.sampleRate);
       const data = buf.getChannelData(0);
       for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
@@ -710,13 +721,11 @@
 
       const noiseFilter = AC.createBiquadFilter();
       noiseFilter.type = "lowpass";
-      noiseFilter.frequency.value = 200;    // только низкий шум
+      noiseFilter.frequency.value = 200;
 
       const noiseGain = AC.createGain();
-      noiseGain.gain.value = 0.02;    // почти не слышно
+      noiseGain.gain.value = 0.02;
 
-      // Собираем
-      osc.connect(oscGain).connect(masterGain);
       noiseSrc.connect(noiseFilter).connect(noiseGain).connect(masterGain);
       masterGain.connect(AC.destination);
 
@@ -729,7 +738,7 @@
       if (!playing) return;
       const elapsed = (performance.now() - startedAt) / 1000;
       if (elapsed >= TOTAL_SEC) {
-        stopPlayback();
+        stopPlayback(true);
         return;
       }
       const pct = (elapsed / TOTAL_SEC) * 100;
@@ -744,7 +753,6 @@
       playing = true;
       startedAt = performance.now();
 
-      // плавно поднимаем громкость
       const now = AC.currentTime;
       masterGain.gain.cancelScheduledValues(now);
       masterGain.gain.setValueAtTime(masterGain.gain.value, now);
@@ -753,39 +761,67 @@
       player.classList.add("playing");
       btn.textContent = "❚❚";
       hint.innerHTML = '<span class="warn">●</span> playing... the silence is 7 minutes 13 seconds.';
+
+      // Расписание шёпота
+      speakWhisper("one of the forty seven", 45000, { rate: 0.5, pitch: 0.1, volume: 0.25 });
+      speakWhisper("do not stop listening", 90000, { rate: 0.45, pitch: 0.05, volume: 0.25 });
+      speakWhisper("one of the forty seven", 180000, { rate: 0.5, pitch: 0.1, volume: 0.25 });
+      speakWhisper("we are still here", 240000, { rate: 0.45, pitch: 0.05, volume: 0.25 });
+      speakWhisper("you are next", 300000, { rate: 0.4, pitch: 0.05, volume: 0.25 });
+      speakWhisper("one of the forty seven", 360000, { rate: 0.5, pitch: 0.1, volume: 0.25 });
+
       updateProgress();
     }
 
     // ---------- СТОП ----------
-    function stopPlayback() {
+    function stopPlayback(ended) {
       playing = false;
       if (rafId) cancelAnimationFrame(rafId);
+
+      whisperTimers.forEach(t => clearTimeout(t));
+      whisperTimers = [];
+
+      try {
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+      } catch (e) {}
+
       if (masterGain && AC) {
         const now = AC.currentTime;
         masterGain.gain.cancelScheduledValues(now);
         masterGain.gain.setValueAtTime(masterGain.gain.value, now);
         masterGain.gain.linearRampToValueAtTime(0.0001, now + 0.5);
       }
+
       player.classList.remove("playing");
       btn.textContent = "▶";
       bar.style.width = "0%";
       durEl.textContent = "00:00 / 07:13";
-      hint.innerHTML = '<span class="warn">⚠</span> use headphones. the silence is not empty.';
+
+      if (ended) {
+        hint.innerHTML = '<span class="warn">⚠</span> recording ended. you heard it.';
+      } else {
+        hint.innerHTML = '<span class="warn">⚠</span> use headphones. the silence is not empty.';
+      }
     }
 
     // ---------- КНОПКА ----------
     btn.addEventListener("click", () => {
-      if (playing) {
-        stopPlayback();
-      } else {
-        startPlayback();
-      }
+      if (playing) stopPlayback(false);
+      else startPlayback();
     });
 
-    // ---------- ПРИ УХОДЕ СО ВКЛАДКИ — ПАУЗА ----------
+    // ---------- ПРИ УХОДЕ СО ВКЛАДКИ ----------
     document.addEventListener("visibilitychange", () => {
-      if (document.hidden && playing) stopPlayback();
+      if (document.hidden && playing) stopPlayback(false);
     });
+
+    // ---------- ПРЕДЗАГРУЗКА ГОЛОСОВ ----------
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
   })();
 </script>
 
