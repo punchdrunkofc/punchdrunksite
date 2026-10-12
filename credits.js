@@ -1,111 +1,80 @@
 // ==================================================================
-//  credits.js — финальные титры
-//  Если игрок дошёл до финала (loop_completed) — на главной
-//  показываются титры вместо колеса.
+//  credits.js — финальные титры на отдельной странице credits.html
 // ==================================================================
 
 (function () {
   "use strict";
 
-  // ---------- ПРОВЕРКА ФИНАЛА ----------
-  if (localStorage.getItem("loop_completed") !== "true") return;
-  // Если игрок уже посмотрел титры — не показываем повторно
-  if (localStorage.getItem("credits_seen") === "true") return;
-
-  // ---------- ПОДГОТОВКА ----------
-  // Скрываем всё содержимое главной
-  document.body.style.overflow = "hidden";
+  const box = document.getElementById("creditsBox");
+  const overlay = document.getElementById("credits-overlay");
+  if (!box) return;
 
   // ---------- ТИТРЫ ----------
   const CREDITS = [
-    { text: "NODE_07 // CARRIER TRACE", cls: "title", delay: 500 },
-    { text: "", cls: "", delay: 300 },
-    { text: "A STORY IN TEN SECTORS", cls: "subtitle", delay: 600 },
-    { text: "", cls: "", delay: 400 },
-    { text: "", cls: "", delay: 300 },
-
-    { text: "— CAST —", cls: "section", delay: 500 },
-    { text: "", cls: "", delay: 200 },
-    { text: "CARRIER_01 — you", cls: "line", delay: 400 },
-    { text: "CARRIER_02 — missing", cls: "line", delay: 400 },
-    { text: "CARRIER_03 — deceased", cls: "line", delay: 400 },
-    { text: "CARRIER_04 — transformed", cls: "line", delay: 400 },
-    { text: "CARRIER_05 — missing", cls: "line", delay: 400 },
-    { text: "CARRIER_06 — active", cls: "line", delay: 400 },
-    { text: "CARRIER_07 — transformed", cls: "line", delay: 400 },
-    { text: "CARRIER_08 — deceased", cls: "line", delay: 400 },
-    { text: "CARRIER_09–46 — redacted", cls: "dim", delay: 400 },
-    { text: "CARRIER_47 — you", cls: "line", delay: 400 },
-    { text: "", cls: "", delay: 500 },
-
-    { text: "— THE SIGNAL —", cls: "section", delay: 500 },
-    { text: "", cls: "", delay: 200 },
-    { text: "7.83 Hz", cls: "big", delay: 800 },
-    { text: "Schumann resonance", cls: "dim", delay: 400 },
-    { text: "", cls: "", delay: 500 },
-
-    { text: "— THEY —", cls: "section", delay: 500 },
-    { text: "", cls: "", delay: 200 },
-    { text: "the label that tried to bury it", cls: "line", delay: 400 },
-    { text: "the algorithm that hid it", cls: "line", delay: 400 },
-    { text: "the ones who erased node 0x00", cls: "line", delay: 400 },
-    { text: "", cls: "", delay: 500 },
-
-    { text: "— THE WHEEL —", cls: "section", delay: 500 },
-    { text: "", cls: "", delay: 200 },
-    { text: "KICK · SNARE · BASS · SIREN", cls: "line", delay: 500 },
-    { text: "BREAKBEAT · GLITCH · ACID · TOTAL", cls: "line", delay: 500 },
-    { text: "eight ways of breaking", cls: "dim", delay: 400 },
-    { text: "", cls: "", delay: 500 },
-
-    { text: "— THE OTHERS —", cls: "section", delay: 500 },
-    { text: "", cls: "", delay: 200 },
-    { text: "the visitors", cls: "line", delay: 400 },
-    { text: "the carriers", cls: "line", delay: 400 },
-    { text: "the ones who came before", cls: "line", delay: 400 },
-    { text: "the ones who will come after", cls: "line", delay: 400 },
+    { text: "NODE_07 // CARRIER TRACE", cls: "title", delay: 800 },
     { text: "", cls: "", delay: 600 },
 
-    { text: "— FINAL TRANSMISSION —", cls: "section", delay: 600 },
-    { text: "", cls: "", delay: 300 },
-    { text: "you heard it.", cls: "line", delay: 700 },
-    { text: "you carried it.", cls: "line", delay: 700 },
-    { text: "you became it.", cls: "line", delay: 700 },
+    { text: "A STORY IN TEN SECTORS", cls: "subtitle", delay: 1000 },
     { text: "", cls: "", delay: 800 },
 
-       { text: "— MADE BY —", cls: "section", delay: 800 },
+    { text: "— CAST —", cls: "section", delay: 800 },
+    { text: "", cls: "", delay: 400 },
+    { text: "CARRIER_01 — you", cls: "line", delay: 500 },
+    { text: "CARRIER_02 — missing", cls: "line", delay: 500 },
+    { text: "CARRIER_03 — deceased", cls: "line", delay: 500 },
+    { text: "CARRIER_04 — transformed", cls: "line", delay: 500 },
+    { text: "CARRIER_05 — missing", cls: "line", delay: 500 },
+    { text: "CARRIER_06 — active", cls: "line", delay: 500 },
+    { text: "CARRIER_07 — transformed", cls: "line", delay: 500 },
+    { text: "CARRIER_08 — deceased", cls: "line", delay: 500 },
+    { text: "CARRIER_09–46 — redacted", cls: "dim", delay: 500 },
+    { text: "CARRIER_47 — you", cls: "line", delay: 500 },
+    { text: "", cls: "", delay: 800 },
+
+    { text: "— THE SIGNAL —", cls: "section", delay: 800 },
+    { text: "", cls: "", delay: 400 },
+    { text: "7.83 Hz", cls: "big", delay: 1200 },
+    { text: "Schumann resonance", cls: "dim", delay: 600 },
+    { text: "", cls: "", delay: 800 },
+
+    { text: "— THEY —", cls: "section", delay: 800 },
+    { text: "", cls: "", delay: 400 },
+    { text: "the label that tried to bury it", cls: "line", delay: 500 },
+    { text: "the algorithm that hid it", cls: "line", delay: 500 },
+    { text: "the ones who erased node 0x00", cls: "line", delay: 500 },
+    { text: "the ones who will come next", cls: "line", delay: 500 },
+    { text: "", cls: "", delay: 800 },
+
+    { text: "— FINAL TRANSMISSION —", cls: "section", delay: 1000 },
+    { text: "", cls: "", delay: 500 },
+    { text: "you heard it.", cls: "line", delay: 900 },
+    { text: "you carried it.", cls: "line", delay: 900 },
+    { text: "you became it.", cls: "line", delay: 900 },
+    { text: "", cls: "", delay: 1200 },
+
+    { text: "— MADE BY —", cls: "section", delay: 800 },
     { text: "", cls: "", delay: 400 },
     { text: "PUNCHDRUNK", cls: "big", delay: 900 },
-    { text: "FUBAR", cls: "big", delay: 600 },
+    { text: "fubar", cls: "big", delay: 600 },
     { text: "and the 47 carriers", cls: "dim", delay: 700 },
     { text: "", cls: "", delay: 1000 },
-    { text: "— SPECIAL THANKS —", cls: "section", delay: 500 },
-    { text: "", cls: "", delay: 200 },
-    { text: "to everyone who pressed play", cls: "line", delay: 400 },
-    { text: "to everyone who kept spinning", cls: "line", delay: 400 },
-    { text: "to everyone who did not stop", cls: "line", delay: 400 },
-    { text: "", cls: "", delay: 1000 },
 
-    { text: "— END OF TRANSMISSION —", cls: "final", delay: 800 },
-    { text: "", cls: "", delay: 600 },
-    { text: "this site will now reset.", cls: "dim", delay: 800 },
-    { text: "the wheel will forget you.", cls: "dim", delay: 800 },
-    { text: "but the signal will not.", cls: "whisper", delay: 1000 },
-    { text: "", cls: "", delay: 2000 },
+    { text: "— SPECIAL THANKS —", cls: "section", delay: 800 },
+    { text: "", cls: "", delay: 400 },
+    { text: "to everyone who pressed play", cls: "line", delay: 600 },
+    { text: "to everyone who kept spinning", cls: "line", delay: 600 },
+    { text: "to everyone who did not stop", cls: "line", delay: 600 },
+    { text: "", cls: "", delay: 1500 },
+
+    { text: "— END OF TRANSMISSION —", cls: "final", delay: 1000 },
+    { text: "", cls: "", delay: 800 },
+    { text: "this site will now reset.", cls: "dim", delay: 1000 },
+    { text: "the wheel will forget you.", cls: "dim", delay: 1000 },
+    { text: "but the signal will not.", cls: "whisper", delay: 1200 },
+    { text: "", cls: "", delay: 2500 },
   ];
 
-  // ---------- СОЗДАНИЕ ОВЕРЛЕЯ ----------
-  const overlay = document.createElement("div");
-  overlay.id = "credits-overlay";
-
-  const box = document.createElement("div");
-  box.className = "credits-box";
-  box.id = "creditsBox";
-
-  overlay.appendChild(box);
-  document.body.appendChild(overlay);
-
-  // ---------- ЗВУК (тихий гул 7.83 Hz) ----------
+  // ---------- ЗВУК ----------
   let AC = null;
   let osc = null;
   let gain = null;
@@ -128,8 +97,6 @@
 
       osc.connect(lp).connect(gain).connect(AC.destination);
       osc.start();
-
-      // плавно поднимаем
       gain.gain.linearRampToValueAtTime(0.04, AC.currentTime + 3);
     } catch (e) {
       console.warn("credits: audio failed", e);
@@ -145,7 +112,7 @@
     }, 2200);
   }
 
-  // ---------- ПОКАЗ ТИТРОВ ----------
+  // ---------- ПОКАЗ ТИТРОВ (без авто-скролла) ----------
   let totalDelay = 800;
 
   CREDITS.forEach((line) => {
@@ -162,14 +129,11 @@
       p.className = "credits-line " + (line.cls || "");
       p.textContent = line.text;
       box.appendChild(p);
-
-      // АВТО-СКРОЛЛ УБРАН — игрок сам решает, когда скроллить
     }, totalDelay);
   });
 
-  // ---------- ПОСЛЕ ТИТРОВ — RESET КНОПКА ----------
+  // ---------- RESET КНОПКА ----------
   setTimeout(() => {
-    // кнопка возврата
     const resetBtn = document.createElement("div");
     resetBtn.className = "credits-reset";
     resetBtn.innerHTML = `
@@ -178,43 +142,35 @@
       <div class="credits-reset-hint">warning: this will erase all progress</div>
     `;
     box.appendChild(resetBtn);
-    overlay.scrollTop = overlay.scrollHeight;
 
-    // обработчик кнопки
     setTimeout(() => {
       const btn = document.getElementById("creditsResetBtn");
       if (!btn) return;
       btn.addEventListener("click", () => {
-        // останавливаем звук
         stopAmbient();
-
-        // показываем финальный чёрный экран на секунду
-        overlay.classList.add("fade-out");
+        overlay.style.transition = "opacity 1.5s";
+        overlay.style.opacity = "0";
 
         setTimeout(() => {
-          // сбрасываем ВСЕ флаги — сайт начинается заново
           localStorage.clear();
           sessionStorage.clear();
           window.location.href = "index.html";
         }, 1500);
       });
     }, 100);
-  }, totalDelay + 1500);
+  }, totalDelay + 2000);
 
-  // ---------- ЗАПУСК ЗВУКА ПРИ ПЕРВОМ КЛИКЕ ----------
+  // ---------- АУДИО ----------
   document.addEventListener("click", function onFirstClick() {
     document.removeEventListener("click", onFirstClick);
     startAmbient();
   });
-  // если уже кликали — запускаем сразу
   setTimeout(startAmbient, 500);
 
-  // ---------- ОТМЕТКА «ТИТРЫ ПРОСМОТРЕНЫ» ----------
-  setTimeout(() => {
-    localStorage.setItem("credits_seen", "true");
-  }, totalDelay + 3000);
+  // ---------- ОТМЕТКА ----------
+  localStorage.setItem("credits_seen", "true");
 
-  // ---------- ЭКСПОРТ ДЛЯ ОТЛАДКИ ----------
+  // ---------- ОТЛАДКА ----------
   window._creditsReset = () => {
     localStorage.removeItem("credits_seen");
     location.reload();
