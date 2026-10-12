@@ -847,6 +847,44 @@
 
     // Меняем заголовок вкладки
     document.title = "CARRIER_01 // YOU DID THIS";
+        // ============================================================
+    //  CARRIER_47 — после финала становится ПУСТОЙ
+    //  Ты больше не 47-й. Ты — первый.
+    // ============================================================
+    const card47 = document.getElementById("carrier47");
+    const exp47 = document.getElementById("your-exposure");
+    const status47 = document.getElementById("your-status");
+
+    if (card47) {
+      // Меняем класс — убираем «you», добавляем «empty»
+      card47.classList.remove("you");
+      card47.classList.add("empty-now");
+
+      // Меняем заголовок
+      const id47 = card47.querySelector(".carrier-id");
+      const statusEl47 = card47.querySelector(".carrier-status");
+
+      if (id47) {
+        id47.textContent = "CARRIER_47";
+        id47.style.color = "#4a3a3a";
+        id47.style.textShadow = "none";
+      }
+      if (statusEl47) {
+        statusEl47.textContent = "EMPTY";
+        statusEl47.className = "carrier-status dead";
+      }
+
+      // Меняем текст
+      const text47 = card47.querySelector(".carrier-text");
+      if (text47) {
+        text47.innerHTML = "This entry is empty. <em>The 47th was never the last.</em> The 47th was the first. Look up. <span class='whisper'>you did this.</span>";
+        text47.style.color = "#6a5a75";
+        text47.style.fontStyle = "italic";
+      }
+    }
+
+    if (exp47) exp47.textContent = "EXPOSURE: —";
+    if (status47) status47.textContent = "STATUS: REASSIGNED";
   })();
 
   // ============================================================
