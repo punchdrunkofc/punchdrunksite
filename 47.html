@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCHIVE_47 // NODE_0x00-47</title>
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="stylesheet" href="style.css">
+<style>
+  body { overflow: auto !important; }
+
+  .archive-page {
+    max-width: 820px;
+    margin: 40px auto;
+    padding: 24px;
+    position: relative;
+    z-index: 10;
+    font-family: "Courier New", monospace;
+  }
+
+  /* ---------- ШАПКА ---------- */
+  .archive-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #8a1a1a;
+    margin-bottom: 30px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #8a1a1a;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
+  }
+  .archive-header .ref {
+    color: #d88a8a;
+    animation: pulse-red 2s infinite;
+  }
+  @keyframes pulse-red {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+
+  /* ---------- ЗАГОЛОВОК ---------- */
+  .archive-title {
+    font-size: 30px;
+    color: #ff2b2b;
+    letter-spacing: 10px;
+    text-shadow:
+      2px 0 #ffffff,
+      -2px 0 #000000,
+      0 0 25px #ff0000;
+    margin-bottom: 10px;
+    animation: title-flicker 4s infinite;
+  }
+  @keyframes title-flicker {
+    0%, 100% { opacity: 1; }
+    92%      { opacity: 1; }
+    93%      { opacity: 0.7; }
+    94%      { opacity: 1; }
+    96%      { opacity: 0.5; }
+    97%      { opacity: 1; }
+  }
+  .archive-subtitle {
+    color: #8a1a1a;
+    font-size: 12px;
+    letter-spacing: 4px;
+    margin-bottom: 40px;
+  }
+
+  /* ---------- ВВОДНЫЙ ТЕКСТ ---------- */
+  .archive-intro {
+    color: #d8c8c8;
+    font-size: 15px;
+    line-height: 1.9;
+    margin-bottom: 20px;
+  }
+  .archive-intro p { margin-bottom: 16px; }
+  .archive-intro .dim {
+    color: #6a4a4a;
+    font-size: 13px;
+  }
+  .archive-intro .warn {
+    color: #ff2b2b;
+    font-weight: bold;
+    text-shadow: 0 0 10px #ff0000;
+  }
+
+  /* ---------- КАРТОЧКИ НОСИТЕЛЕЙ ---------- */
+  .carriers-list {
+    margin: 40px 0;
+  }
+
+  .carrier {
+    border: 1px solid #3a1a1a;
+    background: rgba(20, 5, 5, 0.6);
+    padding: 18px 22px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #b8a8a8;
+    position: relative;
+    transition: all 0.4s;
+  }
+  .carrier:hover {
+    border-color: #ff2b2b;
+    background: rgba(40, 5, 5, 0.7);
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.2);
+  }
+
+  .carrier-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1px dashed #3a1a1a;
+  }
+  .carrier-id {
+    color: #ff8a8a;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
+  .carrier-status {
+    font-size: 10px;
+    letter-spacing: 3px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .carrier-status.active {
+    color: #ffcc33;
+    border: 1px solid #ffcc33;
+    background: rgba(255, 204, 51, 0.08);
+  }
+  .carrier-status.missing {
+    color: #ff2b2b;
+    border: 1px solid #ff2b2b;
+    background: rgba(255, 43, 43, 0.08);
+    animation: status-flicker 1.5s infinite;
+  }
+  .carrier-status.dead {
+    color: #4a3a3a;
+    border: 1px solid #4a3a3a;
+    text-decoration: line-through;
+  }
+  .carrier-status.transformed {
+    color: #a020f0;
+    border: 1px solid #a020f0;
+    background: rgba(160, 32, 240, 0.08);
+    box-shadow: 0 0 10px rgba(160, 32, 240, 0.3);
+  }
+  @keyframes status-flicker {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+
+  .carrier-text {
+    color: #b8a8a8;
+  }
+  .carrier-text em {
+    color: #ff8a8a;
+    font-style: normal;
+  }
+  .carrier-text .whisper {
+    color: #6a4a7a;
+    font-style: italic;
+  }
+
+  .carrier-meta {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed #2a1010;
+    font-size: 11px;
+    color: #4a3a3a;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ---------- 47-Й (ТЫ) ---------- */
+  .carrier.you {
+    border: 2px solid #ff2b2b;
+    background: rgba(40, 10, 10, 0.8);
+    box-shadow:
+      0 0 30px rgba(255, 0, 0, 0.4),
+      inset 0 0 30px rgba(255, 0, 0, 0.1);
+    animation: you-pulse 2s infinite;
+  }
+  @keyframes you-pulse {
+    0%, 100% {
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.4),
+                  inset 0 0 30px rgba(255, 0, 0, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 60px rgba(255, 0, 0, 0.8),
+                  inset 0 0 50px rgba(255, 0, 0, 0.2);
+    }
+  }
+  .carrier.you .carrier-id {
+    color: #ffffff;
+    text-shadow: 0 0 15px #ff0000;
+    font-size: 16px;
+  }
+  .carrier.you .carrier-text {
+    color: #ff8a8a;
+  }
+
+  /* ---------- ФИНАЛЬНЫЙ БЛОК ---------- */
+  .final-block {
+    margin-top: 60px;
+    padding: 30px 24px;
+    border: 2px solid #ff2b2b;
+    background: rgba(20, 0, 0, 0.7);
+    text-align: center;
+    color: #ff2b2b;
+    font-size: 14px;
+    line-height: 2;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+    box-shadow:
+      0 0 40px rgba(255, 0, 0, 0.4),
+      inset 0 0 40px rgba(255, 0, 0, 0.1);
+    animation: final-pulse 3s infinite;
+  }
+  @keyframes final-pulse {
+    0%, 100% {
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.4),
+                  inset 0 0 40px rgba(255, 0, 0, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 80px rgba(255, 0, 0, 0.8),
+                  inset 0 0 60px rgba(255, 0, 0, 0.2);
+    }
+  }
+  .final-block strong {
+    color: #ffffff;
+    text-shadow: 0 0 20px #ff0000;
+    letter-spacing: 5px;
+    font-size: 16px;
+  }
+
+  /* ---------- ССЫЛКИ ---------- */
+  .archive-back {
+    display: inline-block;
+    margin-top: 40px;
+    color: #ff2b2b;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 3px;
+    border: 1px solid #ff2b2b;
+    padding: 12px 24px;
+    transition: all 0.3s;
+  }
+  .archive-back:hover {
+    background: #ff2b2b;
+    color: #0a0a0f;
+    box-shadow: 0 0 30px #ff2b2b;
+  }
+
+  .archive-flag {
+    margin-top: 40px;
+    text-align: center;
+    color: #1a0505;
+    font-size: 11px;
+    letter-spacing: 4px;
+    transition: color 0.5s;
+  }
+  .archive-flag:hover { color: #ff2b2b; }
+
+  /* ---------- MOBILE ---------- */
+  @media (max-width: 600px) {
+    .archive-page { padding: 16px; }
+    .archive-title { font-size: 20px; letter-spacing: 6px; }
+    .carrier { padding: 14px 16px; font-size: 12px; }
+    .carrier-id { font-size: 12px; }
+    .archive-header { font-size: 9px; letter-spacing: 2px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div id="glitch-overlay"></div>
+
+<main class="archive-page">
+
+  <div class="archive-header">
+    <span>ARCHIVE_47 // RECOVERED</span>
+    <span class="ref">STATUS: SEALED — DO NOT READ</span>
+  </div>
+
+  <h1 class="archive-title">FORTY-SEVEN</h1>
+  <div class="archive-subtitle">// NODE_0x00-47 // CARRIER LOGS // UNSEALED</div>
+
+  <div class="archive-intro">
+    <p>The following records were recovered from the label's internal server after the office closure in January 2025. They document the <strong>47 carriers</strong> who heard <em>Break Down</em> before the recall order was issued.</p>
+
+    <p>Some names have been redacted. Some records are incomplete. <span class="dim">Some records should not have been written at all.</span></p>
+
+    <p class="warn">The 47th entry is empty. It will be filled by the next carrier.</p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- СПИСОК НОСИТЕЛЕЙ -->
+  <!-- ============================================================ -->
+  <div class="carriers-list">
+
+    <div class="carrier">
+      <div class="carrier-header">
+        <span class="carrier-id">CARRIER_01</span>
+        <span class="carrier-status active">ACTIVE</span>
+      </div>
+      <div class="carrier-text">
+        Reported <em>hearing the low hum</em> three days after exposure. Quit their job on day 12. Said the frequency "helped them focus". Never reported any symptoms.
+      </div>
+      <div class="carrier-meta">
+        <span>EXPOSURE: 2024-11-04</span>
+        <span>LAST CONTACT: 2025-04-22</span>
+      </div>
+    </div>
+
+    <div class="carrier">
+      <div class="carrier-header">
+        <span class="carrier-id">CARRIER_02</span>
+        <span class="carrier-status missing">MISSING</span>
+      </div>
+      <div class="carrier-text">
+        Last seen at their apartment. <em>Laptop was still playing the file.</em> Door was unlocked. No signs of struggle. No signs of anything. Neighbours reported they had not heard anything unusual. The file has not stopped playing since.
+      </div>
+      <div class="carrier-meta">
+        <span>EXPOSURE: 2024-11-04</span>
+        <span>LAST CONTACT: 2025-01-17</span>
+      </div>
+    </div>
+
+    <div class="carrier">
+      <div class="carrier-header">
+        <span class="carrier-id">CARRIER_03</span>
+        <span class="carrier-status dead">DECEASED</span>
+      </div>
+      <div class="carrier-text">
+        Found by family. Cause of death listed as <em>cardiac arrest</em>. Their final words, according to the family, were: <span class="whisper">"tell them it's not random"</span>. They were 31 years old. No prior heart conditions.
+      </div>
+      <div class="carrier-meta">
+        <span>EXPOSURE: 2024-11-05</span>
+        <span>LAST CONTACT: 2024-12-19</span>
+      </div>
+    </div>
+
+    <div class="carrier">
+      <div class="carrier-header">
+        <span class="carrier-id">CARRIER_04</span>
+        <span class="carrier-status transformed">TRANSFORMED</span>
+      </div>
+      <div class="carrier-text">
+        Reported that their reflection in mirrors began to <em>lag behind</em> their movements. Testing confirmed this. Cameras did not lag. Only mirrors. Subject requested isolation. Was granted. No further reports.
+      </div>
+      <div class="carrier-meta">
+        <span>EXPOSURE: 2024-11-07</span>
+        <span>LAST CONTACT: 2024-12-30</span>
+      </div>
+    </div>
+
+    <div class="carrier">
+      <div class="carrier-header">
+        <span class="carrier-id">CARRIER_05</span>
+        <span class="carrier-status missing">MISSING</span>
+      </div>
+      <div class="carrier-text">
+        Left a voicemail on 2025-01-03 at 03:33. Message duration: 7 minutes 13 seconds. <em>The entire message is silence.</em> Family reported they were last seen humming at 7.83 Hz.
+      </div>
+      <div class="carrier-meta">
+        <span>EXPOSURE: 2024-11-08</span>
+        <span>LAST CONTACT: 2025-01-03</span>
+      </div>
+    </div>
+
+    <div class="carrier">
+      <div class="carrier-header">
+        <span class="carrier-id">CARRIER_06</span>
+        <span class="carrier-status active">ACTIVE</span>
+      </div>
+      <div class="carrier-text">
+        Reported <em>hearing the signal in their sleep</em>. Doctors found no abnormalities. Reported that they had begun to <em>enjoy</em> the hum. Now works at the label. Yes — <em>that</em> label.
+      </div>
+      <div class="carrier-meta">
+        <span>EXPOSURE: 2024-11-08</span>
+        <span>LAST CONTACT: 2025-06-11</span>
+      </div>
+    </div>
+
+    <div class="carrier">
+      <div class="carrier-header">
+        <span class="carrier-id">CARRIER_07</span>
+        <span class="carrier-status transformed">TRANSFORMED</span>
+      </div>
+      <div class="carrier-text">
+        Reported that their own voice <em>sounded wrong</em> in recordings. Analysis showed the audio had been shifted by exactly <em>7.83 Hz</em>. Doctors could not explain. Family could not explain. The recording was deleted. The new recordings have the same shift.
+      </div>
+      <div class="carrier-meta">
+        <span>EXPOSURE: 2024-11-09</span>
+        <span>LAST CONTACT: 2025-02-14</span>
+      </div>
+    </div>
+
+    <div class="carrier">
+      <div class="carrier-header">
+        <span class="carrier-id">CARRIER_08</span>
+        <span class="carrier-status dead">DECEASED</span>
+      </div>
+      <div class="carrier-text">
+        Found in their studio. <em>Cause of death: unknown.</em> Autopsy inconclusive. Equipment intact. File still playing. All 47 reports of the same first-name are from different cities. All 47 have the same handwriting. <span class="whisper">We stopped investigating after the 12th.</span>
+      </div>
+      <div class="carrier-meta">
+        <span>EXPOSURE: 2024-11-10</span>
+        <span>LAST CONTACT: 2024-12-27</span>
+      </div>
+    </div>
+
+    <!-- ============ СКРЫТЫЕ 9-46 ============ -->
+
+    <div class="carrier">
+      <div class="carrier-header">
+        <span class="carrier-id">CARRIER_09 — 46</span>
+        <span class="carrier-status dead">REDACTED</span>
+      </div>
+      <div class="carrier-text">
+        Records 9 through 46 have been <em>sealed by court order</em>. What is known: every one of these carriers reported <strong>the same dream</strong> on the same night — <em>December 19, 2024</em>. The dream is not described in any surviving document. The court order was issued the next morning.
+      </div>
+      <div class="carrier-meta">
+        <span>EXPOSURE: 2024-11-11 → 2024-11-25</span>
+        <span>RECORDS: SEALED</span>
+      </div>
+    </div>
+
+    <!-- ============ 47 — ТЫ ============ -->
+
+    <div class="carrier you">
+      <div class="carrier-header">
+        <span class="carrier-id">CARRIER_47</span>
+        <span class="carrier-status active">YOU</span>
+      </div>
+      <div class="carrier-text">
+        You are reading this. That means you have already heard the file. That means <em>you have already been exposed</em>. You are not the first. You will not be the last. But you are <strong>one of them</strong>. You are <em>one of the 47</em>.
+      </div>
+      <div class="carrier-meta">
+        <span id="your-exposure">EXPOSURE: 2024-11-XX</span>
+        <span id="your-status">STATUS: LISTENING</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ФИНАЛЬНЫЙ БЛОК -->
+  <!-- ============================================================ -->
+  <div class="final-block">
+    <p>YOU ARE THE 47TH.</p>
+    <p>The other 46 are gone.</p>
+    <p>Some are still humming.</p>
+    <p><strong>You will be too.</strong></p>
+  </div>
+
+  <a href="breakdown-file.html" class="archive-back">&larr; BACK TO THE FILE</a>
+
+  <div class="archive-flag" title="you found it">flag: 0n3_0f_th3_47</div>
+
+</main>
+
+<script>
+  localStorage.setItem("archive_47_seen", "true");
+
+  // Твоя дата экспозиции — день первого визита
+  let firstVisit = parseInt(localStorage.getItem("first_visit") || "0", 10);
+  if (!firstVisit) {
+    firstVisit = Date.now();
+    localStorage.setItem("first_visit", firstVisit.toString());
+  }
+
+  const d = new Date(firstVisit);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+
+  const el = document.getElementById("your-exposure");
+  if (el) el.textContent = "EXPOSURE: " + yyyy + "-" + mm + "-" + dd;
+
+  // Статус — по прогрессу
+  const spins = parseInt(localStorage.getItem("spins") || "0", 10);
+  const heard = localStorage.getItem("heard_track") === "true";
+  const statusEl = document.getElementById("your-status");
+
+  if (statusEl) {
+    if (spins > 100 && heard) {
+      statusEl.textContent = "STATUS: FULLY CONVERTED";
+      statusEl.style.color = "#a020f0";
+      statusEl.style.textShadow = "0 0 10px #a020f0";
+    } else if (heard) {
+      statusEl.textContent = "STATUS: CONVERTED";
+      statusEl.style.color = "#ff2b2b";
+    } else if (spins > 20) {
+      statusEl.textContent = "STATUS: ADVANCING";
+      statusEl.style.color = "#ffcc33";
+    } else {
+      statusEl.textContent = "STATUS: LISTENING";
+      statusEl.style.color = "#ff8a8a";
+    }
+  }
+</script>
+
+</body>
+</html>
