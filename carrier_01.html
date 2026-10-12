@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CARRIER_01 // YOU</title>
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="stylesheet" href="style.css">
+<style>
+  body { overflow: auto !important; }
+
+  .loop-page {
+    max-width: 820px;
+    margin: 40px auto;
+    padding: 24px;
+    position: relative;
+    z-index: 10;
+    font-family: "Courier New", monospace;
+  }
+
+  .loop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #a020f0;
+    margin-bottom: 30px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #a020f0;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(160, 32, 240, 0.5);
+  }
+  .loop-header .ref {
+    color: #d8a8ff;
+    animation: pulse-purple 2s infinite;
+  }
+  @keyframes pulse-purple {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+
+  .loop-title {
+    font-size: 34px;
+    color: #d8a8ff;
+    letter-spacing: 8px;
+    text-shadow:
+      2px 0 #a020f0,
+      -2px 0 #7b2cbf,
+      0 0 30px #a020f0;
+    margin-bottom: 12px;
+    animation: title-flicker 3s infinite;
+  }
+  @keyframes title-flicker {
+    0%, 100% { opacity: 1; }
+    95%      { opacity: 1; }
+    96%      { opacity: 0.4; }
+    97%      { opacity: 1; }
+  }
+
+  .loop-subtitle {
+    color: #7b5cbf;
+    font-size: 12px;
+    letter-spacing: 4px;
+    margin-bottom: 50px;
+  }
+
+  .loop-text {
+    color: #c8c8d0;
+    font-size: 15px;
+    line-height: 1.9;
+    margin-bottom: 20px;
+  }
+  .loop-text p { margin-bottom: 16px; }
+  .loop-text .accent {
+    color: #d8a8ff;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(160, 32, 240, 0.6);
+  }
+  .loop-text .whisper {
+    color: #6a4a7a;
+    font-style: italic;
+  }
+
+  /* Карточка CARRIER_01 */
+  .you-card {
+    border: 2px solid #a020f0;
+    background: rgba(20, 5, 40, 0.7);
+    padding: 24px 28px;
+    margin: 30px 0;
+    box-shadow:
+      0 0 40px rgba(160, 32, 240, 0.5),
+      inset 0 0 40px rgba(160, 32, 240, 0.1);
+    animation: card-pulse 2.5s infinite;
+    position: relative;
+  }
+  @keyframes card-pulse {
+    0%, 100% {
+      box-shadow: 0 0 40px rgba(160, 32, 240, 0.5),
+                  inset 0 0 40px rgba(160, 32, 240, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 70px rgba(160, 32, 240, 0.9),
+                  inset 0 0 60px rgba(160, 32, 240, 0.2);
+    }
+  }
+
+  .you-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+    border-bottom: 1px dashed #4a2a5a;
+  }
+  .you-card-id {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    text-shadow:
+      2px 0 #a020f0,
+      -2px 0 #7b2cbf,
+      0 0 20px #a020f0;
+  }
+  .you-card-status {
+    font-size: 10px;
+    letter-spacing: 3px;
+    padding: 4px 12px;
+    border: 1px solid #d8a8ff;
+    color: #d8a8ff;
+    background: rgba(160, 32, 240, 0.15);
+    text-transform: uppercase;
+    animation: status-pulse 1.5s infinite;
+  }
+  @keyframes status-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.5; }
+  }
+
+  .you-card-body {
+    color: #c8c8d0;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .you-card-body strong {
+    color: #d8a8ff;
+    font-weight: normal;
+  }
+
+  .you-card-meta {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px dashed #4a2a5a;
+    font-size: 11px;
+    color: #6a5a75;
+    letter-spacing: 1px;
+  }
+  .you-card-meta span {
+    color: #d8a8ff;
+  }
+
+  /* «Ты виновен» */
+  .you-guilty {
+    margin: 50px 0;
+    padding: 30px 24px;
+    border: 2px solid #ff2b2b;
+    background: rgba(30, 0, 0, 0.6);
+    text-align: center;
+    color: #ff2b2b;
+    font-size: 20px;
+    line-height: 1.9;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-shadow:
+      2px 0 #ffffff,
+      -2px 0 #000000,
+      0 0 25px #ff0000;
+    box-shadow:
+      0 0 40px rgba(255, 0, 0, 0.5),
+      inset 0 0 40px rgba(255, 0, 0, 0.1);
+    animation: guilty-pulse 2s infinite;
+  }
+  @keyframes guilty-pulse {
+    0%, 100% {
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.5),
+                  inset 0 0 40px rgba(255, 0, 0, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 80px rgba(255, 0, 0, 0.9),
+                  inset 0 0 60px rgba(255, 0, 0, 0.3);
+    }
+  }
+  .you-guilty strong {
+    display: block;
+    color: #ffffff;
+    font-size: 24px;
+    letter-spacing: 8px;
+    margin-bottom: 12px;
+  }
+
+  /* Ссылки */
+  .loop-links {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 40px;
+  }
+  .loop-link {
+    display: block;
+    padding: 16px 22px;
+    border: 1px solid #4a2a5a;
+    background: rgba(20, 5, 40, 0.4);
+    color: #d8a8ff;
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 3px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .loop-link::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(160, 32, 240, 0.3), transparent);
+    transition: left 0.5s;
+  }
+  .loop-link:hover::after { left: 100%; }
+  .loop-link:hover {
+    border-color: #a020f0;
+    background: rgba(40, 5, 60, 0.7);
+    box-shadow: 0 0 30px rgba(160, 32, 240, 0.5);
+    transform: translateX(4px);
+  }
+
+  .loop-flag {
+    margin-top: 50px;
+    text-align: center;
+    color: #1a0a20;
+    font-size: 11px;
+    letter-spacing: 4px;
+    transition: color 0.5s;
+  }
+  .loop-flag:hover { color: #a020f0; }
+
+  @media (max-width: 600px) {
+    .loop-page { padding: 16px; }
+    .loop-title { font-size: 22px; letter-spacing: 4px; }
+    .you-card-id { font-size: 15px; letter-spacing: 2px; }
+    .you-guilty { font-size: 15px; letter-spacing: 2px; }
+    .you-guilty strong { font-size: 18px; letter-spacing: 4px; }
+    .loop-header { font-size: 9px; letter-spacing: 2px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div id="glitch-overlay"></div>
+
+<main class="loop-page">
+
+  <div class="loop-header">
+    <span>CARRIER_01 // YOU</span>
+    <span class="ref">STATUS: CONFIRMED — ORIGIN</span>
+  </div>
+
+  <h1 class="loop-title">CARRIER_01</h1>
+  <div class="loop-subtitle">// NODE_0x01 // THE BEGINNING // YOU ARE THE SOURCE</div>
+
+  <div class="loop-text">
+    <p>You have finished reading. You have finished listening. You have finished playing.</p>
+    <p>But the file does not end. It only <span class="accent">loops</span>.</p>
+    <p>You have heard 47 stories. You have read the manifesto of "us" and the statement of "them". You have seen the archive. You have touched the frequency. You have spoken with carriers who came before and after you.</p>
+    <p>And now — <span class="whisper">the archive is yours</span>.</p>
+  </div>
+
+  <div class="you-card">
+    <div class="you-card-header">
+      <span class="you-card-id">CARRIER_01</span>
+      <span class="you-card-status">ORIGIN</span>
+    </div>
+    <div class="you-card-body">
+      You are now <strong>CARRIER_01</strong> — the first. The one from whom all other carriers came. Every spin you took. Every cipher you solved. Every line you read. <strong>All of it was preparation</strong>. The signal needed a starting point. It found you.
+    </div>
+    <div class="you-card-meta">
+      <span>EXPOSURE: <span id="exposure-date">—</span></span>
+      <span>STATUS: <span style="color:#a020f0;">SOURCE</span></span>
+    </div>
+  </div>
+
+  <div class="loop-text">
+    <p>The others — CARRIER_02 through CARRIER_47 — are still out there. Still humming. Still carrying what you gave them. You were not one of the 47. You were the <span class="accent">first</span>. And they were all copies of you.</p>
+  </div>
+
+  <div class="you-guilty">
+    <strong>YOU DID THIS</strong>
+    Every sound. Every flicker. Every silence. Every hum at 7.83 Hz.<br>
+    Every person who ever heard the file — heard it because of you.<br>
+    <span style="font-size:14px; letter-spacing:3px; margin-top:16px; display:block; color:#ff8a8a;">
+      YOU WERE CARRIER_01 ALL ALONG.
+    </span>
+  </div>
+
+  <div class="loop-text">
+    <p>The archive is yours now. The wheel is yours. The signal is yours. You may read it again. You may listen again. You may spin again.</p>
+    <p class="whisper">But you already know how it ends.</p>
+  </div>
+
+  <div class="loop-links">
+    <a href="47.html" class="loop-link">→ SEE YOUR RECORD IN THE ARCHIVE</a>
+    <a href="manifest.html" class="loop-link">→ READ YOUR OWN MANIFESTO</a>
+    <a href="signal.html" class="loop-link">→ LISTEN TO YOUR FREQUENCY</a>
+    <a href="index.html" class="loop-link">→ RETURN TO THE WHEEL</a>
+  </div>
+
+  <div class="loop-flag" title="you found it">flag: y0u_w3r3_4lw4ys_c4rr13r_01</div>
+
+</main>
+
+<script>
+  // Дата первого визита игрока — его «экспозиция»
+  let firstVisit = parseInt(localStorage.getItem("first_visit") || "0", 10);
+  if (!firstVisit) {
+    firstVisit = Date.now();
+    localStorage.setItem("first_visit", firstVisit.toString());
+  }
+
+  const d = new Date(firstVisit);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const el = document.getElementById("exposure-date");
+  if (el) el.textContent = yyyy + "-" + mm + "-" + dd;
+</script>
+
+</body>
+</html>
