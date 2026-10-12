@@ -1,130 +1,304 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WHEEL_0x07 // CARRIER TRACE</title>
-<link rel="icon" href="logo.png" type="image/png">
-<link rel="apple-touch-icon" href="logo.png">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
+:root {
+  --bg: #0a0a0f;
+  --fg: #c8c8d0;
+  --accent: #a020f0;
+  --acid: #d8a8ff;
+  --cyan: #7b2cbf;
+  --dim: #2a2030;
+}
 
-<script src="boot-screen.js"></script>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-<div class="scanlines"></div>
-<div class="vignette"></div>
-<div id="glitch-overlay"></div>
-<div id="gold-flash"></div>
+html, body {
+  height: 100%;
+  background: transparent;
+  color: var(--fg);
+  font-family: "Courier New", "Consolas", monospace;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
 
-<header class="hud">
-  <div class="hud-left">
-    <span class="dot red"></span>
-    <span class="dot yellow"></span>
-    <span class="dot green"></span>
-    <span class="hud-title">NODE_07 // SIGNAL: <span class="err">DETECTED</span></span>
-  </div>
-  <div class="hud-right">
-    <span id="visitor-id">SUBJECT_0000</span>
-    <span class="sep">|</span>
-    <span id="counter">SPINS: 0</span>
-    <span class="sep">|</span>
-    <span id="clock">00:00:00</span>
-  </div>
-</header>
+#mic-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#mic-bg.active { opacity: 1; }
+.mic-word {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #a020f0;
+  white-space: nowrap;
+  will-change: transform, opacity, filter;
+  text-shadow:
+    0 0 10px rgba(160, 32, 240, 0.4),
+    0 0 20px rgba(160, 32, 240, 0.2);
+  user-select: none;
+}
 
-<main class="stage">
+.hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--dim);
+  background: rgba(10, 10, 15, 0.7);
+  font-size: 12px;
+  letter-spacing: 1px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(2px);
+}
+.hud-left, .hud-right { display: flex; align-items: center; gap: 10px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.red { background: #a020f0; }
+.yellow { background: #7b2cbf; }
+.green { background: #d8a8ff; }
+.hud-title { margin-left: 8px; color: var(--dim); }
+.hud-right { color: #6a5a75; }
+.sep { color: #3a2a45; }
+.err { color: #ff2b6a; }
 
-  <div class="intro" id="intro">
-    <p class="line system">&gt; carrier trace initialized.</p>
-    <p class="line system">&gt; signal origin: <span class="err">UNKNOWN</span></p>
-    <p class="line whisper">you were not supposed to find this. but you were supposed to hear it.</p>
-    <p class="line">Press <span class="glitch-text" data-text="SPIN">SPIN</span> to continue. Each sector is a fragment of the signal.</p>
-    <p class="line dim">They are not random. Nothing here is random.</p>
-  </div>
+.stage {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px 80px;
+  position: relative;
+  z-index: 5;
+  background: transparent;
+}
 
-  <div class="wheel-wrap">
-    <div class="wheel-pointer">▼</div>
-    <canvas id="wheel" width="600" height="600"></canvas>
-    <button id="spin-btn" class="spin-btn">
-      <span class="glitch-text" data-text="SPIN">SPIN</span>
-    </button>
-  </div>
+.intro { margin-bottom: 24px; line-height: 1.55; font-size: 14px; }
+.line { margin-bottom: 4px; }
+.line.system { color: #8a7a95; }
+.line.dim { color: #4a3a55; }
+.line.whisper {
+  color: #6a4a7a;
+  font-style: italic;
+  opacity: 0.85;
+  animation: whisper 5s infinite;
+}
+.line.user::before { content: "> "; color: var(--accent); }
+.ok { color: var(--acid); }
 
-  <div class="visualizer-wrap">
-    <canvas id="visualizer" width="800" height="80"></canvas>
-  </div>
+.wheel-wrap {
+  position: relative;
+  width: min(600px, 90vw);
+  aspect-ratio: 1;
+  margin: 20px auto 30px;
+  filter: drop-shadow(0 0 30px rgba(160, 32, 240, 0.25));
+}
 
-  <div class="result" id="result">
-    <div class="result-label">// DECODED FRAGMENT</div>
-    <div class="result-text" id="result-text">—</div>
-    <div class="result-sub" id="result-sub"></div>
-  </div>
+#wheel {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;
+  transition: transform 4.5s cubic-bezier(0.15, 0.9, 0.05, 1);
+}
 
-  <div class="log" id="log">
-    <p class="line system">&gt; signal trace active.</p>
-    <p class="line whisper">you are a carrier. we will explain.</p>
-    <p class="line dim">&gt; type: help</p>
-  </div>
+.wheel-pointer {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 32px;
+  color: var(--accent);
+  text-shadow: 0 0 10px var(--accent);
+  z-index: 3;
+  pointer-events: none;
+}
 
-  <div class="terminal-input">
-    <span class="prompt">&gt;</span>
-    <input type="text" id="cmd" autocomplete="off" spellcheck="false" placeholder="type a command...">
-  </div>
+.spin-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: radial-gradient(circle, #14081f 0%, #0a0a0f 100%);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  cursor: pointer;
+  z-index: 4;
+  box-shadow:
+    0 0 20px rgba(160, 32, 240, 0.5),
+    inset 0 0 20px rgba(160, 32, 240, 0.25);
+  transition: all 0.2s;
+}
+.spin-btn:hover {
+  background: radial-gradient(circle, #2a103f 0%, #0a0a0f 100%);
+  box-shadow:
+    0 0 40px rgba(160, 32, 240, 0.9),
+    inset 0 0 30px rgba(160, 32, 240, 0.5);
+}
+.spin-btn:active { transform: translate(-50%, -50%) scale(0.95); }
+.spin-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-</main>
+.glitch-text {
+  position: relative;
+  display: inline-block;
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent);
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+.glitch-text::before {
+  color: #d8a8ff;
+  animation: glitch-1 2s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+}
+.glitch-text::after {
+  color: #7b2cbf;
+  animation: glitch-2 3s infinite linear alternate-reverse;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+}
+@keyframes glitch-1 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(-1px, -1px); }
+  60% { transform: translate(2px, 1px); }
+  80% { transform: translate(1px, -2px); }
+}
+@keyframes glitch-2 {
+  0%, 100% { transform: translate(0); }
+  25% { transform: translate(2px, -1px); }
+  50% { transform: translate(-2px, 1px); }
+  75% { transform: translate(1px, 2px); }
+}
 
-<a href="chat.html" class="channel-btn" title="other carriers">
-  <span class="channel-row">
-    <span class="channel-dot"></span>
-    <span class="channel-text">CHANNEL_0x0F</span>
-  </span>
-  <span class="channel-count" id="channelCount">4 carriers</span>
-</a>
+.result {
+  text-align: center;
+  border: 1px solid var(--dim);
+  background: rgba(10, 10, 15, 0.55);
+  padding: 20px;
+  margin-bottom: 20px;
+  min-height: 100px;
+  transition: all 0.3s;
+}
+.result.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(160, 32, 240, 0.4);
+}
+.result-label {
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+}
+.result-text {
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  color: var(--acid);
+  text-shadow: 0 0 12px var(--acid);
+  word-break: break-word;
+}
+.result-sub {
+  font-size: 13px;
+  color: #6a5a75;
+  margin-top: 10px;
+  font-style: italic;
+  min-height: 18px;
+}
 
-<footer class="hidden-footer">
-  <a href="manifest.html" class="secret-dot" title="recovery document">manifest.node</a>
-  <a href="manifest-enemy.html" class="secret-dot" title="their version">official.node</a>
-  <a href="signal.html" class="secret-dot" title="carrier wave analysis">signal.node</a>
-  <a href="hidden.html" class="secret-dot" title="you were not supposed to see this">break_down.node</a>
-  <a href="void.html" class="secret-dot" title="do not follow">void.node</a>
-  <span class="hidden-tag" title="you found it">7</span>
-</footer>
+.visualizer-wrap {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 20px;
+  height: 80px;
+  position: relative;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.visualizer-wrap.active { opacity: 1; }
+#visualizer {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 0 8px rgba(160, 32, 240, 0.6));
+}
 
-<script src="audio.js"></script>
-<script src="wheel-a.js"></script>
-<script src="wheel-b.js"></script>
-<script src="cmd-1.js"></script>
-<script src="cmd-2.js"></script>
-<script src="cmd-3.js"></script>
-<script src="cmd-4.js"></script>
-<script src="cmd-5.js"></script>
-<script src="cmd-6.js"></script>
-<script src="visualizer.js"></script>
-<script src="mic-bg.js"></script>
-<script src="referrer.js"></script>
-<script src="copy-trap.js"></script>
-<script src="cursor-drift.js"></script>
-<script src="camera-watch.js"></script>
-<script src="counter.js"></script>
-<script src="intro.js"></script>
-<script src="title-flicker.js"></script>
-<script src="crt.js"></script>
-<script src="fisheye-bg.js"></script>
+.log {
+  border-top: 1px solid var(--dim);
+  padding: 12px 0;
+  font-size: 13px;
+  line-height: 1.5;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  background: rgba(10, 10, 15, 0.45);
+}
+.log::-webkit-scrollbar { width: 6px; }
+.log::-webkit-scrollbar-thumb { background: var(--dim); }
 
-<script>
-  // ---------- ЖИВОЙ СЧЁТЧИК "ONLINE" ----------
-  (function() {
-    const countEl = document.getElementById("channelCount");
-    if (!countEl) return;
-    function update() {
-      const n = Math.max(3, Math.min(9, 4 + Math.floor(Math.random() * 4 - 1)));
-      countEl.textContent = n + " carriers";
-    }
-    update();
-    setInterval(update, 30000);
-  })();
-</script>
+.terminal-input {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid var(--dim);
+  padding: 10px 0;
+  background: rgba(10, 10, 15, 0.45);
+}
+.prompt { color: var(--accent); margin-right: 10px; font-weight: bold; }
+#cmd {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 14px;
+  caret-color: var(--accent);
+}
+#cmd::placeholder { color: #3a2a45; }
 
-</body>
-</html>
+.scanlines {
+  position: fixed; inset: 0; z-index: 99; pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg, rgba(0,0,0,0.22) 0px, rgba(0,0,0,0.22) 1px,
+    transparent 1px, transparent 3px);
+}
+.vignette {
+  position: fixed; inset: 0; z-index: 98; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+}
+#glitch-overlay {
+  position: fixed; inset: 0; z-index: 150; pointer-events: none;
+  background: transparent;
+}
+#glitch-overlay.active {
+  animation: full-glitch 0.35s steps(2) infinite;
+  background: rgba(160, 32, 240, 0.1);
+  mix-blend-mode: difference;
+}
+@keyframes full-glitch {
+  0% { transform: translate(0); filter: hue-rotate(0deg); }
+  50% { transform: translate(-4px, 2px); filter: hue-rotate(60deg); }
+  100% { transform: translate(3px, -3px); filter: hue-rotate(120deg); }
+}
+@keyframes whisper {
+  0%, 100% { opacity: 0.2; letter-spacing: 0; }
+  50% { opacity: 0.9; letter-spacing: 2px; }
+}
