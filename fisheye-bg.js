@@ -4,7 +4,10 @@
 
 (function () {
   "use strict";
-
+  const canvas = document.createElement("canvas");
+  canvas.id = "fisheye-bg";
+  canvas.style.cssText = "position:fixed;inset:0;z-index:0;pointer-events:none;width:100vw;height:100vh;display:block;";
+  document.body.insertBefore(canvas, document.body.firstChild);
   // на этой странице фон прозрачный — WebGL рисует его
   document.body.classList.add("has-fisheye-bg");
 
