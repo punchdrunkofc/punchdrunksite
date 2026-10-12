@@ -116,7 +116,32 @@
 <script src="frequency-bg.js"></script>
 <script src="loop.js"></script>
 <script src="stalking.js"></script>
-<script src="credits.js"></script>
+
+<script>
+  // ---------- ПОКАЗЫВАЕМ ССЫЛКУ НА ТИТРЫ ПОСЛЕ ФИНАЛА ----------
+  (function() {
+    if (localStorage.getItem("loop_completed") === "true") {
+      const link = document.getElementById("creditsLink");
+      if (link) {
+        link.style.display = "inline";
+        link.style.color = "#d8a8ff";
+        link.style.fontWeight = "bold";
+        link.style.textShadow = "0 0 10px #a020f0";
+        link.style.animation = "credits-link-pulse 2s infinite";
+      }
+
+      // добавляем анимацию пульсации
+      const style = document.createElement("style");
+      style.textContent = `
+        @keyframes credits-link-pulse {
+          0%, 100% { opacity: 1; }
+          50%      { opacity: 0.5; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  })();
+</script>
 
 
 <script>
