@@ -260,12 +260,14 @@ body.has-fisheye-bg {
 .log::-webkit-scrollbar { width: 6px; }
 .log::-webkit-scrollbar-thumb { background: var(--dim); }
 
+
 .terminal-input {
   display: flex;
   align-items: center;
   border-top: 1px solid var(--dim);
   padding: 10px 0;
-  background: rgba(10, 10, 15, 0.45);
+  background: rgba(10, 10, 15, 0.25);
+}
 }
 .prompt { color: var(--accent); margin-right: 10px; font-weight: bold; }
 #cmd {
