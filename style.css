@@ -920,3 +920,187 @@ body::after {
     font-size: 8px;
   }
 }
+/* ================================================================ */
+/*                    FINAL CREDITS                                  */
+/* ================================================================ */
+
+#credits-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: #000000;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-family: "Courier New", monospace;
+  color: #c8c8d0;
+  transition: opacity 1.5s ease;
+  scrollbar-width: thin;
+}
+
+#credits-overlay::-webkit-scrollbar {
+  width: 6px;
+}
+#credits-overlay::-webkit-scrollbar-thumb {
+  background: #2a2030;
+}
+
+#credits-overlay.fade-out {
+  opacity: 0;
+}
+
+.credits-box {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 100vh 30px 60vh 30px;
+  text-align: center;
+}
+
+/* ---------- СТРОКИ ---------- */
+.credits-line {
+  font-size: 14px;
+  line-height: 1.9;
+  margin: 0 0 8px 0;
+  opacity: 0;
+  animation: credits-fade-in 1s ease-out forwards;
+  letter-spacing: 1px;
+}
+
+@keyframes credits-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.credits-space {
+  height: 20px;
+}
+
+/* Типы строк */
+.credits-line.title {
+  font-size: 32px;
+  letter-spacing: 10px;
+  color: #a020f0;
+  text-shadow:
+    2px 0 #ffffff,
+    -2px 0 #000000,
+    0 0 25px #a020f0;
+  margin-bottom: 20px;
+}
+
+.credits-line.subtitle {
+  font-size: 14px;
+  color: #7b2cbf;
+  letter-spacing: 6px;
+  margin-bottom: 30px;
+}
+
+.credits-line.section {
+  font-size: 16px;
+  color: #a020f0;
+  letter-spacing: 8px;
+  margin: 30px 0 20px 0;
+  text-shadow: 0 0 15px #a020f0;
+  font-weight: bold;
+}
+
+.credits-line.line {
+  font-size: 14px;
+  color: #c8c8d0;
+  letter-spacing: 3px;
+}
+
+.credits-line.dim {
+  font-size: 12px;
+  color: #4a4055;
+  letter-spacing: 2px;
+  font-style: italic;
+}
+
+.credits-line.big {
+  font-size: 42px;
+  color: #ffffff;
+  letter-spacing: 12px;
+  margin: 30px 0;
+  text-shadow:
+    3px 0 #a020f0,
+    -3px 0 #7b2cbf,
+    0 0 30px #a020f0;
+}
+
+.credits-line.whisper {
+  color: #5a3a6a;
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 4px;
+  animation: credits-fade-in 1s ease-out forwards,
+             credits-pulse 3s infinite;
+}
+
+@keyframes credits-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+.credits-line.final {
+  font-size: 20px;
+  color: #ff2b2b;
+  letter-spacing: 8px;
+  margin: 40px 0 30px 0;
+  text-shadow:
+    2px 0 #ffffff,
+    -2px 0 #000000,
+    0 0 20px #ff0000;
+}
+
+/* ---------- КНОПКА RESET ---------- */
+.credits-reset {
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px dashed #2a2030;
+  text-align: center;
+}
+
+.credits-reset-text {
+  font-size: 14px;
+  color: #5a3a6a;
+  font-style: italic;
+  letter-spacing: 3px;
+  margin-bottom: 30px;
+}
+
+.credits-reset-btn {
+  padding: 16px 32px;
+  background: transparent;
+  border: 2px solid #a020f0;
+  color: #a020f0;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  letter-spacing: 4px;
+  cursor: pointer;
+  transition: all 0.4s;
+  text-transform: uppercase;
+  box-shadow: 0 0 15px rgba(160, 32, 240, 0.3);
+}
+
+.credits-reset-btn:hover {
+  background: #a020f0;
+  color: #000000;
+  box-shadow: 0 0 35px #a020f0;
+  letter-spacing: 6px;
+}
+
+.credits-reset-hint {
+  margin-top: 20px;
+  font-size: 11px;
+  color: #4a0a0a;
+  letter-spacing: 3px;
+  font-style: italic;
+}
+
+/* ---------- МОБИЛЬНАЯ ---------- */
+@media (max-width: 768px) {
+  .credits-line.title { font-size: 20px; letter-spacing: 5px; }
+  .credits-line.big { font-size: 28px; letter-spacing: 6px; }
+  .credits-line.section { font-size: 13px; letter-spacing: 4px; }
+  .credits-line.line { font-size: 12px; letter-spacing: 1px; }
+  .credits-reset-btn { font-size: 11px; padding: 12px 20px; letter-spacing: 2px; }
+}
