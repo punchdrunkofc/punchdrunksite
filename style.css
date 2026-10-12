@@ -11,18 +11,43 @@
 
 html, body {
   height: 100%;
-  background: #0a0a0f;
+  background: transparent;
   color: var(--fg);
   font-family: "Courier New", "Consolas", monospace;
   overflow-x: hidden;
   cursor: crosshair;
 }
 
-/* На главной странице фон прозрачный — его рисует WebGL-канвас */
-body.has-fisheye-bg {
-  background: transparent !important;
+/* На внутренних страницах (без WebGL-канваса) — тёмный фон */
+body:not(.has-fisheye-bg) {
+  background: #0a0a0f;
 }
 
+/* ---------- ПЛАВНОЕ ЗАТЕМНЕНИЕ ФОНА ПО КРАЯМ ---------- */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(10, 10, 15, 0.85) 0%,
+      transparent 18%,
+      transparent 82%,
+      rgba(10, 10, 15, 0.85) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(10, 10, 15, 0.5) 0%,
+      transparent 8%,
+      transparent 92%,
+      rgba(10, 10, 15, 0.5) 100%
+    );
+}
+
+/* ---------- MIC BACKGROUND ---------- */
 #mic-bg {
   position: fixed;
   inset: 0;
@@ -49,6 +74,7 @@ body.has-fisheye-bg {
   user-select: none;
 }
 
+/* ---------- HUD ---------- */
 .hud {
   display: flex;
   justify-content: space-between;
@@ -73,13 +99,13 @@ body.has-fisheye-bg {
 .sep { color: #3a2a45; }
 .err { color: #ff2b6a; }
 
+/* ---------- STAGE ---------- */
 .stage {
   max-width: 900px;
   margin: 0 auto;
   padding: 24px 16px 80px;
   position: relative;
   z-index: 5;
-  background: transparent;
 }
 
 .intro { margin-bottom: 24px; line-height: 1.55; font-size: 14px; }
@@ -95,6 +121,7 @@ body.has-fisheye-bg {
 .line.user::before { content: "> "; color: var(--accent); }
 .ok { color: var(--acid); }
 
+/* ---------- WHEEL ---------- */
 .wheel-wrap {
   position: relative;
   width: min(600px, 90vw);
@@ -154,6 +181,7 @@ body.has-fisheye-bg {
 .spin-btn:active { transform: translate(-50%, -50%) scale(0.95); }
 .spin-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+/* ---------- GLITCH TEXT ---------- */
 .glitch-text {
   position: relative;
   display: inline-block;
@@ -193,6 +221,7 @@ body.has-fisheye-bg {
   75% { transform: translate(1px, 2px); }
 }
 
+/* ---------- RESULT ---------- */
 .result {
   text-align: center;
   border: 1px solid var(--dim);
@@ -228,6 +257,7 @@ body.has-fisheye-bg {
   min-height: 18px;
 }
 
+/* ---------- VISUALIZER ---------- */
 .visualizer-wrap {
   width: 100%;
   max-width: 800px;
@@ -246,6 +276,7 @@ body.has-fisheye-bg {
   filter: drop-shadow(0 0 8px rgba(160, 32, 240, 0.6));
 }
 
+/* ---------- LOG & INPUT ---------- */
 .log {
   border-top: 1px solid var(--dim);
   padding: 12px 0;
@@ -256,10 +287,8 @@ body.has-fisheye-bg {
   scrollbar-width: thin;
   background: rgba(10, 10, 15, 0.25);
 }
-
 .log::-webkit-scrollbar { width: 6px; }
 .log::-webkit-scrollbar-thumb { background: var(--dim); }
-
 
 .terminal-input {
   display: flex;
@@ -267,7 +296,6 @@ body.has-fisheye-bg {
   border-top: 1px solid var(--dim);
   padding: 10px 0;
   background: rgba(10, 10, 15, 0.25);
-}
 }
 .prompt { color: var(--accent); margin-right: 10px; font-weight: bold; }
 #cmd {
@@ -282,6 +310,7 @@ body.has-fisheye-bg {
 }
 #cmd::placeholder { color: #3a2a45; }
 
+/* ---------- OVERLAYS ---------- */
 .scanlines {
   position: fixed; inset: 0; z-index: 99; pointer-events: none;
   background: repeating-linear-gradient(
@@ -727,11 +756,7 @@ body.has-fisheye-bg {
 .intro-line.err     { color: #ff2b6a; }
 .intro-line.ok      { color: #d8a8ff; }
 
-/* ================================================================ */
-/*                    CRT / TERMINAL EFFECT                          */
-/* ================================================================ */
-
-/* ---------- КОНТЕЙНЕР ОВЕРЛЕЯ ---------- */
+/* ---------- CRT / TERMINAL EFFECT ---------- */
 #crt-overlay {
   position: fixed;
   inset: 0;
@@ -739,8 +764,6 @@ body.has-fisheye-bg {
   pointer-events: none;
   overflow: hidden;
 }
-
-/* ---------- СКАНЛАЙНЫ ---------- */
 .crt-scanlines {
   position: absolute;
   inset: 0;
@@ -755,13 +778,10 @@ body.has-fisheye-bg {
   opacity: 0.85;
   animation: crt-scanline-shift 8s linear infinite;
 }
-
 @keyframes crt-scanline-shift {
   0%   { background-position: 0 0; }
   100% { background-position: 0 200px; }
 }
-
-/* ---------- FLICKER ---------- */
 .crt-flicker {
   position: absolute;
   inset: 0;
@@ -770,8 +790,6 @@ body.has-fisheye-bg {
   transition: opacity 0.05s;
   pointer-events: none;
 }
-
-/* ---------- ХРОМАТИЧЕСКАЯ АБЕРРАЦИЯ ---------- */
 .crt-rgb {
   position: absolute;
   inset: 0;
@@ -786,13 +804,10 @@ body.has-fisheye-bg {
   mix-blend-mode: screen;
   animation: crt-rgb-drift 6s ease-in-out infinite;
 }
-
 @keyframes crt-rgb-drift {
   0%, 100% { transform: translateX(0); }
   50%      { transform: translateX(1px); }
 }
-
-/* ---------- ВИНЬЕТКА ---------- */
 .crt-vignette {
   position: absolute;
   inset: 0;
@@ -804,8 +819,6 @@ body.has-fisheye-bg {
   );
   pointer-events: none;
 }
-
-/* ---------- СТЕКЛО ---------- */
 .crt-glass {
   position: absolute;
   inset: 0;
@@ -823,33 +836,21 @@ body.has-fisheye-bg {
   pointer-events: none;
 }
 
-/* ---------- ФОСФОРНОЕ СВЕЧЕНИЕ ---------- */
-.glitch-text,
-.spin-btn,
-.channel-btn,
-.hidden-footer {
-  filter: drop-shadow(0 0 2px currentColor);
-}
-
-
-/* ---------- РАССЕИВАНИЕ СВЕТА ОТ ЭКРАНА ---------- */
-.stage::after {
+/* ---------- КОРПУС ЭЛТ ---------- */
+.stage::before {
   content: "";
   position: fixed;
-  inset: 0;
+  inset: 20px;
   pointer-events: none;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(160, 32, 240, 0.04) 0%,
-    transparent 50%
-  );
-  mix-blend-mode: screen;
-  z-index: 8997;
+  border: 1px solid rgba(160, 32, 240, 0.15);
+  border-radius: 24px;
+  box-shadow:
+    inset 0 0 40px rgba(160, 32, 240, 0.08),
+    inset 0 0 80px rgba(0, 0, 0, 0.4);
+  z-index: 8998;
 }
 
-/* ================================================================ */
-/*                           MOBILE                                  */
-/* ================================================================ */
+/* ---------- MOBILE ---------- */
 @media (max-width: 768px) {
   .hud-title { display: none; }
   .result-text { font-size: 18px; letter-spacing: 2px; }
@@ -895,26 +896,4 @@ body.has-fisheye-bg {
     inset: 8px;
     border-radius: 12px;
   }
-}
-/* ---------- FREQUENCY SYNC EFFECT ---------- */
-/* Когда игрок достигает синхронизации — визуализатор пульсирует 7.83 Hz */
-
-body.freq-synced .visualizer-wrap {
-  animation: freq-pulse 1.28s ease-in-out infinite;
-}
-
-/* 7.83 Hz ≈ 1.28 сек на цикл (1000 / 7.83 ≈ 127.7 мс × 10 = 1.28 сек) */
-@keyframes freq-pulse {
-  0%, 100% { opacity: 1; filter: drop-shadow(0 0 8px rgba(160, 32, 240, 0.6)); }
-  50%      { opacity: 0.85; filter: drop-shadow(0 0 20px rgba(160, 32, 240, 1)); }
-}
-
-/* Лёгкая пульсация всего интерфейса при синхронизации */
-body.freq-synced {
-  animation: freq-body-pulse 1.28s ease-in-out infinite;
-}
-
-@keyframes freq-body-pulse {
-  0%, 100% { filter: brightness(1); }
-  50%      { filter: brightness(1.03); }
 }
