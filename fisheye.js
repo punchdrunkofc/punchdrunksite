@@ -1,152 +1,204 @@
 // ==================================================================
-//  fisheye.js — настоящий fisheye через SVG feDisplacementMap
-//  Искажает только .stage. HUD, футер и кнопка чата остаются
-//  фиксированными и не искажаются.
+//  fisheye-bg.js — WebGL fisheye на фоне сайта
+//  Фон искажается через fisheye-шейдер. Сайт — прямой, работает.
 // ==================================================================
 
 (function () {
   "use strict";
 
-  // ---------- НАСТРОЙКИ ----------
-  const CONFIG = {
-    size: 1024,             // размер карты смещений (больше = чётче)
-    scale: 60,              // сила искажения (20–120)
-    exponent: 2.0,          // нелинейность (1.5 = слабо, 3.0 = сильно)
-    applyTo: [".stage"]     // к чему применяем фильтр
-  };
-
-  // ---------- СОЗДАНИЕ SVG-ФИЛЬТРА ----------
-  const svgNS = "http://www.w3.org/2000/svg";
-
-  const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("width", "0");
-  svg.setAttribute("height", "0");
-  svg.setAttribute("aria-hidden", "true");
-  svg.style.cssText = "position:absolute;left:-9999px;width:0;height:0;";
-  svg.innerHTML = `
-    <defs>
-      <filter id="fisheye-filter"
-              x="-20%" y="-20%"
-              width="140%" height="140%"
-              color-interpolation-filters="sRGB">
-        <feImage id="fisheye-map" result="map"
-                 preserveAspectRatio="none"/>
-        <feDisplacementMap in="SourceGraphic" in2="map"
-                           scale="${CONFIG.scale}"
-                           xChannelSelector="R"
-                           yChannelSelector="G"/>
-      </filter>
-    </defs>
+  // ---------- КОНТЕЙНЕР ----------
+  const canvas = document.createElement("canvas");
+  canvas.id = "fisheye-bg";
+  canvas.style.cssText = `
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    width: 100vw;
+    height: 100vh;
   `;
-  document.body.appendChild(svg);
+  document.body.insertBefore(canvas, document.body.firstChild);
 
-  // ---------- СОЗДАНИЕ КАРТЫ СМЕЩЕНИЙ ----------
-  // Canvas с радиальным градиентом: R-канал = X-смещение,
-  // G-канал = Y-смещение, B-канал = 0.
-  function createDisplacementMap() {
-    const size = CONFIG.size;
-    const canvas = document.createElement("canvas");
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext("2d");
-    const img = ctx.createImageData(size, size);
+  // Скрываем старый body::before (логотип), чтобы не мешал
+  const styleHide = document.createElement("style");
+  styleHide.textContent = "body::before { display: none !important; }";
+  document.head.appendChild(styleHide);
 
-    const center = size / 2;
-    const maxR = center;
+  // ---------- WEBGL ----------
+  const gl = canvas.getContext("webgl", { antialias: true, alpha: false });
+  if (!gl) {
+    canvas.remove();
+    return;
+  }
 
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        const i = (y * size + x) * 4;
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  resize();
+  window.addEventListener("resize", resize);
 
-        // нормализованные координаты относительно центра
-        const dx = (x - center) / maxR;
-        const dy = (y - center) / maxR;
+  // ---------- ВЕРШИННЫЙ ШЕЙДЕР ----------
+  const vertSrc = `
+    attribute vec2 aPos;
+    varying vec2 vUv;
+    void main() {
+      vUv = (aPos + 1.0) * 0.5;
+      vUv.y = 1.0 - vUv.y;
+      gl_Position = vec4(aPos, 0.0, 1.0);
+    }
+  `;
 
-        const r = Math.sqrt(dx * dx + dy * dy);
+  // ---------- ФРАГМЕНТНЫЙ ШЕЙДЕР (FISHEYE) ----------
+  const fragSrc = `
+    precision highp float;
 
-        // нелинейное искажение: чем дальше от центра — тем сильнее
-        const norm = Math.min(r, 1);
-        const distorted = Math.pow(norm, CONFIG.exponent);
+    varying vec2 vUv;
+    uniform vec2  uResolution;
+    uniform float uTime;
+    uniform float uStrength;
 
-        // вектор искажения
-        let nx = 0, ny = 0;
-        if (norm > 0.0001) {
-          nx = (dx / norm) * distorted;
-          ny = (dy / norm) * distorted;
-        }
+    // ---------- FISHEYE-ПРОЕКЦИЯ ----------
+    vec2 fisheye(vec2 uv, float strength) {
+      vec2 p = uv - 0.5;
+      p.x *= uResolution.x / uResolution.y;
 
-        // R = X-смещение, G = Y-смещение (128 = нейтраль)
-        img.data[i]     = Math.round(128 + nx * 127);
-        img.data[i + 1] = Math.round(128 + ny * 127);
-        img.data[i + 2] = 0;
-        img.data[i + 3] = 255;
-      }
+      float r = length(p);
+      float r2 = r * r;
+
+      // нелинейная проекция
+      float f = 1.0 / (1.0 + r2 * 0.4 * strength);
+      float warp = mix(1.0, pow(max(r, 0.0001), 0.85), 1.0 - f);
+
+      p *= f * warp;
+
+      p.x /= uResolution.x / uResolution.y;
+      return p + 0.5;
     }
 
-    ctx.putImageData(img, 0, 0);
-    return canvas.toDataURL("image/png");
-  }
+    // ---------- ХЕШ ----------
+    float hash(vec2 p) {
+      p = fract(p * vec2(123.34, 456.21));
+      p += dot(p, p + 45.32);
+      return fract(p.x * p.y);
+    }
 
-  // ---------- ПРИМЕНЕНИЕ ФИЛЬТРА ----------
-  function applyFisheye() {
-    const mapURL = createDisplacementMap();
+    void main() {
+      vec2 uv = fisheye(vUv, uStrength);
 
-    // вставляем карту в feImage
-    const feImage = document.getElementById("fisheye-map");
-    if (!feImage) return;
-    // ставим оба атрибута — для совместимости браузеров
-    feImage.setAttribute("href", mapURL);
-    feImage.setAttributeNS(
-      "http://www.w3.org/1999/xlink", "xlink:href", mapURL
-    );
-
-    // применяем фильтр к целевым элементам
-    CONFIG.applyTo.forEach(sel => {
-      const el = document.querySelector(sel);
-      if (el) {
-        el.style.filter = "url(#fisheye-filter)";
+      // за пределами кадра — чёрный
+      if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
+        gl_FragColor = vec4(0.02, 0.01, 0.03, 1.0);
+        return;
       }
-    });
+
+      // ---------- СЛОИ ФОНА ----------
+      vec3 color = vec3(0.039, 0.031, 0.059);
+
+      // 1. радиальный градиент — центр ярче
+      float grad = 1.0 - length(uv - 0.5) * 1.3;
+      color += vec3(0.09, 0.02, 0.14) * max(grad, 0.0);
+
+      // 2. горизонтальные сканлайны
+      float scan = sin(uv.y * uResolution.y * 1.5) * 0.5 + 0.5;
+      scan = step(0.6, scan);
+      color *= (1.0 - scan * 0.1);
+
+      // 3. зерно плёнки
+      float n = hash(uv * uResolution.xy + uTime * 30.0);
+      color += vec3(n * 0.025);
+
+      // 4. вертикальные «полосы сбоя»
+      float vStripe = step(0.995, hash(vec2(floor(uv.x * 80.0), uTime)));
+      color += vec3(0.12, 0.02, 0.18) * vStripe;
+
+      // 5. крест в центре — мягкое свечение
+      vec2 c = uv - 0.5;
+      float cross = max(0.0, 1.0 - abs(c.x) * 250.0) * 0.12;
+      cross += max(0.0, 1.0 - abs(c.y) * 250.0) * 0.12;
+      color += vec3(0.45, 0.12, 0.65) * cross;
+
+      // 6. виньетка — сильно тёмные углы
+      float r = length(c * vec2(uResolution.x / uResolution.y, 1.0));
+      float vignette = smoothstep(1.0, 0.2, r);
+      color *= mix(0.03, 1.0, vignette);
+
+      // 7. фиолетовый оттенок
+      color *= vec3(1.0, 0.85, 1.2);
+
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `;
+
+  // ---------- КОМПИЛЯЦИЯ ----------
+  function compile(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      console.error("fisheye-bg:", gl.getShaderInfoLog(s));
+      return null;
+    }
+    return s;
   }
 
-  // ---------- ЗАПУСК ----------
-  function start() {
-    // на мобильных не применяем — слишком медленно
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    if (isMobile) return;
+  const v = compile(gl.VERTEX_SHADER, vertSrc);
+  const f = compile(gl.FRAGMENT_SHADER, fragSrc);
+  if (!v || !f) { canvas.remove(); return; }
 
-    // применяем через небольшую задержку,
-    // чтобы DOM успел отрисоваться
-    setTimeout(applyFisheye, 600);
+  const prog = gl.createProgram();
+  gl.attachShader(prog, v);
+  gl.attachShader(prog, f);
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    console.error("fisheye-bg:", gl.getProgramInfoLog(prog));
+    canvas.remove();
+    return;
   }
+  gl.useProgram(prog);
 
-  if (document.readyState === "complete" ||
-      document.readyState === "interactive") {
-    start();
-  } else {
-    document.addEventListener("DOMContentLoaded", start);
+  // ---------- ГЕОМЕТРИЯ ----------
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    -1,-1,  1,-1,  -1,1,
+    -1, 1,  1,-1,   1,1
+  ]), gl.STATIC_DRAW);
+
+  const aPos = gl.getAttribLocation(prog, "aPos");
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+  // ---------- UNIFORMS ----------
+  const uResolution = gl.getUniformLocation(prog, "uResolution");
+  const uTime = gl.getUniformLocation(prog, "uTime");
+  const uStrength = gl.getUniformLocation(prog, "uStrength");
+
+  // ---------- РЕНДЕР ----------
+  const start = performance.now();
+
+  function frame() {
+    const t = (performance.now() - start) / 1000;
+
+    gl.uniform2f(uResolution, canvas.width, canvas.height);
+    gl.uniform1f(uTime, t);
+    gl.uniform1f(uStrength, window._fisheyeStrength || 1.0);
+
+    gl.clearColor(0.02, 0.01, 0.03, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+    requestAnimationFrame(frame);
   }
+  frame();
 
   // ---------- ЭКСПОРТ ДЛЯ ОТЛАДКИ ----------
-  window._disableFisheye = () => {
-    CONFIG.applyTo.forEach(sel => {
-      const el = document.querySelector(sel);
-      if (el) el.style.filter = "";
-    });
+  window._removeFisheyeBg = () => {
+    canvas.remove();
   };
-
-  window._setFisheyeIntensity = (n) => {
-    const fe = document.querySelector("#fisheye-filter feDisplacementMap");
-    if (fe) fe.setAttribute("scale", String(n));
-  };
-
-  window._refreshFisheyeMap = () => {
-    const mapURL = createDisplacementMap();
-    const feImage = document.getElementById("fisheye-map");
-    if (!feImage) return;
-    feImage.setAttribute("href", mapURL);
-    feImage.setAttributeNS(
-      "http://www.w3.org/1999/xlink", "xlink:href", mapURL
-    );
+  window._setFisheyeStrength = (n) => {
+    window._fisheyeStrength = n;
   };
 })();
