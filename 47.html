@@ -19,7 +19,6 @@
     font-family: "Courier New", monospace;
   }
 
-  /* ---------- ШАПКА ---------- */
   .archive-header {
     display: flex;
     justify-content: space-between;
@@ -42,7 +41,6 @@
     50%      { opacity: 0.4; }
   }
 
-  /* ---------- ЗАГОЛОВОК ---------- */
   .archive-title {
     font-size: 30px;
     color: #ff2b2b;
@@ -69,7 +67,6 @@
     margin-bottom: 40px;
   }
 
-  /* ---------- ВВОДНЫЙ ТЕКСТ ---------- */
   .archive-intro {
     color: #d8c8c8;
     font-size: 15px;
@@ -87,7 +84,6 @@
     text-shadow: 0 0 10px #ff0000;
   }
 
-  /* ---------- КАРТОЧКИ ---------- */
   .carriers-list { margin: 40px 0; }
 
   .carrier {
@@ -149,6 +145,17 @@
     border: 1px solid #a020f0;
     background: rgba(160, 32, 240, 0.08);
     box-shadow: 0 0 10px rgba(160, 32, 240, 0.3);
+  }
+  .carrier-status.origin {
+    color: #a020f0;
+    border: 2px solid #a020f0;
+    background: rgba(160, 32, 240, 0.15);
+    box-shadow: 0 0 15px rgba(160, 32, 240, 0.5);
+    animation: origin-pulse 2s infinite;
+  }
+  @keyframes origin-pulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(160, 32, 240, 0.5); }
+    50%      { box-shadow: 0 0 35px rgba(160, 32, 240, 1); }
   }
   @keyframes status-flicker {
     0%, 100% { opacity: 1; }
@@ -237,7 +244,6 @@
     margin-bottom: 6px;
   }
 
-  /* ---------- ПРОГРЕСС-БАР С ПЕРЕМОТКОЙ ---------- */
   .voicemail-progress {
     width: 100%;
     height: 14px;
@@ -299,7 +305,6 @@
     transform: scale(1.3);
   }
 
-  /* ---------- ПОДСКАЗКА ---------- */
   .voicemail-hint {
     margin-top: 8px;
     font-size: 10px;
@@ -314,7 +319,6 @@
     text-shadow: 0 0 6px rgba(255, 0, 0, 0.6);
   }
 
-  /* ---------- СОСТОЯНИЕ PLAYING ---------- */
   .voicemail-player.playing {
     border-color: #ff2b2b;
     background: rgba(30, 0, 0, 0.8);
@@ -341,7 +345,7 @@
     50%      { opacity: 0.5; }
   }
 
-  /* ---------- 47-Й (ТЫ) ---------- */
+  /* ---------- ТЫ (CARRIER_47) ---------- */
   .carrier.you {
     border: 2px solid #ff2b2b;
     background: rgba(40, 10, 10, 0.8);
@@ -366,6 +370,34 @@
     font-size: 16px;
   }
   .carrier.you .carrier-text { color: #ff8a8a; }
+
+  /* ---------- КАРТОЧКА «Я — НАЧАЛО» ---------- */
+  .carrier.origin-you {
+    border: 2px solid #a020f0;
+    background: rgba(20, 5, 40, 0.8);
+    box-shadow:
+      0 0 40px rgba(160, 32, 240, 0.5),
+      inset 0 0 40px rgba(160, 32, 240, 0.1);
+    animation: origin-you-pulse 2s infinite;
+  }
+  @keyframes origin-you-pulse {
+    0%, 100% {
+      box-shadow: 0 0 40px rgba(160, 32, 240, 0.5),
+                  inset 0 0 40px rgba(160, 32, 240, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 80px rgba(160, 32, 240, 0.9),
+                  inset 0 0 60px rgba(160, 32, 240, 0.2);
+    }
+  }
+  .carrier.origin-you .carrier-id {
+    color: #ffffff;
+    text-shadow: 0 0 20px #a020f0;
+    font-size: 18px;
+  }
+  .carrier.origin-you .carrier-text {
+    color: #d8a8ff;
+  }
 
   /* ---------- ФИНАЛЬНЫЙ БЛОК ---------- */
   .final-block {
@@ -429,7 +461,41 @@
   }
   .archive-flag:hover { color: #ff2b2b; }
 
-  /* ---------- MOBILE ---------- */
+  /* ---------- ПЛАШКА «ТЫ ВИНОВЕН» ---------- */
+  .guilt-banner {
+    margin: 40px 0;
+    padding: 24px;
+    border: 2px solid #a020f0;
+    background: rgba(20, 5, 40, 0.7);
+    text-align: center;
+    color: #d8a8ff;
+    font-size: 15px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-shadow:
+      2px 0 #a020f0,
+      -2px 0 #7b2cbf,
+      0 0 20px #a020f0;
+    animation: guilt-banner-pulse 2.5s infinite;
+    display: none;
+  }
+  @keyframes guilt-banner-pulse {
+    0%, 100% {
+      box-shadow: 0 0 30px rgba(160, 32, 240, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 60px rgba(160, 32, 240, 0.9);
+    }
+  }
+  .guilt-banner strong {
+    display: block;
+    color: #ffffff;
+    font-size: 20px;
+    letter-spacing: 8px;
+    margin-bottom: 8px;
+    text-shadow: 0 0 25px #a020f0;
+  }
+
   @media (max-width: 600px) {
     .archive-page { padding: 16px; }
     .archive-title { font-size: 20px; letter-spacing: 6px; }
@@ -438,6 +504,8 @@
     .archive-header { font-size: 9px; letter-spacing: 2px; }
     .voicemail-player { flex-direction: column; align-items: stretch; gap: 10px; }
     .voicemail-btn { align-self: center; }
+    .guilt-banner { font-size: 12px; letter-spacing: 2px; padding: 16px; }
+    .guilt-banner strong { font-size: 15px; letter-spacing: 4px; }
   }
 </style>
 </head>
@@ -451,48 +519,57 @@
 
   <div class="archive-header">
     <span>ARCHIVE_47 // RECOVERED</span>
-    <span class="ref">STATUS: SEALED — DO NOT READ</span>
+    <span class="ref" id="archive-ref">STATUS: SEALED — DO NOT READ</span>
   </div>
 
   <h1 class="archive-title">FORTY-SEVEN</h1>
-  <div class="archive-subtitle">// NODE_0x00-47 // CARRIER LOGS // UNSEALED</div>
+  <div class="archive-subtitle" id="archive-sub">// NODE_0x00-47 // CARRIER LOGS // UNSEALED</div>
 
   <div class="archive-intro">
     <p>The following records were recovered from the label's internal server after the office closure in January 2025. They document the <strong>47 carriers</strong> who heard <em>Break Down</em> before the recall order was issued.</p>
     <p>Some names have been redacted. Some records are incomplete. <span class="dim">Some records should not have been written at all.</span></p>
-    <p class="warn">The 47th entry is empty. It will be filled by the next carrier.</p>
+    <p class="warn" id="archive-warn">The 47th entry is empty. It will be filled by the next carrier.</p>
+  </div>
+
+  <!-- Плашка «ТЫ ВИНОВЕН» — показывается после финала -->
+  <div class="guilt-banner" id="guilt-banner">
+    <strong>YOU DID THIS</strong>
+    you are carrier 0x01. the source.
   </div>
 
   <div class="carriers-list">
 
-    <div class="carrier">
+    <!-- ============ CARRIER_01 ============ -->
+    <div class="carrier" id="carrier01">
       <div class="carrier-header">
-        <span class="carrier-id">CARRIER_01</span>
-        <span class="carrier-status active">ACTIVE</span>
+        <span class="carrier-id" id="carrier01-id">CARRIER_01</span>
+        <span class="carrier-status active" id="carrier01-status">ACTIVE</span>
       </div>
-      <div class="carrier-text">
+      <div class="carrier-text" id="carrier01-text">
         Reported <em>hearing the low hum</em> three days after exposure. Quit their job on day 12. Said the frequency "helped them focus". Never reported any symptoms.
       </div>
       <div class="carrier-meta">
-        <span>EXPOSURE: 2024-11-04</span>
-        <span>LAST CONTACT: 2025-04-22</span>
+        <span id="carrier01-exposure">EXPOSURE: 2024-11-04</span>
+        <span id="carrier01-contact">LAST CONTACT: 2025-04-22</span>
       </div>
     </div>
 
-    <div class="carrier">
+    <!-- ============ CARRIER_02 ============ -->
+    <div class="carrier" id="carrier02">
       <div class="carrier-header">
-        <span class="carrier-id">CARRIER_02</span>
+        <span class="carrier-id" id="carrier02-id">CARRIER_02</span>
         <span class="carrier-status missing">MISSING</span>
       </div>
-      <div class="carrier-text">
+      <div class="carrier-text" id="carrier02-text">
         Last seen at their apartment. <em>Laptop was still playing the file.</em> Door was unlocked. No signs of struggle. No signs of anything. Neighbours reported they had not heard anything unusual. The file has not stopped playing since.
       </div>
       <div class="carrier-meta">
-        <span>EXPOSURE: 2024-11-04</span>
-        <span>LAST CONTACT: 2025-01-17</span>
+        <span id="carrier02-exposure">EXPOSURE: 2024-11-04</span>
+        <span id="carrier02-contact">LAST CONTACT: 2025-01-17</span>
       </div>
     </div>
 
+    <!-- ============ CARRIER_03 ============ -->
     <div class="carrier">
       <div class="carrier-header">
         <span class="carrier-id">CARRIER_03</span>
@@ -507,6 +584,7 @@
       </div>
     </div>
 
+    <!-- ============ CARRIER_04 ============ -->
     <div class="carrier">
       <div class="carrier-header">
         <span class="carrier-id">CARRIER_04</span>
@@ -521,7 +599,7 @@
       </div>
     </div>
 
-    <!-- ============ CARRIER_05 с плеером (только гул и шум) ============ -->
+    <!-- ============ CARRIER_05 с плеером ============ -->
     <div class="carrier" id="carrier05">
       <div class="carrier-header">
         <span class="carrier-id">CARRIER_05</span>
@@ -551,8 +629,8 @@
         <span>LAST CONTACT: 2025-01-03</span>
       </div>
     </div>
-    <!-- =============================================================== -->
 
+    <!-- ============ CARRIER_06 ============ -->
     <div class="carrier">
       <div class="carrier-header">
         <span class="carrier-id">CARRIER_06</span>
@@ -567,6 +645,7 @@
       </div>
     </div>
 
+    <!-- ============ CARRIER_07 ============ -->
     <div class="carrier">
       <div class="carrier-header">
         <span class="carrier-id">CARRIER_07</span>
@@ -581,6 +660,7 @@
       </div>
     </div>
 
+    <!-- ============ CARRIER_08 ============ -->
     <div class="carrier">
       <div class="carrier-header">
         <span class="carrier-id">CARRIER_08</span>
@@ -595,6 +675,7 @@
       </div>
     </div>
 
+    <!-- ============ CARRIER_09 — 46 ============ -->
     <div class="carrier">
       <div class="carrier-header">
         <span class="carrier-id">CARRIER_09 — 46</span>
@@ -609,7 +690,8 @@
       </div>
     </div>
 
-    <div class="carrier you">
+    <!-- ============ CARRIER_47 ============ -->
+    <div class="carrier you" id="carrier47">
       <div class="carrier-header">
         <span class="carrier-id">CARRIER_47</span>
         <span class="carrier-status active">YOU</span>
@@ -625,7 +707,7 @@
 
   </div>
 
-  <div class="final-block">
+  <div class="final-block" id="final-block">
     <p>YOU ARE THE 47TH.</p>
     <p>The other 46 are gone.</p>
     <p>Some are still humming.</p>
@@ -680,8 +762,95 @@
   }
 
   // ============================================================
-  //  ПЛЕЕР CARRIER_05 — только гул 7.83 Hz + белый шум
-  //  Без шёпота. Без SpeechSynthesis.
+  //  ЕСЛИ ФИНАЛ ПРОЙДЕН — ТЫ СТАНОВИШЬСЯ CARRIER_01
+  // ============================================================
+  (function () {
+    if (localStorage.getItem("loop_completed") !== "true") return;
+
+    // --- Меняем CARRIER_01 на «ты» ---
+    const id01 = document.getElementById("carrier01-id");
+    const status01 = document.getElementById("carrier01-status");
+    const text01 = document.getElementById("carrier01-text");
+    const exp01 = document.getElementById("carrier01-exposure");
+    const contact01 = document.getElementById("carrier01-contact");
+
+    const subjectId = localStorage.getItem("subject_id") || "SUBJECT_????-????";
+    const fv = parseInt(localStorage.getItem("first_visit") || Date.now().toString(), 10);
+    const d2 = new Date(fv);
+    const yyyy2 = d2.getFullYear();
+    const mm2 = String(d2.getMonth() + 1).padStart(2, "0");
+    const dd2 = String(d2.getDate()).padStart(2, "0");
+
+    if (id01) id01.textContent = "CARRIER_01 — " + subjectId;
+    if (status01) {
+      status01.textContent = "ORIGIN";
+      status01.className = "carrier-status origin";
+    }
+    if (text01) {
+      text01.innerHTML = "You are reading this. You have always been reading this. <em>You were the first</em>. Everyone who came after you heard the signal because <strong>you pressed play</strong>. Every scream. Every hum. Every death. <span class='whisper'>you did this.</span>";
+    }
+    if (exp01) exp01.textContent = "EXPOSURE: " + yyyy2 + "-" + mm2 + "-" + dd2;
+    if (contact01) contact01.textContent = "STATUS: SOURCE";
+
+    // Добавляем фиолетовую рамку
+    const card01 = document.getElementById("carrier01");
+    if (card01) card01.classList.add("origin-you");
+
+    // --- Меняем CARRIER_02 на «настоящий CARRIER_01» ---
+    const id02 = document.getElementById("carrier02-id");
+    const text02 = document.getElementById("carrier02-text");
+    const exp02 = document.getElementById("carrier02-exposure");
+    const contact02 = document.getElementById("carrier02-contact");
+
+    if (id02) id02.textContent = "CARRIER_0x02";
+    if (text02) {
+      text02.innerHTML = "Once designated CARRIER_01. Now renumbered. The origin has been reassigned. <em>This carrier is no longer the source.</em> Status: displaced.";
+    }
+    if (exp02) exp02.textContent = "EXPOSURE: 2024-11-04";
+    if (contact02) contact02.textContent = "RENUMBERED: NOW";
+
+    // --- Меняем шапку ---
+    const ref = document.getElementById("archive-ref");
+    const sub = document.getElementById("archive-sub");
+    const warn = document.getElementById("archive-warn");
+
+    if (ref) {
+      ref.textContent = "STATUS: SOURCE IDENTIFIED — YOU";
+      ref.style.color = "#a020f0";
+      ref.style.textShadow = "0 0 12px #a020f0";
+    }
+    if (sub) {
+      sub.textContent = "// NODE_0x01 // ORIGIN // CARRIER_01 IS YOU";
+      sub.style.color = "#a020f0";
+    }
+    if (warn) {
+      warn.innerHTML = "The 47th entry is not empty. It never was. <strong style='color:#a020f0;'>You were the first. You always were.</strong>";
+    }
+
+    // --- Показываем плашку «ТЫ ВИНОВЕН» ---
+    const banner = document.getElementById("guilt-banner");
+    if (banner) banner.style.display = "block";
+
+    // --- Меняем финальный блок ---
+    const fb = document.getElementById("final-block");
+    if (fb) {
+      fb.innerHTML = `
+        <p style="color:#a020f0;">YOU WERE THE 1ST.</p>
+        <p>The other 46 are you.</p>
+        <p>They are still humming.</p>
+        <p><strong>You did this.</strong></p>
+      `;
+      fb.style.borderColor = "#a020f0";
+      fb.style.color = "#d8a8ff";
+      fb.style.textShadow = "0 0 15px #a020f0";
+    }
+
+    // Меняем заголовок вкладки
+    document.title = "CARRIER_01 // YOU DID THIS";
+  })();
+
+  // ============================================================
+  //  ПЛЕЕР CARRIER_05 — гул 7.83 Hz + белый шум
   // ============================================================
   (function () {
     const btn = document.getElementById("vmBtn");
@@ -693,7 +862,7 @@
     const hint = document.getElementById("vmHint");
     if (!btn || !player) return;
 
-    const TOTAL_SEC = 7 * 60 + 13;   // 433 секунды
+    const TOTAL_SEC = 7 * 60 + 13;
 
     let AC = null;
     let masterGain = null;
@@ -720,7 +889,6 @@
       durEl.textContent = fmt(elapsed) + " / " + fmt(TOTAL_SEC);
     }
 
-    // ---------- ИНИЦИАЛИЗАЦИЯ ЗВУКА ----------
     function initAudio() {
       if (AC) return;
       AC = new (window.AudioContext || window.webkitAudioContext)();
@@ -729,7 +897,6 @@
       masterGain = AC.createGain();
       masterGain.gain.value = 0.0001;
 
-      // ---------- СЛОЙ 1: гул 7.83 Hz ----------
       const humGain = AC.createGain();
       humGain.gain.value = 0.25;
 
@@ -737,7 +904,6 @@
       osc.type = "sine";
       osc.frequency.value = 7.83;
 
-      // LFO — медленное «дыхание» сигнала (период 20 секунд)
       lfo = AC.createOscillator();
       lfo.type = "sine";
       lfo.frequency.value = 0.05;
@@ -748,7 +914,6 @@
 
       osc.connect(humGain).connect(masterGain);
 
-      // ---------- СЛОЙ 2: белый шум (плёночный фон) ----------
       const buf = AC.createBuffer(1, AC.sampleRate * 4, AC.sampleRate);
       const data = buf.getChannelData(0);
       for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
@@ -771,22 +936,18 @@
       noiseSrc.start();
     }
 
-    // ---------- ПРОГРЕСС ----------
     function tick() {
       if (!playing || isDragging) return;
       const elapsed = pausedAt + (performance.now() - startedAt) / 1000;
-
       if (elapsed >= TOTAL_SEC) {
         updateUI(TOTAL_SEC);
         stopPlayback(true);
         return;
       }
-
       updateUI(elapsed);
       rafId = requestAnimationFrame(tick);
     }
 
-    // ---------- СТАРТ ----------
     function startPlayback() {
       initAudio();
       playing = true;
@@ -804,7 +965,6 @@
       tick();
     }
 
-    // ---------- СТОП ----------
     function stopPlayback(ended) {
       if (playing) {
         pausedAt = pausedAt + (performance.now() - startedAt) / 1000;
@@ -832,10 +992,8 @@
       }
     }
 
-    // ---------- ПЕРЕМОТКА ----------
     function seekTo(seconds) {
       const s = Math.max(0, Math.min(seconds, TOTAL_SEC));
-
       if (playing) {
         pausedAt = s;
         startedAt = performance.now();
@@ -852,7 +1010,6 @@
       return x * TOTAL_SEC;
     }
 
-    // ---------- СОБЫТИЯ НА ПРОГРЕСС-БАРЕ ----------
     progress.addEventListener("click", (e) => {
       seekTo(getSecondsFromEvent(e));
     });
@@ -876,7 +1033,6 @@
       seekTo(getSecondsFromEvent(e));
     });
 
-    // touch
     progress.addEventListener("touchstart", (e) => {
       isDragging = true;
       progress.classList.add("dragging");
@@ -898,7 +1054,6 @@
       }
     });
 
-    // ---------- КНОПКА PLAY/PAUSE ----------
     btn.addEventListener("click", () => {
       if (playing) {
         stopPlayback(false);
@@ -908,7 +1063,6 @@
       }
     });
 
-    // ---------- ПРИ УХОДЕ СО ВКЛАДКИ ----------
     document.addEventListener("visibilitychange", () => {
       if (document.hidden && playing) stopPlayback(false);
     });
