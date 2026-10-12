@@ -163,8 +163,7 @@
       p.textContent = line.text;
       box.appendChild(p);
 
-      // авто-скролл вниз по мере появления
-      overlay.scrollTop = overlay.scrollHeight;
+      // АВТО-СКРОЛЛ УБРАН — игрок сам решает, когда скроллить
     }, totalDelay);
   });
 
