@@ -19,11 +19,6 @@
   `;
   document.body.insertBefore(canvas, document.body.firstChild);
 
-  // Скрываем старый body::before (логотип), чтобы не мешал
-  const styleHide = document.createElement("style");
-  styleHide.textContent = "body::before { display: none !important; }";
-  document.head.appendChild(styleHide);
-
   // ---------- WEBGL ----------
   const gl = canvas.getContext("webgl", { antialias: true, alpha: false });
   if (!gl) {
@@ -51,7 +46,7 @@
     }
   `;
 
-  // ---------- ФРАГМЕНТНЫЙ ШЕЙДЕР (FISHEYE) ----------
+  // ---------- ФРАГМЕНТНЫЙ ШЕЙДЕР ----------
   const fragSrc = `
     precision highp float;
 
@@ -68,9 +63,9 @@
       float r = length(p);
       float r2 = r * r;
 
-      // нелинейная проекция
-      float f = 1.0 / (1.0 + r2 * 0.4 * strength);
-      float warp = mix(1.0, pow(max(r, 0.0001), 0.85), 1.0 - f);
+      // нелинейная проекция — «закручивает» края внутрь
+      float f = 1.0 / (1.0 + r2 * 0.5 * strength);
+      float warp = mix(1.0, pow(max(r, 0.0001), 0.8), 1.0 - f);
 
       p *= f * warp;
 
@@ -78,7 +73,7 @@
       return p + 0.5;
     }
 
-    // ---------- ХЕШ ----------
+    // ---------- ХЕШ-ШУМ ----------
     float hash(vec2 p) {
       p = fract(p * vec2(123.34, 456.21));
       p += dot(p, p + 45.32);
@@ -88,42 +83,37 @@
     void main() {
       vec2 uv = fisheye(vUv, uStrength);
 
-      // за пределами кадра — чёрный
-      if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
-        gl_FragColor = vec4(0.02, 0.01, 0.03, 1.0);
-        return;
-      }
+      // ---------- ФОН: базовый фиолетовый градиент ----------
+      vec3 color = vec3(0.06, 0.02, 0.10);
 
-      // ---------- СЛОИ ФОНА ----------
-      vec3 color = vec3(0.039, 0.031, 0.059);
-
-      // 1. радиальный градиент — центр ярче
-      float grad = 1.0 - length(uv - 0.5) * 1.3;
-      color += vec3(0.09, 0.02, 0.14) * max(grad, 0.0);
+      // 1. радиальный градиент — центр ярче (фиолетовое свечение)
+      vec2 c = uv - 0.5;
+      c.x *= uResolution.x / uResolution.y;
+      float r = length(c);
+      float grad = 1.0 - smoothstep(0.0, 0.85, r);
+      color += vec3(0.35, 0.10, 0.55) * grad;
 
       // 2. горизонтальные сканлайны
       float scan = sin(uv.y * uResolution.y * 1.5) * 0.5 + 0.5;
       scan = step(0.6, scan);
-      color *= (1.0 - scan * 0.1);
+      color *= (1.0 - scan * 0.12);
 
       // 3. зерно плёнки
       float n = hash(uv * uResolution.xy + uTime * 30.0);
-      color += vec3(n * 0.025);
+      color += vec3(n * 0.03);
 
       // 4. вертикальные «полосы сбоя»
-      float vStripe = step(0.995, hash(vec2(floor(uv.x * 80.0), uTime)));
-      color += vec3(0.12, 0.02, 0.18) * vStripe;
+      float vStripe = step(0.996, hash(vec2(floor(uv.x * 80.0), uTime)));
+      color += vec3(0.15, 0.03, 0.22) * vStripe;
 
       // 5. крест в центре — мягкое свечение
-      vec2 c = uv - 0.5;
-      float cross = max(0.0, 1.0 - abs(c.x) * 250.0) * 0.12;
-      cross += max(0.0, 1.0 - abs(c.y) * 250.0) * 0.12;
-      color += vec3(0.45, 0.12, 0.65) * cross;
+      float crossX = max(0.0, 1.0 - abs(c.x) * 220.0) * 0.15;
+      float crossY = max(0.0, 1.0 - abs(c.y) * 220.0) * 0.15;
+      color += vec3(0.55, 0.15, 0.8) * (crossX + crossY);
 
       // 6. виньетка — сильно тёмные углы
-      float r = length(c * vec2(uResolution.x / uResolution.y, 1.0));
-      float vignette = smoothstep(1.0, 0.2, r);
-      color *= mix(0.03, 1.0, vignette);
+      float vignette = smoothstep(1.1, 0.15, r);
+      color *= mix(0.02, 1.0, vignette);
 
       // 7. фиолетовый оттенок
       color *= vec3(1.0, 0.85, 1.2);
@@ -194,11 +184,7 @@
   }
   frame();
 
-  // ---------- ЭКСПОРТ ДЛЯ ОТЛАДКИ ----------
-  window._removeFisheyeBg = () => {
-    canvas.remove();
-  };
-  window._setFisheyeStrength = (n) => {
-    window._fisheyeStrength = n;
-  };
+  // ---------- ЭКСПОРТ ----------
+  window._removeFisheyeBg = () => { canvas.remove(); };
+  window._setFisheyeStrength = (n) => { window._fisheyeStrength = n; };
 })();
