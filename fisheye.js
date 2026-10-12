@@ -1,26 +1,38 @@
 // ==================================================================
 //  fisheye.js — настоящий fisheye через SVG feDisplacementMap
-//  Искажает пиксели нелинейно. Центр выпуклый, края закручиваются.
+//  Искажает только .stage. HUD, футер и кнопка чата остаются
+//  фиксированными и не искажаются.
 // ==================================================================
 
 (function () {
   "use strict";
 
-  // ---------- SVG-ФИЛЬТР ----------
+  // ---------- НАСТРОЙКИ ----------
+  const CONFIG = {
+    size: 1024,             // размер карты смещений (больше = чётче)
+    scale: 60,              // сила искажения (20–120)
+    exponent: 2.0,          // нелинейность (1.5 = слабо, 3.0 = сильно)
+    applyTo: [".stage"]     // к чему применяем фильтр
+  };
+
+  // ---------- СОЗДАНИЕ SVG-ФИЛЬТРА ----------
   const svgNS = "http://www.w3.org/2000/svg";
 
   const svg = document.createElementNS(svgNS, "svg");
   svg.setAttribute("width", "0");
   svg.setAttribute("height", "0");
-  svg.style.position = "absolute";
-  svg.style.left = "-9999px";
+  svg.setAttribute("aria-hidden", "true");
+  svg.style.cssText = "position:absolute;left:-9999px;width:0;height:0;";
   svg.innerHTML = `
     <defs>
-      <filter id="fisheye-filter" x="-20%" y="-20%" width="140%" height="140%">
+      <filter id="fisheye-filter"
+              x="-20%" y="-20%"
+              width="140%" height="140%"
+              color-interpolation-filters="sRGB">
         <feImage id="fisheye-map" result="map"
                  preserveAspectRatio="none"/>
         <feDisplacementMap in="SourceGraphic" in2="map"
-                           scale="40"
+                           scale="${CONFIG.scale}"
                            xChannelSelector="R"
                            yChannelSelector="G"/>
       </filter>
@@ -28,10 +40,11 @@
   `;
   document.body.appendChild(svg);
 
-  // ---------- КАРТА СМЕЩЕНИЙ (gradient map) ----------
-  // Создаём canvas с радиальным градиентом — он задаёт вектор искажения
+  // ---------- СОЗДАНИЕ КАРТЫ СМЕЩЕНИЙ ----------
+  // Canvas с радиальным градиентом: R-канал = X-смещение,
+  // G-канал = Y-смещение, B-канал = 0.
   function createDisplacementMap() {
-    const size = 512;
+    const size = CONFIG.size;
     const canvas = document.createElement("canvas");
     canvas.width = size;
     canvas.height = size;
@@ -44,49 +57,51 @@
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
         const i = (y * size + x) * 4;
+
+        // нормализованные координаты относительно центра
         const dx = (x - center) / maxR;
         const dy = (y - center) / maxR;
+
         const r = Math.sqrt(dx * dx + dy * dy);
 
-        // Ключевая формула fisheye:
-        // чем дальше от центра — тем сильнее смещение наружу
+        // нелинейное искажение: чем дальше от центра — тем сильнее
         const norm = Math.min(r, 1);
-        const distort = Math.pow(norm, 2.2); // <-- степень искажения
-        const nx = norm > 0 ? (dx / norm) * distort : 0;
-        const ny = norm > 0 ? (dy / norm) * distort : 0;
+        const distorted = Math.pow(norm, CONFIG.exponent);
 
-        // R-канал = X-смещение, G-канал = Y-смещение
+        // вектор искажения
+        let nx = 0, ny = 0;
+        if (norm > 0.0001) {
+          nx = (dx / norm) * distorted;
+          ny = (dy / norm) * distorted;
+        }
+
+        // R = X-смещение, G = Y-смещение (128 = нейтраль)
         img.data[i]     = Math.round(128 + nx * 127);
         img.data[i + 1] = Math.round(128 + ny * 127);
         img.data[i + 2] = 0;
         img.data[i + 3] = 255;
       }
     }
+
     ctx.putImageData(img, 0, 0);
     return canvas.toDataURL("image/png");
   }
 
-  // ---------- ПРИМЕНЯЕМ К КОНТЕНТУ ----------
+  // ---------- ПРИМЕНЕНИЕ ФИЛЬТРА ----------
   function applyFisheye() {
     const mapURL = createDisplacementMap();
 
     // вставляем карту в feImage
     const feImage = document.getElementById("fisheye-map");
-    feImage.setAttributeNS("http://www.w3.org/1999/xlink", "href", mapURL);
+    if (!feImage) return;
+    // ставим оба атрибута — для совместимости браузеров
     feImage.setAttribute("href", mapURL);
+    feImage.setAttributeNS(
+      "http://www.w3.org/1999/xlink", "xlink:href", mapURL
+    );
 
-    // применяем фильтр ко всем контейнерам сайта
-    const targets = [
-      ".stage",
-      ".hud",
-      ".hidden-footer",
-      ".channel-btn",
-      "#boot-screen",
-      "#intro-panel",
-      "#mic-bg"
-    ];
-
-    targets.forEach(sel => {
+    // применяем фильтр к целевым элементам
+    CONFIG.applyTo.forEach(sel => {
       const el = document.querySelector(sel);
       if (el) {
         el.style.filter = "url(#fisheye-filter)";
@@ -94,24 +109,44 @@
     });
   }
 
-  // ---------- ЖДЁМ ЗАГРУЗКИ DOM ----------
-  if (document.readyState === "complete" || document.readyState === "interactive") {
-    applyFisheye();
+  // ---------- ЗАПУСК ----------
+  function start() {
+    // на мобильных не применяем — слишком медленно
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (isMobile) return;
+
+    // применяем через небольшую задержку,
+    // чтобы DOM успел отрисоваться
+    setTimeout(applyFisheye, 600);
+  }
+
+  if (document.readyState === "complete" ||
+      document.readyState === "interactive") {
+    start();
   } else {
-    document.addEventListener("DOMContentLoaded", applyFisheye);
+    document.addEventListener("DOMContentLoaded", start);
   }
 
   // ---------- ЭКСПОРТ ДЛЯ ОТЛАДКИ ----------
   window._disableFisheye = () => {
-    document.querySelectorAll("*").forEach(el => {
-      if (el.style.filter && el.style.filter.includes("fisheye-filter")) {
-        el.style.filter = "";
-      }
+    CONFIG.applyTo.forEach(sel => {
+      const el = document.querySelector(sel);
+      if (el) el.style.filter = "";
     });
   };
 
   window._setFisheyeIntensity = (n) => {
-    const f = document.querySelector("#fisheye-filter feDisplacementMap");
-    if (f) f.setAttribute("scale", n);
+    const fe = document.querySelector("#fisheye-filter feDisplacementMap");
+    if (fe) fe.setAttribute("scale", String(n));
+  };
+
+  window._refreshFisheyeMap = () => {
+    const mapURL = createDisplacementMap();
+    const feImage = document.getElementById("fisheye-map");
+    if (!feImage) return;
+    feImage.setAttribute("href", mapURL);
+    feImage.setAttributeNS(
+      "http://www.w3.org/1999/xlink", "xlink:href", mapURL
+    );
   };
 })();
