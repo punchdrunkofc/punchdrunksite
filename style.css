@@ -1063,7 +1063,7 @@ body::after {
   }
  #progress-panel {
   position: fixed;
-  bottom: 90px;
+  top: 60px;
   right: 20px;
   z-index: 9998;
   width: 320px;
