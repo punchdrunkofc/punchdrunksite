@@ -11,11 +11,16 @@
 
 html, body {
   height: 100%;
-  background: transparent;
+  background: #0a0a0f;
   color: var(--fg);
   font-family: "Courier New", "Consolas", monospace;
   overflow-x: hidden;
   cursor: crosshair;
+}
+
+/* На главной странице фон прозрачный — его рисует WebGL-канвас */
+body.has-fisheye-bg {
+  background: transparent !important;
 }
 
 #mic-bg {
