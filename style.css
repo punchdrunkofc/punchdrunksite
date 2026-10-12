@@ -893,3 +893,25 @@ body.has-fisheye-bg {
     border-radius: 12px;
   }
 }
+/* ---------- FREQUENCY SYNC EFFECT ---------- */
+/* Когда игрок достигает синхронизации — визуализатор пульсирует 7.83 Hz */
+
+body.freq-synced .visualizer-wrap {
+  animation: freq-pulse 1.28s ease-in-out infinite;
+}
+
+/* 7.83 Hz ≈ 1.28 сек на цикл (1000 / 7.83 ≈ 127.7 мс × 10 = 1.28 сек) */
+@keyframes freq-pulse {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 8px rgba(160, 32, 240, 0.6)); }
+  50%      { opacity: 0.85; filter: drop-shadow(0 0 20px rgba(160, 32, 240, 1)); }
+}
+
+/* Лёгкая пульсация всего интерфейса при синхронизации */
+body.freq-synced {
+  animation: freq-body-pulse 1.28s ease-in-out infinite;
+}
+
+@keyframes freq-body-pulse {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.03); }
+}
