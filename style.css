@@ -254,8 +254,9 @@ body.has-fisheye-bg {
   max-height: 200px;
   overflow-y: auto;
   scrollbar-width: thin;
-  background: rgba(10, 10, 15, 0.45);
+  background: rgba(10, 10, 15, 0.25);
 }
+
 .log::-webkit-scrollbar { width: 6px; }
 .log::-webkit-scrollbar-thumb { background: var(--dim); }
 
