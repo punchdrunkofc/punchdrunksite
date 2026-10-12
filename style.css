@@ -986,13 +986,25 @@ body::after {
   margin-bottom: 20px;
 }
 
-.credits-line.subtitle {
-  font-size: 14px;
-  color: #7b2cbf;
-  letter-spacing: 6px;
-  margin-bottom: 30px;
-}
+  .credits-line.small {
+    font-size: 13px;
+    color: #4a4055;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
 
+  .credits-line.author {
+    font-size: 28px;
+    color: #ffffff;
+    letter-spacing: 6px;
+    text-shadow:
+      2px 0 #a020f0,
+      -2px 0 #7b2cbf,
+      0 0 30px #a020f0;
+    margin-bottom: 30px;
+    text-transform: lowercase;
+  }
 .credits-line.section {
   font-size: 16px;
   color: #a020f0;
