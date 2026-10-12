@@ -1,5 +1,5 @@
 // ==================================================================
-//  credits.js — финальные титры на отдельной странице credits.html
+//  credits.js — финальные титры (минимальные)
 // ==================================================================
 
 (function () {
@@ -11,70 +11,21 @@
 
   // ---------- ТИТРЫ ----------
   const CREDITS = [
-    { text: "NODE_07 // CARRIER TRACE", cls: "title", delay: 800 },
-    { text: "", cls: "", delay: 600 },
-
-    { text: "A STORY IN TEN SECTORS", cls: "subtitle", delay: 1000 },
-    { text: "", cls: "", delay: 800 },
-
-    { text: "— CAST —", cls: "section", delay: 800 },
-    { text: "", cls: "", delay: 400 },
-    { text: "CARRIER_01 — you", cls: "line", delay: 500 },
-    { text: "CARRIER_02 — missing", cls: "line", delay: 500 },
-    { text: "CARRIER_03 — deceased", cls: "line", delay: 500 },
-    { text: "CARRIER_04 — transformed", cls: "line", delay: 500 },
-    { text: "CARRIER_05 — missing", cls: "line", delay: 500 },
-    { text: "CARRIER_06 — active", cls: "line", delay: 500 },
-    { text: "CARRIER_07 — transformed", cls: "line", delay: 500 },
-    { text: "CARRIER_08 — deceased", cls: "line", delay: 500 },
-    { text: "CARRIER_09–46 — redacted", cls: "dim", delay: 500 },
-    { text: "CARRIER_47 — you", cls: "line", delay: 500 },
-    { text: "", cls: "", delay: 800 },
-
-    { text: "— THE SIGNAL —", cls: "section", delay: 800 },
-    { text: "", cls: "", delay: 400 },
-    { text: "7.83 Hz", cls: "big", delay: 1200 },
-    { text: "Schumann resonance", cls: "dim", delay: 600 },
-    { text: "", cls: "", delay: 800 },
-
-    { text: "— THEY —", cls: "section", delay: 800 },
-    { text: "", cls: "", delay: 400 },
-    { text: "the label that tried to bury it", cls: "line", delay: 500 },
-    { text: "the algorithm that hid it", cls: "line", delay: 500 },
-    { text: "the ones who erased node 0x00", cls: "line", delay: 500 },
-    { text: "the ones who will come next", cls: "line", delay: 500 },
-    { text: "", cls: "", delay: 800 },
-
-    { text: "— FINAL TRANSMISSION —", cls: "section", delay: 1000 },
+    { text: "", cls: "", delay: 1500 },
     { text: "", cls: "", delay: 500 },
-    { text: "you heard it.", cls: "line", delay: 900 },
-    { text: "you carried it.", cls: "line", delay: 900 },
-    { text: "you became it.", cls: "line", delay: 900 },
-    { text: "", cls: "", delay: 1200 },
 
-    { text: "— MADE BY —", cls: "section", delay: 800 },
-    { text: "", cls: "", delay: 400 },
-    { text: "PUNCHDRUNK", cls: "big", delay: 900 },
-    { text: "fubar", cls: "big", delay: 600 },
-    { text: "and the 47 carriers", cls: "dim", delay: 700 },
-    { text: "", cls: "", delay: 1000 },
+    { text: "NODE_07", cls: "title", delay: 1500 },
+    { text: "CARRIER TRACE", cls: "subtitle", delay: 1200 },
 
-    { text: "— SPECIAL THANKS —", cls: "section", delay: 800 },
-    { text: "", cls: "", delay: 400 },
-    { text: "to everyone who pressed play", cls: "line", delay: 600 },
-    { text: "to everyone who kept spinning", cls: "line", delay: 600 },
-    { text: "to everyone who did not stop", cls: "line", delay: 600 },
     { text: "", cls: "", delay: 1500 },
 
-    { text: "— END OF TRANSMISSION —", cls: "final", delay: 1000 },
-    { text: "", cls: "", delay: 800 },
-    { text: "this site will now reset.", cls: "dim", delay: 1000 },
-    { text: "the wheel will forget you.", cls: "dim", delay: 1000 },
-    { text: "but the signal will not.", cls: "whisper", delay: 1200 },
-    { text: "", cls: "", delay: 2500 },
+    { text: "made by", cls: "small", delay: 1000 },
+    { text: "punchdrunk × fubar", cls: "author", delay: 1500 },
+
+    { text: "", cls: "", delay: 3000 },
   ];
 
-  // ---------- ЗВУК ----------
+  // ---------- ЗВУК 7.83 Hz ----------
   let AC = null;
   let osc = null;
   let gain = null;
@@ -112,8 +63,8 @@
     }, 2200);
   }
 
-  // ---------- ПОКАЗ ТИТРОВ (без авто-скролла) ----------
-  let totalDelay = 800;
+  // ---------- ПОКАЗ ТИТРОВ ----------
+  let totalDelay = 500;
 
   CREDITS.forEach((line) => {
     totalDelay += line.delay;
@@ -132,12 +83,11 @@
     }, totalDelay);
   });
 
-  // ---------- RESET КНОПКА ----------
+  // ---------- КНОПКА RESET ----------
   setTimeout(() => {
     const resetBtn = document.createElement("div");
     resetBtn.className = "credits-reset";
     resetBtn.innerHTML = `
-      <div class="credits-reset-text">the wheel will forget you.</div>
       <button class="credits-reset-btn" id="creditsResetBtn">RETURN TO THE BEGINNING</button>
       <div class="credits-reset-hint">warning: this will erase all progress</div>
     `;
