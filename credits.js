@@ -73,12 +73,12 @@
     { text: "you became it.", cls: "line", delay: 700 },
     { text: "", cls: "", delay: 800 },
 
-    { text: "— MADE BY —", cls: "section", delay: 500 },
-    { text: "", cls: "", delay: 200 },
-    { text: "PUNCHDRUNK", cls: "big", delay: 600 },
-    { text: "and the 47 carriers", cls: "dim", delay: 500 },
-    { text: "", cls: "", delay: 800 },
-
+       { text: "— MADE BY —", cls: "section", delay: 800 },
+    { text: "", cls: "", delay: 400 },
+    { text: "PUNCHDRUNK", cls: "big", delay: 900 },
+    { text: "FUBAR", cls: "big", delay: 600 },
+    { text: "and the 47 carriers", cls: "dim", delay: 700 },
+    { text: "", cls: "", delay: 1000 },
     { text: "— SPECIAL THANKS —", cls: "section", delay: 500 },
     { text: "", cls: "", delay: 200 },
     { text: "to everyone who pressed play", cls: "line", delay: 400 },
