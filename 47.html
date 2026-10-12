@@ -180,6 +180,130 @@
     justify-content: space-between;
   }
 
+  /* ---------- PLAY BUTTON (для carrier_05) ---------- */
+  .voicemail-player {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border: 1px solid #8a1a1a;
+    background: rgba(10, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.3s;
+  }
+  .voicemail-player:hover {
+    border-color: #ff2b2b;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+  }
+
+  .voicemail-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid #ff2b2b;
+    background: radial-gradient(circle, #2a0505 0%, #0a0000 100%);
+    color: #ff2b2b;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    padding-left: 3px;
+    font-family: "Courier New", monospace;
+  }
+  .voicemail-btn:hover {
+    background: radial-gradient(circle, #4a0a0a 0%, #0a0000 100%);
+    box-shadow: 0 0 20px #ff2b2b;
+    color: #ffffff;
+  }
+  .voicemail-btn:active { transform: scale(0.92); }
+
+  .voicemail-info {
+    flex: 1;
+    font-size: 11px;
+    letter-spacing: 1px;
+    line-height: 1.6;
+  }
+  .voicemail-info .file-name {
+    color: #ff8a8a;
+    font-size: 12px;
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+  }
+  .voicemail-info .duration {
+    color: #4a3a3a;
+  }
+
+  /* ---------- PLAYER (когда играет) ---------- */
+  .voicemail-player.playing {
+    border-color: #ff2b2b;
+    background: rgba(30, 0, 0, 0.8);
+    box-shadow:
+      0 0 25px rgba(255, 0, 0, 0.5),
+      inset 0 0 20px rgba(255, 0, 0, 0.1);
+  }
+  .voicemail-player.playing .voicemail-btn {
+    background: #ff2b2b;
+    color: #0a0000;
+    animation: playing-pulse 1.28s infinite;
+  }
+  @keyframes playing-pulse {
+    0%, 100% { box-shadow: 0 0 15px #ff2b2b; }
+    50%      { box-shadow: 0 0 35px #ff2b2b; }
+  }
+  .voicemail-player.playing .file-name {
+    color: #ffffff;
+    text-shadow: 0 0 10px #ff0000;
+    animation: filename-flicker 2s infinite;
+  }
+  @keyframes filename-flicker {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.5; }
+  }
+
+  /* Прогресс-бар */
+  .voicemail-progress {
+    width: 100%;
+    height: 4px;
+    background: #2a0505;
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .voicemail-progress .bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #8a1a1a, #ff2b2b);
+    box-shadow: 0 0 8px #ff2b2b;
+    transition: width 0.5s linear;
+  }
+
+  /* Счётчик времени */
+  .voicemail-time {
+    font-size: 10px;
+    color: #ff8a8a;
+    letter-spacing: 1px;
+    margin-top: 4px;
+    font-family: "Courier New", monospace;
+  }
+
+  /* Подсказка под плеером */
+  .voicemail-hint {
+    margin-top: 8px;
+    font-size: 10px;
+    color: #4a3a3a;
+    letter-spacing: 2px;
+    font-style: italic;
+  }
+  .voicemail-hint .warn {
+    color: #ff2b2b;
+    font-style: normal;
+    font-weight: bold;
+    text-shadow: 0 0 6px rgba(255, 0, 0, 0.6);
+  }
+
   /* ---------- 47-Й (ТЫ) ---------- */
   .carrier.you {
     border: 2px solid #ff2b2b;
@@ -277,6 +401,8 @@
     .carrier { padding: 14px 16px; font-size: 12px; }
     .carrier-id { font-size: 12px; }
     .archive-header { font-size: 9px; letter-spacing: 2px; }
+    .voicemail-player { flex-direction: column; align-items: stretch; gap: 10px; }
+    .voicemail-btn { align-self: center; }
   }
 </style>
 </head>
@@ -304,9 +430,6 @@
     <p class="warn">The 47th entry is empty. It will be filled by the next carrier.</p>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- СПИСОК НОСИТЕЛЕЙ -->
-  <!-- ============================================================ -->
   <div class="carriers-list">
 
     <div class="carrier">
@@ -365,19 +488,37 @@
       </div>
     </div>
 
-    <div class="carrier">
+    <!-- ============ CARRIER_05 с плеером ============ -->
+    <div class="carrier" id="carrier05">
       <div class="carrier-header">
         <span class="carrier-id">CARRIER_05</span>
         <span class="carrier-status missing">MISSING</span>
       </div>
       <div class="carrier-text">
-        Left a voicemail on 2025-01-03 at 03:33. Message duration: 7 minutes 13 seconds. <em>The entire message is silence.</em> Family reported they were last seen humming at 7.83 Hz.
+        Left a voicemail on 2025-01-03 at 03:33. Message duration: <em>7 minutes 13 seconds</em>. The entire message is <em>silence</em>. Family reported they were last seen humming at 7.83 Hz.
       </div>
+
+      <!-- Плеер для прослушивания -->
+      <div class="voicemail-player" id="vmPlayer">
+        <button class="voicemail-btn" id="vmBtn" aria-label="Play voicemail">▶</button>
+        <div class="voicemail-info">
+          <div class="file-name" id="vmName">RECOVERED_VOICEMAIL_03-01-2025.wav</div>
+          <div class="duration" id="vmDuration">00:00 / 07:13</div>
+          <div class="voicemail-progress">
+            <div class="bar" id="vmBar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="voicemail-hint" id="vmHint">
+        <span class="warn">⚠</span> use headphones. the silence is not empty.
+      </div>
+
       <div class="carrier-meta">
         <span>EXPOSURE: 2024-11-08</span>
         <span>LAST CONTACT: 2025-01-03</span>
       </div>
     </div>
+    <!-- ====================================== -->
 
     <div class="carrier">
       <div class="carrier-header">
@@ -421,8 +562,6 @@
       </div>
     </div>
 
-    <!-- ============ СКРЫТЫЕ 9-46 ============ -->
-
     <div class="carrier">
       <div class="carrier-header">
         <span class="carrier-id">CARRIER_09 — 46</span>
@@ -436,8 +575,6 @@
         <span>RECORDS: SEALED</span>
       </div>
     </div>
-
-    <!-- ============ 47 — ТЫ ============ -->
 
     <div class="carrier you">
       <div class="carrier-header">
@@ -455,9 +592,6 @@
 
   </div>
 
-  <!-- ============================================================ -->
-  <!-- ФИНАЛЬНЫЙ БЛОК -->
-  <!-- ============================================================ -->
   <div class="final-block">
     <p>YOU ARE THE 47TH.</p>
     <p>The other 46 are gone.</p>
@@ -474,7 +608,9 @@
 <script>
   localStorage.setItem("archive_47_seen", "true");
 
-  // Твоя дата экспозиции — день первого визита
+  // ============================================================
+  //  ПЕРСОНАЛЬНАЯ ДАТА И СТАТУС (для CARRIER_47)
+  // ============================================================
   let firstVisit = parseInt(localStorage.getItem("first_visit") || "0", 10);
   if (!firstVisit) {
     firstVisit = Date.now();
@@ -489,7 +625,6 @@
   const el = document.getElementById("your-exposure");
   if (el) el.textContent = "EXPOSURE: " + yyyy + "-" + mm + "-" + dd;
 
-  // Статус — по прогрессу
   const spins = parseInt(localStorage.getItem("spins") || "0", 10);
   const heard = localStorage.getItem("heard_track") === "true";
   const statusEl = document.getElementById("your-status");
@@ -510,6 +645,148 @@
       statusEl.style.color = "#ff8a8a";
     }
   }
+
+  // ============================================================
+  //  ВОСПРОИЗВЕДЕНИЕ ГОЛОСОВОГО СООБЩЕНИЯ CARRIER_05
+  //  7 минут 13 секунд «тишины» с очень тихим гулом 7.83 Hz
+  // ============================================================
+  (function () {
+    const btn = document.getElementById("vmBtn");
+    const player = document.getElementById("vmPlayer");
+    const bar = document.getElementById("vmBar");
+    const durEl = document.getElementById("vmDuration");
+    const hint = document.getElementById("vmHint");
+    if (!btn || !player) return;
+
+    const TOTAL_SEC = 7 * 60 + 13;   // 433 секунды
+    let AC = null;
+    let masterGain = null;
+    let osc = null;
+    let noiseSrc = null;
+    let startedAt = 0;
+    let rafId = null;
+    let playing = false;
+
+    function fmt(sec) {
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+
+    // ---------- ИНИЦИАЛИЗАЦИЯ ЗВУКА ----------
+    function initAudio() {
+      if (AC) return;
+      AC = new (window.AudioContext || window.webkitAudioContext)();
+      if (AC.state === "suspended") AC.resume();
+
+      masterGain = AC.createGain();
+      masterGain.gain.value = 0.0001;
+
+      // Основной oscillator — 7.83 Hz, слышим как гуляющая волна
+      osc = AC.createOscillator();
+      osc.type = "sine";
+      osc.frequency.value = 7.83;
+
+      const oscGain = AC.createGain();
+      oscGain.gain.value = 0.25;   // очень тихо
+
+      // Слабая амплитудная модуляция — «дыхание» сигнала
+      const lfo = AC.createOscillator();
+      lfo.type = "sine";
+      lfo.frequency.value = 0.05;    // очень медленно
+      const lfoGain = AC.createGain();
+      lfoGain.gain.value = 0.08;
+      lfo.connect(lfoGain);
+      lfoGain.connect(oscGain.gain);
+      lfo.start();
+
+      // Постоянный белый шум — «тишина» с плёночным шумом
+      const buf = AC.createBuffer(1, AC.sampleRate * 4, AC.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      noiseSrc = AC.createBufferSource();
+      noiseSrc.buffer = buf;
+      noiseSrc.loop = true;
+
+      const noiseFilter = AC.createBiquadFilter();
+      noiseFilter.type = "lowpass";
+      noiseFilter.frequency.value = 200;    // только низкий шум
+
+      const noiseGain = AC.createGain();
+      noiseGain.gain.value = 0.02;    // почти не слышно
+
+      // Собираем
+      osc.connect(oscGain).connect(masterGain);
+      noiseSrc.connect(noiseFilter).connect(noiseGain).connect(masterGain);
+      masterGain.connect(AC.destination);
+
+      osc.start();
+      noiseSrc.start();
+    }
+
+    // ---------- ПРОГРЕСС ----------
+    function updateProgress() {
+      if (!playing) return;
+      const elapsed = (performance.now() - startedAt) / 1000;
+      if (elapsed >= TOTAL_SEC) {
+        stopPlayback();
+        return;
+      }
+      const pct = (elapsed / TOTAL_SEC) * 100;
+      bar.style.width = pct + "%";
+      durEl.textContent = fmt(elapsed) + " / " + fmt(TOTAL_SEC);
+      rafId = requestAnimationFrame(updateProgress);
+    }
+
+    // ---------- СТАРТ ----------
+    function startPlayback() {
+      initAudio();
+      playing = true;
+      startedAt = performance.now();
+
+      // плавно поднимаем громкость
+      const now = AC.currentTime;
+      masterGain.gain.cancelScheduledValues(now);
+      masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+      masterGain.gain.linearRampToValueAtTime(0.06, now + 1.5);
+
+      player.classList.add("playing");
+      btn.textContent = "❚❚";
+      hint.innerHTML = '<span class="warn">●</span> playing... the silence is 7 minutes 13 seconds.';
+      updateProgress();
+    }
+
+    // ---------- СТОП ----------
+    function stopPlayback() {
+      playing = false;
+      if (rafId) cancelAnimationFrame(rafId);
+      if (masterGain && AC) {
+        const now = AC.currentTime;
+        masterGain.gain.cancelScheduledValues(now);
+        masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+        masterGain.gain.linearRampToValueAtTime(0.0001, now + 0.5);
+      }
+      player.classList.remove("playing");
+      btn.textContent = "▶";
+      bar.style.width = "0%";
+      durEl.textContent = "00:00 / 07:13";
+      hint.innerHTML = '<span class="warn">⚠</span> use headphones. the silence is not empty.';
+    }
+
+    // ---------- КНОПКА ----------
+    btn.addEventListener("click", () => {
+      if (playing) {
+        stopPlayback();
+      } else {
+        startPlayback();
+      }
+    });
+
+    // ---------- ПРИ УХОДЕ СО ВКЛАДКИ — ПАУЗА ----------
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && playing) stopPlayback();
+    });
+  })();
 </script>
 
 </body>
