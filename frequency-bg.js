@@ -8,8 +8,8 @@
 
   // ---------- НАСТРОЙКИ ----------
   const FREQ_HZ = 7.83;          // частота сигнала
-  const BASE_VOLUME = 0.025;     // базовая громкость (очень тихо)
-  const TARGET_VOLUME = 0.06;    // громкость при синхронизации
+  const BASE_VOLUME = 0.15;      // ← МАКСИМУМ сразу
+  const TARGET_VOLUME = 0.15;    // ← то же значение — нарастания нет
   const SYNC_TIME_MS = 10 * 60 * 1000;   // 10 минут до синхронизации
   const HINT_2MIN = 2 * 60 * 1000;
   const HINT_5MIN = 5 * 60 * 1000;
