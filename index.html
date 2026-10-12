@@ -10,6 +10,7 @@
 </head>
 <body>
 
+<script src="desktop-only.js"></script>
 <script src="boot-screen.js"></script>
 
 <div class="scanlines"></div>
@@ -88,9 +89,9 @@
   <a href="signal.html" class="secret-dot" title="carrier wave analysis">signal.node</a>
   <a href="hidden.html" class="secret-dot" title="you were not supposed to see this">break_down.node</a>
   <a href="47.html" class="secret-dot" title="the others" style="color:#8a1a1a;">archive.node</a>
-  <a href="credits.html" class="secret-dot credits-link" id="creditsLink" title="end of transmission" style="display:none;">credits.node</a>
+  <a href="credits.html" class="secret-dot credits-link" id="creditsLink" title="end of transmission">credits.node</a>
   <a href="void.html" class="secret-dot" title="do not follow">void.node</a>
-  <span class="hidden-tag" title="you found it">?</span>
+  <span class="hidden-tag" title="you found it">7</span>
 </footer>
 
 <script src="audio.js"></script>
@@ -116,33 +117,6 @@
 <script src="frequency-bg.js"></script>
 <script src="loop.js"></script>
 <script src="stalking.js"></script>
-
-<script>
-  // ---------- ПОКАЗЫВАЕМ ССЫЛКУ НА ТИТРЫ ПОСЛЕ ФИНАЛА ----------
-  (function() {
-    if (localStorage.getItem("loop_completed") === "true") {
-      const link = document.getElementById("creditsLink");
-      if (link) {
-        link.style.display = "inline";
-        link.style.color = "#d8a8ff";
-        link.style.fontWeight = "bold";
-        link.style.textShadow = "0 0 10px #a020f0";
-        link.style.animation = "credits-link-pulse 2s infinite";
-      }
-
-      // добавляем анимацию пульсации
-      const style = document.createElement("style");
-      style.textContent = `
-        @keyframes credits-link-pulse {
-          0%, 100% { opacity: 1; }
-          50%      { opacity: 0.5; }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-  })();
-</script>
-
 
 <script>
   // ---------- ЖИВОЙ СЧЁТЧИК "ONLINE" ----------
